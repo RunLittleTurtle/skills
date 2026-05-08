@@ -1,11 +1,30 @@
 ---
 name: skill-creator
-description: Crée interactivement un nouveau skill Claude Code dans le mono-repo personnel de l'utilisateur (typiquement <github-user>/skills). Détecte ou demande la config (GitHub user, author name, repo name, path local) à la première utilisation et la persiste. Pose des questions sur le slug, la description et les étapes du workflow, génère plugin.json + SKILL.md respectant le format plugin marketplace + standard agentskills.io, met à jour marketplace.json + README.md du repo, et propose de commit + push. À invoquer quand l'utilisateur veut ajouter un nouveau skill à sa marketplace personnelle.
+description: Meta-skill GÉNÉRIQUE et ADAPTATIF qui aide n'importe quel utilisateur à créer ses propres skills Claude Code dans SA propre marketplace personnelle (peu importe son compte GitHub, son nom, ses chemins locaux). Détecte ou demande sa config à la première utilisation et la persiste dans ~/.claude/skill-creator/config.json. Génère des skills eux aussi adaptatifs (pas hardcodés au créateur). À invoquer quand l'utilisateur veut ajouter un nouveau skill à sa marketplace personnelle, qu'il en ait déjà une ou pas.
 ---
 
-# skill-creator — Créer un nouveau skill packagé
+# skill-creator — Créer un nouveau skill packagé (générique, adaptatif)
 
-Aide n'importe quel utilisateur (peu importe son compte GitHub, son nom, ou ses chemins) à créer un nouveau skill Claude Code dans **son propre** mono-repo de skills. La première fois, le skill détecte ou demande sa config et la sauvegarde. Ensuite chaque création est rapide.
+## Philosophie & use cases
+
+Ce skill est **générique** : il ne suppose RIEN sur l'identité de l'utilisateur courant. Il peut être installé et utilisé par n'importe qui (Samuel, ses amis, son équipe, un random sur Internet) et fonctionnera immédiatement avec **leurs** infos GitHub et **leurs** chemins.
+
+**Use cases concrets** :
+
+1. **Première utilisation par un nouvel utilisateur** : Alice clone la marketplace `RunLittleTurtle/skills`, installe `skill-creator`, l'invoque. Le skill détecte qu'elle n'a pas encore de config, autodétecte ses infos via `gh api user` et `git config`, lui propose `alice/skills` comme repo cible, et crée le repo GitHub si absent. Tout son setup en 30 secondes.
+
+2. **Utilisateur avec marketplace existante** : Bob a déjà `bob/my-skills` sur GitHub. Il invoque skill-creator, il pointe sa config sur ce repo, et chaque nouveau skill y est ajouté.
+
+3. **Multi-utilisateurs / multi-machines** : Carol travaille sur 2 Mac (perso et boulot). Sur chaque Mac, la première utilisation initialise la config locale dans `~/.claude/skill-creator/config.json`. Sa marketplace cible reste la même (`carol/skills`).
+
+4. **Skills générés aussi adaptatifs** : skill-creator pousse l'utilisateur à rendre ses propres skills génériques (pas de chemins perso hardcodés, pas de noms d'utilisateur figés, utilisation de `gh api` ou `git config` pour détection). Ainsi les skills créés sont eux-mêmes partageables.
+
+**Ce que ce skill ne fait PAS** :
+- Il ne suppose pas que l'utilisateur s'appelle "Samuel" ou utilise `RunLittleTurtle` comme login.
+- Il n'écrit jamais de chemin absolu dans les skills générés (ex: `/Users/samuel/...`).
+- Il n'utilise jamais le repo de quelqu'un d'autre comme cible (chacun pousse dans le sien).
+
+---
 
 **Réponds dans la langue de l'utilisateur (français par défaut si ambigu). Sois concis. Confirme chaque action en une phrase.**
 
@@ -133,12 +152,19 @@ Garde le texte tel quel (pas de troncature, pas de reformulation auto).
 
 ## Étape 6a — Mode interactif
 
-Demande successivement :
+**Avant de commencer la rédaction**, rappelle à l'utilisateur le **principe d'adaptabilité** :
+
+> "Ce skill que tu crées sera potentiellement installé chez d'autres. Évite de hardcoder ton nom, ton login GitHub, des chemins absolus comme `/Users/<toi>/...`, ou des URLs spécifiques à ton compte. Préfère des détections runtime (`gh api user --jq .login`, `git config user.name`, `$HOME`, etc.) ou des variables config. Si le skill DOIT être perso (ex: workflow lié à ton équipe), dis-le explicitement dans la description."
+
+Puis demande successivement :
 
 1. **Langue** de réponse du skill final (français / anglais / autre)
 2. **Style** (concis / détaillé)
-3. **Nombre d'étapes** entre 3 et 7
-4. **Pour chaque étape** : titre court + description (texte libre, 2-5 lignes) + commandes shell impliquées (optionnel)
+3. **Portée** : skill **générique** (utilisable par d'autres) ou **personnel** (lié à TON setup spécifique) ? Si personnel, le mentionner clairement dans la description du frontmatter.
+4. **Nombre d'étapes** entre 3 et 7
+5. **Pour chaque étape** : titre court + description (texte libre, 2-5 lignes) + commandes shell impliquées (optionnel)
+
+Pendant la rédaction, si tu détectes des hardcoded paths/noms dans la description d'une étape, alerte l'utilisateur : "Tu mentionnes `<X>` qui semble spécifique à ton setup. Veux-tu le rendre dynamique (détection runtime) ?".
 
 Construis le body progressivement au format markdown :
 
