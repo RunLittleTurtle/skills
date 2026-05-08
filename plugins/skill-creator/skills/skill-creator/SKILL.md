@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Meta-skill GÉNÉRIQUE et ADAPTATIF qui aide n'importe quel utilisateur à créer ses propres skills Claude Code dans SA propre marketplace personnelle. Fonctionne en deux modes — "github" (avec compte GitHub + gh CLI, push automatique) ou "local" (sans GitHub, marketplace locale uniquement). Détecte automatiquement le mode disponible, basculer vers local si gh manque ou pas authentifié. Persiste la config dans ~/.claude/skill-creator/config.json. Génère des skills eux aussi adaptatifs. À invoquer quand l'utilisateur veut créer un skill, qu'il ait GitHub ou pas.
+description: Meta-skill GÉNÉRIQUE et ADAPTATIF qui aide n'importe quel utilisateur à créer un skill Claude Code (ou compatible agentskills.io). Supporte 3 cibles selon ce que l'utilisateur veut faire — (A) marketplace personnelle multi-skills sur GitHub ou en local, (B) skill standalone perso direct dans ~/.claude/skills/ sans marketplace, (C) skill pour un autre outil (OpenCode, GitHub Copilot Enterprise, Cursor, Claude Desktop, etc.). Détecte automatiquement les outils disponibles, demande la cible appropriée, et adapte tout le workflow. Persiste la config dans ~/.claude/skill-creator/config.json. À invoquer quand l'utilisateur veut créer un skill, peu importe son setup ou ses intentions.
 ---
 
 # skill-creator — Créer un nouveau skill packagé (générique, adaptatif)
@@ -9,24 +9,38 @@ description: Meta-skill GÉNÉRIQUE et ADAPTATIF qui aide n'importe quel utilisa
 
 Ce skill est **générique** : il ne suppose RIEN sur l'identité de l'utilisateur courant. Il peut être installé et utilisé par n'importe qui (Samuel, ses amis, son équipe, un random sur Internet) et fonctionnera immédiatement avec **leurs** infos GitHub et **leurs** chemins.
 
-**Use cases concrets** :
+**Use cases concrets** (3 grandes catégories — A/B/C — choisies à l'Étape 0.0) :
 
-1. **Première utilisation par un nouvel utilisateur GitHub** : Alice clone la marketplace `RunLittleTurtle/skills`, installe `skill-creator`, l'invoque. Le skill détecte qu'elle n'a pas encore de config, autodétecte ses infos via `gh api user` et `git config`, lui propose `alice/skills` comme repo cible, et crée le repo GitHub si absent. Tout son setup en 30 secondes.
+### Type A — Marketplace personnelle (multi-skills, partageable)
 
-2. **Utilisateur avec marketplace existante** : Bob a déjà `bob/my-skills` sur GitHub. Il invoque skill-creator, il pointe sa config sur ce repo, et chaque nouveau skill y est ajouté.
+1. **Nouvel utilisateur GitHub** : Alice clone `RunLittleTurtle/skills`, installe skill-creator, l'invoque. Autodétection via `gh api user`, propose `alice/skills`, crée le repo GitHub si absent. Setup en 30s.
 
-3. **Utilisateur SANS GitHub (mode local)** : Charlie n'a pas de compte GitHub, pas de `gh` CLI, ou ne veut pas publier. Le skill détecte l'absence de `gh` et bascule en **mode local** : tout est généré dans `~/code/skills/` (ou autre dossier choisi), Git local optionnel, pas de push. Pour utiliser ses skills, il fait `/plugin marketplace add ~/code/skills` dans Claude Code (chemin local). Aucune dépendance à Internet ou à un compte.
+2. **Utilisateur avec marketplace existante** : Bob a déjà `bob/my-skills`. La config pointe dessus, chaque nouveau skill y est ajouté + commit + push.
 
-4. **Multi-utilisateurs / multi-machines** : Diane travaille sur 2 Mac (perso et boulot). Sur chaque Mac, la première utilisation initialise la config locale dans `~/.claude/skill-creator/config.json`. Sa marketplace cible reste la même (mode github avec `diane/skills`, ou mode local avec sync iCloud entre les 2 Macs).
+3. **Marketplace LOCALE (sans GitHub)** : Charlie n'a pas de `gh` ou ne veut pas publier. Tout dans `~/code/skills/`, install via `/plugin marketplace add ~/code/skills`. Git local optionnel. Aucune dépendance Internet.
 
-5. **Skills générés aussi adaptatifs** : skill-creator pousse l'utilisateur à rendre ses propres skills génériques (pas de chemins perso hardcodés, pas de noms d'utilisateur figés, utilisation de `gh api` ou `git config` ou `$HOME` pour détection). Ainsi les skills créés sont eux-mêmes partageables.
+### Type B — Skill standalone perso (juste pour soi, sans marketplace)
+
+4. **Skill perso rapide** : Diane veut juste un skill `/check-pr` dans son Claude Code, pas besoin de le partager ou versionner. skill-creator génère directement `~/.claude/skills/check-pr/SKILL.md` — un seul fichier, pas de marketplace, pas de plugin.json. Disponible immédiatement.
+
+### Type C — Skill pour un autre outil (OpenCode, Copilot, Cursor, etc.)
+
+5. **Copilot Enterprise** : Eve travaille avec GitHub Copilot Enterprise au boulot. Elle veut créer un skill pour son équipe. skill-creator génère un `SKILL.md` au standard agentskills.io et lui dit où le placer dans son outil (selon la doc Copilot). Pas de plugin.json Claude Code, pas de marketplace.
+
+6. **OpenCode / Cursor / Claude Desktop** : pareil — skill généré au standard ouvert, dossier cible adapté à l'outil.
+
+### Use case transversal — Skills générés adaptatifs
+
+7. **Skills eux-mêmes adaptatifs** : skill-creator pousse l'utilisateur à rendre ses propres skills génériques (pas de chemins perso hardcodés, pas de noms d'utilisateur figés, utilisation de `gh api`, `git config`, `$HOME` pour détection). Les skills créés sont alors partageables avec d'autres.
 
 **Ce que ce skill ne fait PAS** :
-- Il ne suppose pas que l'utilisateur s'appelle "Samuel" ou utilise `RunLittleTurtle` comme login.
+- Il ne suppose pas l'identité de l'utilisateur (login, nom, organisation).
 - Il ne suppose pas que l'utilisateur a un compte GitHub.
-- Il n'écrit jamais de chemin absolu dans les skills générés (ex: `/Users/samuel/...`).
-- Il n'utilise jamais le repo de quelqu'un d'autre comme cible (chacun pousse dans le sien, ou reste local).
-- Il ne demande jamais à l'utilisateur d'installer `gh` s'il ne veut pas — le mode local est un citoyen de première classe, pas un fallback dégradé.
+- Il ne suppose pas que l'utilisateur veut une marketplace (Type B existe).
+- Il ne suppose pas que l'utilisateur veut Claude Code (Type C existe pour autres outils).
+- Il n'écrit jamais de chemin absolu hardcodé dans les skills générés (ex: `/Users/samuel/...`).
+- Il n'utilise jamais le repo de quelqu'un d'autre comme cible.
+- Il ne demande jamais à installer `gh` ou créer un compte GitHub si l'utilisateur ne veut pas.
 
 ---
 
@@ -34,7 +48,43 @@ Ce skill est **générique** : il ne suppose RIEN sur l'identité de l'utilisate
 
 ---
 
-## Étape 0 — Charger ou initialiser la configuration utilisateur
+## Étape 0.0 — Type de skill à créer (BRANCHEMENT PRINCIPAL)
+
+**Avant tout**, demande à l'utilisateur via `AskUserQuestion` :
+
+> "Que veux-tu faire avec ce nouveau skill ?
+>
+> - **A) Ajouter à ma marketplace personnelle** (recommandé pour skills partageables) : structure complète plugin marketplace, multi-skills dans un seul dépôt (`<user>/skills` ou dossier local), partage facile via `/plugin marketplace add`.
+>
+> - **B) Skill perso standalone** (juste pour moi, ici, maintenant) : un seul fichier `~/.claude/skills/<slug>/SKILL.md`, pas de marketplace, pas de Git, pas de partage. Utilisable immédiatement dans Claude Code.
+>
+> - **C) Skill pour un autre outil** (OpenCode, GitHub Copilot, Cursor, Claude Desktop, etc.) : SKILL.md au standard agentskills.io placé dans le dossier skills de l'outil cible. Tu m'indiques l'outil ou le chemin."
+
+**Selon la réponse** :
+- **Type A** → continuer à l'Étape 0.1 (config marketplace).
+- **Type B** → SKIP Étapes 0.1, 1, 2, 2bis, 8, 9, 10. Aller direct à l'Étape 3 (slug). À l'Étape 7, écris UNIQUEMENT `~/.claude/skills/<slug>/SKILL.md`. Pas de plugin.json, pas de Git.
+- **Type C** → SKIP les mêmes étapes. À l'Étape 7, écris UNIQUEMENT le SKILL.md dans le dossier cible (voir Étape 0.5 pour déterminer le dossier).
+
+---
+
+## Étape 0.5 — Dossier cible (Type C uniquement)
+
+Si Type C, demande via `AskUserQuestion` :
+
+> "Quel outil cible utilises-tu ? (le skill sera placé dans son dossier skills)"
+
+Options proposées (avec dossier par défaut) :
+- **OpenCode** → `~/.opencode/skills/`
+- **GitHub Copilot** → variable selon config (demande à l'utilisateur ou voir [docs Copilot](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills))
+- **Cursor** → variable (voir [docs Cursor](https://cursor.com/docs/context/skills))
+- **Claude Desktop (macOS)** → `~/Library/Application Support/Claude/skills/`
+- **Autre / chemin personnalisé** → l'utilisateur saisit le chemin via "Other"
+
+Vérifie que le dossier existe (sinon, demande de le créer ou de corriger). Stocke dans une variable locale `<target_dir>` pour cette session — pas dans la config persistée (chaque skill peut viser un outil différent).
+
+---
+
+## Étape 0 — Charger ou initialiser la configuration utilisateur (Type A uniquement)
 
 Le skill stocke la config dans `~/.claude/skill-creator/config.json`. Format :
 
@@ -294,7 +344,9 @@ Génère :
 
 ---
 
-## Étape 7 — Construire les fichiers du nouveau skill
+## Étape 7 — Construire les fichiers du nouveau skill (selon Type)
+
+### Type A — Marketplace personnelle
 
 Crée la structure dans `<repo_dir>` :
 
@@ -315,7 +367,7 @@ Crée la structure dans `<repo_dir>` :
     "url": "<author_url>"
   },
   "license": "MIT",
-  "homepage": "https://github.com/<github_user>/<repo_name>"
+  "homepage": "<https://github.com/<github_user>/<repo_name>> ou omis en mode local"
 }
 ```
 
@@ -329,9 +381,34 @@ description: <description>
 <body construit à l'étape 6>
 ```
 
+### Type B — Skill standalone perso
+
+Crée UNIQUEMENT :
+```
+~/.claude/skills/<slug>/SKILL.md
+```
+Pas de plugin.json, pas de marketplace.json. Le SKILL.md a juste le frontmatter `name` + `description` + body. Disponible immédiatement dans Claude Code (slash command `/<slug>`).
+
+`mkdir -p ~/.claude/skills/<slug>` avant d'écrire.
+
+### Type C — Skill pour un autre outil
+
+Crée UNIQUEMENT :
+```
+<target_dir>/<slug>/SKILL.md
+```
+
+(`<target_dir>` vient de l'Étape 0.5). Pas de plugin.json (les autres outils ne s'en servent pas). Le SKILL.md respecte le standard agentskills.io.
+
+`mkdir -p <target_dir>/<slug>` avant d'écrire.
+
 ---
 
-## Étape 8 — Mettre à jour `marketplace.json`
+**Pour Types B et C : SKIP les Étapes 8, 9, 10. Va directement à l'Étape 11 (récap final adapté).**
+
+---
+
+## Étape 8 — Mettre à jour `marketplace.json` (Type A uniquement)
 
 Lis `<repo_dir>/.claude-plugin/marketplace.json` (JSON valide). Ajoute une nouvelle entrée à la fin du tableau `plugins` :
 
@@ -385,9 +462,35 @@ Aucun push possible en mode local — c'est par design, pas un bug.
 
 ---
 
-## Étape 11 — Récap final
+## Étape 11 — Récap final (selon Type)
 
-### Si `mode: "github"` et pushé
+### Type B — Skill standalone perso
+```
+✓ Skill <slug> créé localement.
+
+Fichier : ~/.claude/skills/<slug>/SKILL.md
+
+Disponible immédiatement dans Claude Code via : /<slug>
+
+Pour le supprimer : rm -rf ~/.claude/skills/<slug>
+Pour l'éditer : édite directement ~/.claude/skills/<slug>/SKILL.md
+```
+
+### Type C — Skill pour un autre outil
+```
+✓ Skill <slug> créé pour <outil>.
+
+Fichier : <target_dir>/<slug>/SKILL.md
+
+Format : standard agentskills.io (frontmatter name + description, body markdown).
+
+Pour activer : consulte la doc de <outil> (typiquement, le skill est détecté
+automatiquement au prochain démarrage de l'outil).
+
+Pour partager : envoie le dossier <target_dir>/<slug>/ ou le contenu du SKILL.md.
+```
+
+### Type A — Marketplace personnelle, mode `"github"` et pushé
 ```
 ✓ Skill <slug> créé et publié.
 
