@@ -1,21 +1,19 @@
 {
   "name": "skills",
+  "description": "Marketplace agrégée des skills Claude Code de Samuel Audette — coordination multi-instance, meta-skill skill-creator, et plus à venir.",
   "owner": {
     "name": "Samuel Audette",
     "url": "https://github.com/RunLittleTurtle"
   },
-  "metadata": {
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
       "name": "coordination",
-      "source": "coordination",
+      "source": "./plugins/coordination",
       "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même repo (typiquement plusieurs fenêtres iTerm), ou plusieurs personnes via cloud sync. Système de locks logiques markdown par focus (sprint, task, prd, etc.)."
     },
     {
       "name": "skill-creator",
-      "source": "skill-creator",
+      "source": "./plugins/skill-creator",
       "description": "Crée interactivement un nouveau skill Claude Code dans ce mono-repo. Pose des questions, génère plugin.json + SKILL.md, met à jour marketplace.json + README, propose commit + push."
     }
   ]

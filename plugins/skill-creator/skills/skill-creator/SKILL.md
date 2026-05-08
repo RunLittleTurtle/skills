@@ -158,12 +158,16 @@ Ajoute une nouvelle entrée à la fin du tableau `plugins` :
 ```json
 {
   "name": "<slug>",
-  "source": "<slug>",
+  "source": "./plugins/<slug>",
   "description": "<description courte, 1 phrase>"
 }
 ```
 
-Préserve le formatting (2 espaces d'indentation, virgules correctes). Réécris le fichier complet.
+**Format `source` important** : utilise toujours `"./plugins/<slug>"` (chemin relatif explicite). Le format court `"<slug>"` avec `metadata.pluginRoot` n'est pas accepté par le validator actuel.
+
+Préserve le formatting (2 espaces d'indentation, virgules correctes entre les entrées). Réécris le fichier complet.
+
+Validation : après écriture, lance `claude plugin validate ~/code/skills` et résous toute erreur avant de continuer.
 
 ## Étape 9 — Mettre à jour `README.md`
 
