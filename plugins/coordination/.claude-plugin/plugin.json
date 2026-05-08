@@ -1,0 +1,11 @@
+{
+  "name": "coordination",
+  "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même repo. Système de locks logiques markdown par focus (sprint, task, prd, etc.).",
+  "version": "1.0.0",
+  "author": {
+    "name": "Samuel Audette",
+    "url": "https://github.com/RunLittleTurtle"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/RunLittleTurtle/coordination-skills"
+}

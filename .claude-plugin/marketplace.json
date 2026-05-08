@@ -1,0 +1,17 @@
+{
+  "name": "skills",
+  "owner": {
+    "name": "Samuel Audette",
+    "url": "https://github.com/RunLittleTurtle"
+  },
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "coordination",
+      "source": "coordination",
+      "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même repo (typiquement plusieurs fenêtres iTerm), ou plusieurs personnes via cloud sync. Système de locks logiques markdown par focus (sprint, task, prd, etc.)."
+    }
+  ]
+}
