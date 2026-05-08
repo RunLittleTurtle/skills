@@ -14,7 +14,7 @@
     {
       "name": "skill-creator",
       "source": "./plugins/skill-creator",
-      "description": "Crée interactivement un nouveau skill Claude Code dans ce mono-repo. Pose des questions, génère plugin.json + SKILL.md, met à jour marketplace.json + README, propose commit + push."
+      "description": "Meta-skill générique : crée interactivement un nouveau skill Claude Code dans TA marketplace personnelle (peu importe ton compte GitHub). Détecte ou bootstrap ton repo, pose des questions sur le slug + description + body, génère la structure conforme, et propose commit + push."
     }
   ]
 }
