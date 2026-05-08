@@ -47,6 +47,7 @@ Dossiers cibles courants :
 | Nom | Description | Use case |
 |---|---|---|
 | `coordination` | Coordonner plusieurs instances Claude en parallèle via locks markdown | Plusieurs fenêtres iTerm sur le même repo, ou plusieurs personnes via cloud sync |
+| `skill-creator` | Crée interactivement un nouveau skill et l'ajoute à cette marketplace | Tu veux ajouter un nouveau skill sans coder la structure à la main |
 
 ---
 

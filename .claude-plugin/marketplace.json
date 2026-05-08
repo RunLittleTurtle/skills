@@ -12,6 +12,11 @@
       "name": "coordination",
       "source": "coordination",
       "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même repo (typiquement plusieurs fenêtres iTerm), ou plusieurs personnes via cloud sync. Système de locks logiques markdown par focus (sprint, task, prd, etc.)."
+    },
+    {
+      "name": "skill-creator",
+      "source": "skill-creator",
+      "description": "Crée interactivement un nouveau skill Claude Code dans ce mono-repo. Pose des questions, génère plugin.json + SKILL.md, met à jour marketplace.json + README, propose commit + push."
     }
   ]
 }
