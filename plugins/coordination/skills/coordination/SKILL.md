@@ -11,7 +11,27 @@ Aide l'utilisateur à coordonner plusieurs instances Claude qui travaillent en p
 
 ## Étape 1 — Vérifications préalables
 
-Exécute `git rev-parse --show-toplevel`. Si ça échoue, dis "Pas dans un repo git, le skill ne peut pas continuer" et arrête. Sinon, mémorise le résultat comme `REPO_ROOT` pour la suite.
+Exécute `git rev-parse --show-toplevel` depuis le cwd.
+
+**Si ça réussit** : mémorise le résultat comme `REPO_ROOT` et passe à l'étape 2.
+
+**Si ça échoue** (cwd hors repo git) : **arrête le skill immédiatement** et affiche **exactement** ce message à l'utilisateur (substitue `<cwd>` par le résultat de `pwd`) :
+
+```
+Le répertoire courant <cwd> n'est pas un repo git. La coordination écrit
+des fichiers COORDINATION.*.md à la racine d'un repo, donc j'ai besoin que tu
+sois dans le repo voulu avant d'invoquer le skill.
+
+Action requise : ferme cette session Claude, ouvre un terminal, et fais :
+
+  cd <chemin-vers-ton-repo>
+  claude
+
+Puis ré-invoque /coordination. Je ne devine pas le repo — c'est à toi de le
+définir via le cwd.
+```
+
+**Ne propose pas** d'auto-détection, de menu de choix, ni de path saisi à la main. **Ne tente pas** de déduire le repo du contexte de la conversation. Le cwd est la source unique de vérité pour `REPO_ROOT`.
 
 ## Étape 2 — Détection de l'état actuel
 
