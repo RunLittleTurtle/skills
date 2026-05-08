@@ -1,34 +1,31 @@
 ---
 name: skill-creator
-description: Meta-skill GÉNÉRIQUE et ADAPTATIF qui aide n'importe quel utilisateur à créer un skill Claude Code (ou compatible agentskills.io). Supporte 3 cibles selon ce que l'utilisateur veut faire — (A) marketplace personnelle multi-skills sur GitHub ou en local, (B) skill standalone perso direct dans ~/.claude/skills/ sans marketplace, (C) skill pour un autre outil (OpenCode, GitHub Copilot Enterprise, Cursor, Claude Desktop, etc.). Détecte automatiquement les outils disponibles, demande la cible appropriée, et adapte tout le workflow. Persiste la config dans ~/.claude/skill-creator/config.json. À invoquer quand l'utilisateur veut créer un skill, peu importe son setup ou ses intentions.
+description: Meta-skill GÉNÉRIQUE et ADAPTATIF qui aide n'importe quel utilisateur à créer un skill Claude Code (ou compatible agentskills.io). Détecte automatiquement les fichiers de référence passés en argument (ex `/skill-creator <path1> <path2>`) et pose des questions ciblées sur l'angle/profondeur d'analyse et le rôle de chaque fichier — l'utilisateur n'a PAS à écrire "analyse profondément" en texte libre. Supporte 3 cibles — (A) marketplace personnelle multi-skills sur GitHub ou en local, (B) skill standalone perso direct dans ~/.claude/skills/ sans marketplace, (C) skill pour un autre outil (OpenCode, GitHub Copilot Enterprise, Cursor, Claude Desktop, etc.). Persiste la config dans ~/.claude/skill-creator/config.json. À invoquer quand l'utilisateur veut créer un skill, peu importe son setup ou ses intentions.
 ---
 
 # skill-creator — Créer un nouveau skill packagé (générique, adaptatif)
 
-## Philosophie & use cases
+## Philosophie & garanties
 
-Ce skill est **générique** : il ne suppose RIEN sur l'identité de l'utilisateur courant. Il peut être installé et utilisé par n'importe qui (Samuel, ses amis, son équipe, un random sur Internet) et fonctionnera immédiatement avec **leurs** infos GitHub et **leurs** chemins.
+Skill **générique** : ne suppose RIEN sur l'identité de l'utilisateur courant. Fonctionne pour n'importe qui avec **ses** infos GitHub et **ses** chemins. Trois types couverts (choix à l'Étape 0.0) : **A** marketplace personnelle multi-skills (GitHub ou local), **B** skill standalone perso (`~/.claude/skills/<slug>/SKILL.md`, sans Git), **C** skill pour un autre outil (OpenCode, Cursor, Copilot, Claude Desktop…). Les skills GÉNÉRÉS sont eux-mêmes adaptatifs (pas de hardcoding du créateur).
 
-**Use cases couverts** (3 types A/B/C, choisis à l'Étape 0.0) :
-
-| Type | Cible | Avec / Sans GitHub | Exemple |
-|---|---|---|---|
-| A | Marketplace personnelle multi-skills | github (push auto) | Alice : autodétection `alice/skills`, bootstrap si absent |
-| A | Marketplace personnelle multi-skills | local (sans gh) | Charlie : `~/code/skills/`, install via `/plugin marketplace add <path>` |
-| B | Skill standalone Claude Code | sans Git | Diane : `~/.claude/skills/check-pr/SKILL.md`, dispo immédiat via `/check-pr` |
-| C | Skill pour autre outil | sans Git | Eve : Copilot Enterprise / OpenCode / Cursor / Desktop, dossier cible custom |
-
-**Use case transversal** : les skills GÉNÉRÉS sont eux-mêmes adaptatifs (pas de hardcoding du créateur).
-
-**Garanties (ce que skill-creator ne fait PAS)** :
-- Ne suppose pas l'identité de l'utilisateur, ni qu'il a un compte GitHub.
-- Ne suppose pas qu'il veut une marketplace (Type B/C existent), ni Claude Code (Type C couvre autres outils).
-- N'écrit jamais de chemin absolu hardcodé dans les skills générés.
-- Ne demande jamais d'installer `gh` ou créer un compte GitHub si l'utilisateur ne veut pas.
+**Le skill ne fait JAMAIS** : supposer un compte GitHub ; supposer Claude Code (Type C couvre les autres outils) ; écrire un chemin absolu hardcodé ; forcer l'install de `gh` ou la création d'un compte GitHub.
 
 ---
 
 **Réponds dans la langue de l'utilisateur (français par défaut si ambigu). Sois concis. Confirme chaque action en une phrase.**
+
+---
+
+## Étape -1 — Détection automatique de fichiers de référence (toujours en premier)
+
+**Cette étape s'exécute AVANT toutes les autres**, dès l'invocation du skill, pour éviter que l'utilisateur ait à écrire en texte libre des consignes du genre "analyse profondément ce fichier".
+
+**Logique** :
+1. Scanne le message initial de l'utilisateur. Si tu repères un ou plusieurs tokens qui ressemblent à un chemin de fichier ET que ce(s) fichier(s) existe(nt) sur disque (peu importe l'extension), lis `${CLAUDE_SKILL_DIR}/references/REFERENCE_DETECTION.md` et suis le workflow détaillé qui s'y trouve (lecture des fichiers → questions sur rôle/profondeur → analyse réelle → question dynamique sur les composantes à reproduire → brief injecté dans 4/6a/6c).
+2. Si aucun path détecté → SKIP cette étape, va directement à l'Étape 0.0.
+
+**Important** : la liste des composantes proposée à l'utilisateur est **DYNAMIQUE**, dérivée de l'analyse réelle des fichiers fournis (sections, blocs, patterns, conventions, style). Ce n'est jamais une liste hardcodée — un fichier `.py` produit des options différentes d'un `.md` ou d'un CSV. Les détails sont dans le fichier annexe.
 
 ---
 
@@ -236,7 +233,9 @@ Si invalide ou déjà existant, explique pourquoi et redemande.
 
 > "Décris en 1-3 phrases QUAND ce skill doit être invoqué. Commence par un verbe d'action (Coordonner..., Générer..., Analyser...). Cette description sera lue par le LLM pour décider d'activer le skill."
 
-Garde le texte tel quel (pas de troncature, pas de reformulation auto).
+**Si l'Étape -1 a produit un brief de référence**, propose une description **pré-rédigée** basée sur le brief (ex: "Transformer N'IMPORTE QUEL input (texte, fichier, image, idée) en document structuré comme `<nom du fichier de référence>` : sections X/Y/Z, diagramme de séquence, scénario narratif. À invoquer quand..."). L'utilisateur peut accepter telle quelle, ajuster, ou réécrire.
+
+Garde le texte final tel quel (pas de troncature, pas de reformulation auto).
 
 ---
 
@@ -252,6 +251,8 @@ Garde le texte tel quel (pas de troncature, pas de reformulation auto).
 ## Étape 6a — Mode interactif
 
 **Avant de commencer**, lis `${CLAUDE_SKILL_DIR}/references/AUTHORING_GUIDELINES.md` pour avoir en tête : limites officielles (frontmatter, longueur < 500 lignes, < 5k tokens), pattern progressive disclosure, anti-patterns courants. Réfère-toi à ce fichier quand l'utilisateur demande "est-ce un bon skill ?".
+
+**Si l'Étape -1 a produit un brief de référence**, utilise-le comme **squelette de départ** : propose à l'utilisateur les étapes correspondant aux sections / diagrammes / règles détectés, plutôt que de partir de zéro. Exemple : si le brief mentionne "sections: contexte, scénario, séquence diagrammée, matrice d'attributs", propose 4-5 étapes correspondantes et demande confirmation/ajustement avant de les détailler.
 
 Rappelle à l'utilisateur le **principe d'adaptabilité** :
 
@@ -303,7 +304,7 @@ Utilise tel quel.
 
 ## Étape 6c — Mode "squelette minimal"
 
-Génère :
+**Cas par défaut (sans brief de référence)** :
 
 ```markdown
 # <Nom du skill>
@@ -325,6 +326,8 @@ Génère :
 À remplir.
 ```
 
+**Si l'Étape -1 a produit un brief de référence** : remplace les `Étape N — TODO` génériques par des étapes pré-titrées correspondant aux sections / diagrammes / règles détectés (ex: `## Étape 1 — Lire et structurer l'input`, `## Étape 2 — Générer le diagramme de séquence`, `## Étape 3 — Rédiger le scénario narratif`...). Le contenu de chaque étape reste "À remplir" mais le titre guide l'utilisateur.
+
 ---
 
 ## Étape 7 — Construire les fichiers du nouveau skill (selon Type)
@@ -336,6 +339,7 @@ Crée la structure dans `<repo_dir>` :
 ```
 <repo_dir>/plugins/<slug>/
 ├── .claude-plugin/plugin.json
+├── README.md                     ← visible sur GitHub à la racine du plugin
 └── skills/<slug>/SKILL.md
 ```
 
@@ -345,14 +349,13 @@ Crée la structure dans `<repo_dir>` :
   "name": "<slug>",
   "description": "<description complète frontmatter>",
   "version": "1.0.0",
-  "author": {
-    "name": "<author_name>",
-    "url": "<author_url>"
-  },
+  "author": { "name": "<author_name>", "url": "<author_url>" },
   "license": "MIT",
   "homepage": "<https://github.com/<github_user>/<repo_name>> ou omis en mode local"
 }
 ```
+
+**`<repo_dir>/plugins/<slug>/README.md`** : lis `${CLAUDE_SKILL_DIR}/assets/readme-plugin-template.md`, substitue les placeholders (`<slug>`, `<description>`, `<github_user>`, `<repo_name>`, `<repo_url>`) par les valeurs de la config + des saisies (Étapes 3/4). **En mode `local`** : remplace la commande `/plugin marketplace add <github_user>/<repo_name>` par `/plugin marketplace add <repo_dir>` (chemin local absolu) et adapte/supprime le bloc `git clone` selon le remote disponible. Adapte la section « Contenu » en fonction des dossiers réellement créés dans le skill (`references/`, `assets/` présents ou pas).
 
 **`<repo_dir>/plugins/<slug>/skills/<slug>/SKILL.md`** :
 ```markdown
@@ -447,47 +450,21 @@ Aucun push possible en mode local — c'est par design, pas un bug.
 
 ## Étape 11 — Récap final
 
-Affiche un bloc adapté au type. Toujours commencer par `✓ Skill <slug> créé`, puis :
+Affiche `✓ Skill <slug> créé.` puis le bloc adapté au type :
 
-**Type A — Marketplace, mode `github` pushé** :
+**Type A (marketplace, mode `github` pushé)** :
 ```
 Fichiers : <repo_dir>/plugins/<slug>/
 GitHub   : https://github.com/<github_user>/<repo_name>/tree/main/plugins/<slug>
-Install  : /plugin marketplace add <github_user>/<repo_name>  (si pas déjà fait)
-           /plugin marketplace update <repo_name>
-           /plugin install <slug>@<repo_name>
+Install  : /plugin marketplace add <github_user>/<repo_name>  →  /plugin marketplace update <repo_name>  →  /plugin install <slug>@<repo_name>
 Slash    : /<slug>:<slug>
 ```
 
-**Type A — Marketplace, mode `github` pas pushé** :
-```
-Fichiers : <repo_dir>/plugins/<slug>/
-À faire  : cd <repo_dir> && git add -A && git commit -m "Add <slug> skill" && git push
-```
+**Type A — variantes** : si pas pushé, ajoute `À faire : cd <repo_dir> && git add -A && git commit -m "Add <slug> skill" && git push`. En mode `local`, remplace l'URL GitHub par `Install : /plugin marketplace add <repo_dir>` (chemin local, pas owner/repo) et mentionne le partage par zip + `/plugin marketplace add <chemin>` chez le destinataire.
 
-**Type A — Marketplace, mode `local`** :
-```
-Fichiers : <repo_dir>/plugins/<slug>/
-Install  : /plugin marketplace add <repo_dir>   (chemin local, pas owner/repo)
-           /plugin marketplace update <repo_name>
-           /plugin install <slug>@<repo_name>
-Partage  : zippe <repo_dir>/, le destinataire fait /plugin marketplace add <chemin>.
-           Ou repasse en mode github via la config pour publier.
-```
+**Type B (standalone perso)** : `Fichier : ~/.claude/skills/<slug>/SKILL.md` ; slash `/<slug>` dispo immédiatement ; édition directe du fichier, suppression `rm -rf ~/.claude/skills/<slug>`.
 
-**Type B — Standalone perso** :
-```
-Fichier  : ~/.claude/skills/<slug>/SKILL.md
-Slash    : /<slug>  (dispo immédiatement)
-Édition  : modifie directement le fichier ; suppression : rm -rf ~/.claude/skills/<slug>
-```
-
-**Type C — Autre outil** :
-```
-Fichier  : <target_dir>/<slug>/SKILL.md  (format standard agentskills.io)
-Activer  : consulte la doc de <outil> (souvent auto au prochain démarrage)
-Partage  : envoie le dossier ou le SKILL.md
-```
+**Type C (autre outil)** : `Fichier : <target_dir>/<slug>/SKILL.md` (format standard agentskills.io) ; activation selon la doc de l'outil (souvent auto au prochain démarrage) ; partage = envoie le dossier ou le SKILL.md.
 
 ---
 
@@ -498,7 +475,9 @@ Ce skill suit le pattern **progressive disclosure** recommandé par agentskills.
 | Fichier | Quand le lire |
 |---|---|
 | `${CLAUDE_SKILL_DIR}/assets/readme-template.md` | Phase de bootstrap (Étape 2bis) — template du README généré pour le repo de marketplace |
+| `${CLAUDE_SKILL_DIR}/assets/readme-plugin-template.md` | Étape 7 Type A — template du `README.md` généré à la racine de chaque nouveau plugin (visible sur GitHub quand on navigue dans `plugins/<slug>/`) |
 | `${CLAUDE_SKILL_DIR}/references/AUTHORING_GUIDELINES.md` | Quand tu guides l'utilisateur dans la rédaction du body (Étape 6a/c), ou quand l'utilisateur veut vérifier la qualité d'un skill existant. Contient les limites officielles (frontmatter, longueur), exemples bons/mauvais, anti-patterns. |
+| `${CLAUDE_SKILL_DIR}/references/REFERENCE_DETECTION.md` | Étape -1 — quand l'invocation contient des chemins de fichiers existants. Workflow détaillé : scan → lecture → questions sur rôle/profondeur → **analyse réelle des fichiers** → liste DYNAMIQUE de composantes à reproduire → brief injecté dans 4/6a/6c. |
 
 `${CLAUDE_SKILL_DIR}` est la variable Claude Code qui pointe vers le dossier de ce skill.
 
@@ -511,7 +490,7 @@ Ce skill suit le pattern **progressive disclosure** recommandé par agentskills.
 | Pas de chemin/nom hardcodé — tout passe par les variables de config (Étape 0) | Le skill doit marcher chez n'importe qui |
 | Pas de symlink. Distribution via `/plugin install`, jamais via `ln -s` | Bugs cross-machine |
 | Pas de `gh repo create` sauf bootstrap (Étape 2bis) | Tout va dans le mono-repo |
-| Ne touche QUE aux fichiers du nouveau skill + `marketplace.json` + `README.md` | Pas de side-effects sur les autres skills |
+| Ne touche QUE aux fichiers du nouveau skill + le `marketplace.json` global + le `README.md` global du repo (Type A) | Pas de side-effects sur les autres skills |
 | Frontmatter SKILL.md = `name` + `description` UNIQUEMENT | Standard agentskills.io ; pas de `version`/`tags` non standard |
 | SKILL.md généré : viser < 500 lignes ; si plus, scinder via `references/` + `assets/` | Recommandation officielle Anthropic + agentskills.io |
 | Si erreur (pull conflict, JSON invalide, slug en doublon, push refusé) → arrête et dis exactement ce qui s'est passé | Ne pas réparer en silence |
