@@ -49,6 +49,7 @@ Dossiers cibles courants :
 | `coordination` | Coordonner plusieurs instances Claude en parallèle via locks markdown | Plusieurs fenêtres iTerm sur le même repo, ou plusieurs personnes via cloud sync |
 | `skill-creator` | Meta-skill **générique** : crée un nouveau skill dans TA propre marketplace (pas la mienne) | N'importe qui veut créer/maintenir sa propre marketplace personnelle de skills Claude Code |
 | `mermaid-flow` | Transformer un flow (texte/fichier/mermaid/image) en flowchart Mermaid simplifié pour personnes peu techniques | Vulgariser un processus métier en diagramme accessible (max 10 étapes, palette pastel, emojis acteurs 👤🤖⚙️🖥️⚖️) |
+| `scenario-uc` | Transformer tout input (md/PDF/image/URL Drive/idée) en scénario use-case au format Authentik PRD avec diagramme de séquence Mermaid | Formaliser un cas d'utilisation produit (description + acteurs typés + intent + séquence numérotée + sequenceDiagram), sortie en français, validation interactive |
 
 ---
 

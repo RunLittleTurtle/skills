@@ -20,6 +20,11 @@
       "name": "mermaid-flow",
       "source": "./plugins/mermaid-flow",
       "description": "Transformer un flow (texte, fichier markdown, mermaid existant ou image) en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, palette pastel light-mode, emojis acteurs 👤🤖⚙️🖥️⚖️). Analyse profonde + validation interactive avant génération."
+    },
+    {
+      "name": "scenario-uc",
+      "source": "./plugins/scenario-uc",
+      "description": "Transformer tout input (md, PDF, image, URL Drive, idée verbale) en fichier de scénario use-case au format Authentik PRD : description avec acteurs typés, intent business, scénarios textuels numérotés, diagramme de séquence Mermaid. Analyse profonde + validation interactive avant génération. Sortie en français."
     }
   ]
 }
