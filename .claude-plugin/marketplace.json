@@ -25,6 +25,11 @@
       "name": "scenario-uc",
       "source": "./plugins/scenario-uc",
       "description": "Transformer tout input (md, PDF, image, URL Drive, idée verbale) en fichier de scénario use-case au format Authentik PRD : description avec acteurs typés, intent business, scénarios textuels numérotés, diagramme de séquence Mermaid. Analyse profonde + validation interactive avant génération. Sortie en français."
+    },
+    {
+      "name": "bmad-customize-skills",
+      "source": "./plugins/bmad-customize-skills",
+      "description": "Désactiver / réactiver sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). Réversible, idempotent, ré-applicable après chaque npx bmad-method install. Patche aussi bmad-help.csv pour neutraliser les required gates des phases non pertinentes."
     }
   ]
 }
