@@ -1,6 +1,6 @@
 ---
 name: use-case-value
-description: Priorise et chiffre la VALEUR business des use cases d'AI/automatisation à partir de tout matériel de découverte de processus (transcripts d'ateliers, post-its, inventaires CSV de 500+ lignes, notes de réunion, mixed). Six sources d'Impact $ explicites (temps perdu, opportunités manquées, coût des erreurs, saturation main-d'œuvre, dépendances externes, frictions inter-départementales) + nombre de personnes affectées + transversalité + pain points structurés. Règle d'or stricte : seuls les chiffres durs cités ou validés par le sponsor entrent dans les cellules Impact $, les estimations LLM vont exclusivement en Notes comme questions à poser au sponsor (à chiffrer en atelier). Aucune dimension d'effort technique (Build, Run, Payback, ROI An 1) : ce skill se concentre sur la VALEUR uniquement, l'effort sera traité par un futur skill séparé qui se branchera sur le CSV de sortie. Sortie : un dossier projet par run contenant un CSV 25 colonnes (avec FORMULES et SOURCE pour traçabilité) et une synthèse exécutive one-pager en prose narrative française Québec pour directeurs de compte. Triggers : prioriser, prioriser par impact, valeur use case, quel use case en premier, chiffrer la valeur, note de cadrage, atelier découverte, post-its, transcript atelier, inventaire processus, impact business, pertes évitées, opportunités manquées, saturation ressources, frictions inter-départementales.
+description: Priorise et chiffre la VALEUR business des use cases d'AI/automatisation à partir de tout matériel de découverte de processus (transcripts d'ateliers, post-its, inventaires CSV de 500+ lignes, notes de réunion, mixed). Six sources d'Impact $ explicites (temps perdu, opportunités manquées, coût des erreurs, saturation main-d'œuvre, dépendances externes, frictions inter-départementales) + nombre de personnes affectées + transversalité + pain points structurés + colonne Dépend de pour modéliser les dépendances inter-use-cases. Step 2bis Root Cause Analysis (5 Whys + Ishikawa) appliquée avant chiffrage pour distinguer root causes actionnables vs symptômes (évite de triple-compter l'impact). Règle d'or stricte : seuls les chiffres durs cités ou validés par le sponsor entrent dans les cellules Impact $, les estimations LLM vont exclusivement en Notes comme questions à poser au sponsor (à chiffrer en atelier). Aucune dimension d'effort technique (Build, Run, Payback, ROI An 1) : ce skill se concentre sur la VALEUR uniquement, l'effort sera traité par un futur skill séparé qui se branchera sur le CSV de sortie. Sortie : un dossier projet par run contenant un CSV 26 colonnes (avec FORMULES et SOURCE pour traçabilité) et une synthèse exécutive one-pager en prose narrative française Québec, avec section optionnelle Dépendances et root causes si pertinent. Triggers : prioriser, prioriser par impact, valeur use case, quel use case en premier, chiffrer la valeur, note de cadrage, atelier découverte, post-its, transcript atelier, inventaire processus, impact business, root cause, dépendances use cases, 5 whys, ishikawa.
 ---
 
 # Use Case Value — Priorisation par impact chiffré
@@ -11,25 +11,25 @@ Ce skill transforme du matériel d'atelier de découverte en une **note de cadra
 
 Un dossier `/mnt/user-data/outputs/priorisation_impact_<projet>_<YYYY-MM-DD>/` contenant :
 
-1. **`priorisation_use_cases.csv`** : 25 colonnes, ligne FORMULES (row 2), ligne SOURCE (row 3), puis une ligne par use case. Le fichier de travail pour l'analyste.
-2. **`synthese_priorisation.md`** : synthèse exécutive one-pager en prose narrative française Québec. Préambule + Top 5 + "À chiffrer en atelier" + "Recommandations méthodologiques".
+1. **`priorisation_use_cases.csv`** : 26 colonnes, ligne FORMULES (row 2), ligne SOURCE (row 3), puis une ligne par use case. Le fichier de travail pour l'analyste.
+2. **`synthese_priorisation.md`** : synthèse exécutive one-pager en prose narrative française Québec. Préambule + Top 5 + "À chiffrer en atelier" + "Dépendances et root causes" (section optionnelle) + "Recommandations méthodologiques".
 
 ## Ce que ce skill NE produit PAS
 
 - Aucune estimation de Build, Run cost, Payback, ROI An 1, T-shirt size. L'effort technique est hors scope et sera traité par un futur skill complémentaire.
 - Aucune estimation LLM dans les cellules Impact $. Voir règle d'or absolue ci-dessous.
-- Aucun bundling de use cases dans la synthèse (un Top = un use case, pas un groupe).
-- Aucune section Méthodologie longue ni Lectures transversales séparée.
+- Aucun bundling de use cases dans la synthèse (un Top = un use case actionnable, les dépendances entre eux sont décrites dans la section dédiée).
+- Aucune section Méthodologie longue.
 
 ## Toujours commencer par lire le framework
 
 Avant de traiter tout input, lire dans cet ordre :
 
-1. `references/framework.md` : explication des 25 colonnes, rubriques 1-3, sources méthodologiques (BABOK, WSJF, DAMA-DMBOK).
+1. `references/framework.md` : explication des 26 colonnes, rubriques 1-3, sources méthodologiques (BABOK, WSJF, 5 Whys + Ishikawa, DAMA-DMBOK).
 2. `references/calculation_rules.md` : formules, défaut coût horaire 80 $/h, grille de verdict.
 3. `references/exemples_chiffrage_impact.md` : frontière chiffre dur vs hypothèse, exemples typiques colonne par colonne.
 
-Sans ce contexte, tu vas remplir le CSV de manière incorrecte (notamment violer la règle d'or).
+Sans ce contexte, tu vas remplir le CSV de manière incorrecte (notamment violer la règle d'or ou lister des symptômes au lieu de root causes).
 
 ## Règle d'or absolue : chiffres durs vs estimations LLM
 
@@ -71,134 +71,143 @@ Inférer le nom du projet à partir des inputs, dans cet ordre de priorité :
 2. Entité client mentionnée en boucle dans le transcript ou la note
 3. Sinon : fallback `<YYYY-MM-DD>_<HHMM>` (date-heure du moment)
 
-Annoncer le nom inféré à l'utilisateur. Si le projet est ambigu, demander confirmation rapide. L'utilisateur peut renommer le dossier après coup.
+Annoncer le nom inféré à l'utilisateur. Si le projet est ambigu, demander confirmation rapide.
 
 Créer le dossier de sortie : `/mnt/user-data/outputs/priorisation_impact_<projet>_<YYYY-MM-DD>/`.
 
-### Step 1 — Inventorier les use cases
+### Step 1 — Inventorier les candidats use cases bruts
 
-Pour chaque source d'input :
+Parcourir tous les inputs et lister tous les **candidats use cases bruts** : tout concept centré qui semble être un process, un workflow ou un pain point automatisable.
 
-- Un use case est un **concept centré** (process, workflow, pain point central)
-- Dans les post-its : les notes dominantes ou centrales du diagramme, généralement avec causes et conséquences pointant vers elles
-- Dans les transcripts : les sujets discutés explicitement pour automatisation, généralement avec un sponsor identifiable
-- Dans les tables d'inventaire : généralement une ligne par use case (vérifier d'abord le sens des colonnes)
+À ce stade, **ne pas filtrer**. On peut avoir 15-20 candidats incluant des doublons et des symptômes.
 
-Créer une ligne CSV par use case. Ne pas dupliquer.
+### Step 2bis — Analyse root cause (mini 5 Whys + Ishikawa léger)
 
-Si deux sources décrivent le même process, **fusionner** les informations dans une seule ligne. Quand les sources sont en conflit sur une cellule, utiliser la plus crédible (transcript validé > note d'atelier > photo de post-it) et documenter le conflit dans Notes.
+**Avant de chiffrer l'impact**, identifier pour chaque candidat brut s'il est une **root cause** (cause profonde actionnable par une automatisation) ou un **symptôme** (effet visible d'un autre process qui en serait la vraie cause).
+
+Pour chaque candidat, appliquer un mini 5 Whys :
+
+1. Quel est le pain point apparent ? (ex : "Valérie est saturée par les soumissions")
+2. Pourquoi ? (ex : "Le process d'estimation manuel from Business Central est lent")
+3. Pourquoi ce process est-il lent ? (ex : "Pas d'agent qui pull les données BC, calcule la marge et drafte le doc")
+4. Pourquoi pas d'agent ? (ex : "Pas encore construit, c'est précisément le use case d'automatisation potentiel")
+
+Le **use case à enregistrer dans le CSV est celui qui est actionnable par une automatisation** (le niveau le plus profond avant qu'on quitte le périmètre IA/automatisation). Dans l'exemple ci-dessus : `Agent d'estimation soumission from BC`, pas `Valérie saturée`.
+
+**Comment représenter dans le CSV** :
+
+- **Plusieurs symptômes, une seule automatisation possible** : créer **une seule ligne** pour la root cause. Les symptômes individuels sont listés en Pain Points #1, #2, #3 (cols 10-12). Notes mentionne explicitement `Root cause : cette automatisation est la root cause des symptômes [X], [Y], [Z] consolidés ici en Step 2bis pour éviter de double-compter l'impact.`
+
+- **Symptômes assez distincts pour scopes séparés mais partageant une dépendance** (ex : 3 use cases distincts qui ont tous besoin du même Data Lake) : créer **plusieurs lignes**, chacune avec col 26 "Dépend de" pointant vers la fondation partagée.
+
+- **Le concept partagé est lui-même un use case d'infrastructure** (ex : Data Lake, intégration BC, plateforme de connecteurs) : créer **une ligne pour la fondation** + plusieurs lignes pour les use cases consommateurs qui ont col 26 "Dépend de" = nom de la fondation. La fondation aura souvent un Impact Total Documenté faible et un Verdict "Stratégique long-terme" mécanique, mais la section synthèse "Dépendances et root causes" l'élèvera comme priorité de séquence.
+
+**Pourquoi cette Step est critique** : sans elle, le CSV liste 3-5 symptômes en parallèle (saturation, lenteur, erreurs, double-saisie, friction) et triple-compte l'impact d'une seule automatisation possible. Le LLM doit comprimer les candidats bruts (Step 1) en root causes actionnables (sortie Step 2bis) avant de remplir les cols 6-25.
+
+À la fin de Step 2bis, tu as une liste réduite et nette : 5 à 12 root causes actionnables là où tu avais 15-20 candidats bruts.
 
 ### Step 2 — Remplir colonnes 1 à 12 (identification, contexte, pain points)
 
-- **Cols 1-5 Identification** : Use Case (titre court), Description (1-2 phrases), Sponsor (prénom + rôle ou département), Département principal, Type Agent (catégoriser : email auto / OCR / dashboard genAI / RAG / vision / RPA / autre).
-- **Cols 6-9 Contexte** : Volume Annuel Qté + Volume Annuel Unité, Personnes Affectées (Nb), Transversalité (1-3 selon framework.md §Bloc 2).
-- **Cols 10-12 Pain points** : 1 à 3 pain points listés brièvement (format `[Acteur] [verbe d'action] [contrainte ou perte]`, 1 phrase chacun). Pain Point Principal obligatoire ; #2 et #3 optionnels.
+Pour chaque root cause actionnable retenue après Step 2bis :
+
+- **Cols 1-5 Identification** : Use Case (titre court), Description (1-2 phrases), Sponsor, Département principal, Type Agent.
+- **Cols 6-9 Contexte** : Volume Annuel Qté + Volume Annuel Unité, Personnes Affectées, Transversalité (1-3).
+- **Cols 10-12 Pain points** : 1 à 3 pain points listés brièvement. Si Step 2bis a consolidé plusieurs symptômes sous une root cause, les lister ici en Pain Points #1 à #3.
 
 **Ne jamais inventer.** Si une cellule n'a pas de source claire dans l'input, la laisser vide.
 
 ### Step 3 — Chiffrer l'Impact $ (règle stricte)
 
-Pour chaque colonne Impact $ (cols 13 à 18), procéder ligne par ligne :
+Pour chaque colonne Impact $ (cols 13 à 18) :
 
-1. **Parcourir les inputs** en quête de chiffres durs cités par un sponsor, un participant ou une table source pour cette dimension d'impact.
+1. **Parcourir les inputs** en quête de chiffres durs cités par un sponsor, un participant ou une table source pour cette dimension d'impact sur la **root cause** retenue (pas le symptôme).
 
 2. **Si un chiffre dur existe** ou si une formule simple s'applique (heures par semaine citées × 50 sem × coût horaire fully-loaded 80 $/h par défaut) :
    - Inscrire la valeur calculée dans la cellule
-   - Documenter la citation source dans Notes (ex : `Sources : Shirley a dit "20 à 30 heures par semaine" (atelier 13 mai)`)
-   - Documenter la formule dans Notes (ex : `Hypothèses : 25 h/sem × 50 sem × 80 $/h = 100 000 $`)
+   - Documenter la citation source dans Notes
+   - Documenter la formule dans Notes
 
 3. **Si pas de chiffre dur disponible** :
    - Laisser la cellule à **0**
-   - Ajouter dans Notes une ligne sous la section "À chiffrer en atelier" :
-     ```
-     À chiffrer : [question précise au sponsor]. À titre indicatif, si
-     [hypothèse réaliste], cela représenterait environ [valeur] en Impact $
-     [colonne].
-     ```
-   - L'hypothèse doit être prudente, citer ses dérivations, et clairement présentée comme question à poser au sponsor, pas comme donnée.
+   - Ajouter dans Notes une ligne sous "À chiffrer en atelier" avec question structurée et estimation indicative
 
 4. **Ne jamais inscrire une estimation LLM dans une cellule Impact $.** Quand en doute, la cellule reste à 0 et la question va en Notes.
 
-Consulter `references/exemples_chiffrage_impact.md` pour des exemples colonne par colonne (Temps Perdu, Opportunités Manquées, Coût Erreurs, Main d'Œuvre, Dépendances Externes, Frictions Inter-Départementales).
+Consulter `references/exemples_chiffrage_impact.md` pour des exemples colonne par colonne.
 
 ### Step 4 — Évaluer les scores 1-3 (cols 20 à 22)
 
-- **Disponibilité Données (col 20)** selon rubrique framework.md §Bloc 5 :
-  - `3 - structurées dans système accessible` : données déjà dans Business Central, CRM, fichier Excel structuré accessible
-  - `2 - mixtes partiellement accessibles` : une partie dans système, l'autre dispersée
-  - `1 - dispersées non structurées` : papier, post-it, mémoire des employés
-
-- **Complétude Chiffrage (col 21)** reflète la richesse réelle des chiffres durs en cols 13-18, pas la richesse des hypothèses en Notes :
-  - `3 - toutes sources pertinentes chiffrées` : 4 à 6 cellules sur 6 ont une valeur non-zéro tirée d'un chiffre dur
-  - `2 - sources principales chiffrées, secondaires manquantes` : 2 à 3 cellules chiffrées, le reste à 0 avec questions en Notes
-  - `1 - chiffres partiels ou hypothétiques en Notes uniquement` : 0 à 1 cellule chiffrée, l'essentiel est en hypothèse en Notes
-
-- **Urgence Stratégique (col 22)** selon rubrique framework.md §Bloc 5 :
-  - `3 - critique court terme` : OKR explicite client, fenêtre commerciale, sponsor pousse activement avec date butoir
-  - `2 - important moyen terme` : sponsor identifié, mention récurrente, pas de date butoir
-  - `1 - nice-to-have` : mention isolée, pas de sponsor actif
+Selon les rubriques de `framework.md` §Bloc 5 :
+- Disponibilité Données (col 20) : 3 / 2 / 1 selon accessibilité
+- Complétude Chiffrage (col 21) : reflète la richesse des chiffres durs en 13-18, pas les hypothèses
+- Urgence Stratégique (col 22) : Cost of Delay WSJF
 
 ### Step 5 — Calculer Impact Total, Score Priorité, Verdict (cols 19, 23, 24)
 
-Appliquer les formules de `references/calculation_rules.md` :
+Appliquer les formules de `references/calculation_rules.md`.
 
-- **Col 19 Impact Total Documenté** = SUM(col13 à col18)
-- **Col 23 Score Priorité Impact** = Impact Total × Complétude × Urgence × (1 + 0.2 × log(max(1, Personnes Affectées))), normalisé sur le max du CSV
-- **Col 24 Verdict Impact** = lookup sur la grille (Critique / Forte / À chiffrer prioritairement / À chiffrer secondairement / Stratégique long-terme / Faible impact)
+### Step 5bis — Remplir Dépend de (col 26)
+
+Pour chaque ligne, identifier les use cases **prérequis** identifiés en Step 2bis :
+
+- Si la root cause a besoin qu'un autre use case du CSV soit livré en premier pour atteindre son Impact, lister le nom exact de l'autre Use Case (col 1) dans Dépend de
+- Format texte libre, plusieurs prérequis séparés par virgules
+- Vide si aucune dépendance externe au sein du périmètre IA (cas par défaut)
+- Les dépendances **non-use-case** (intégration tierce, condition contractuelle, autre projet hors scope IA) vont en Notes, pas dans col 26
 
 ### Step 6 — Rédiger la synthèse en prose narrative
 
-Suivre le gabarit `references/synthese_template.md`. Règles clés :
+Suivre le gabarit `references/synthese_template.md`. Sections :
 
-- **Préambule** (1 paragraphe) : date, sources d'inputs, nombre de use cases analysés, rappel de la règle d'or chiffres durs vs hypothèses, scope impact-only.
-- **5 Top en prose narrative** (5 à 8 lignes chacun) : sans pipe, sans crochet, sans em dash, sans `---` entre Top. Sponsor sur une ligne, situation et chiffres durs en prose, impact documenté ventilé, verdict intégré dans la phrase, ouverture sur les questions à chiffrer si pertinent.
-- **Section "À chiffrer en atelier avant décision"** : use cases avec Verdict "À chiffrer prioritairement" ou "Stratégique long-terme" pas déjà dans le Top 5, avec questions clés à poser.
-- **Section "Recommandations méthodologiques"** : 1-2 paragraphes sur les limites du chiffrage actuel et la prochaine étape (atelier de validation, futur skill effort).
+1. **Préambule** (1 paragraphe) : date, sources, nombre de use cases analysés (avant et après Step 2bis), rappel règle d'or et root cause, scope impact-only.
+2. **Top 5 en prose narrative** (5 à 8 lignes chacun, sans pipe, sans crochet, sans em dash, sans `---` entre Top).
+3. **À chiffrer en atelier avant décision** : use cases avec Verdict "À chiffrer prioritairement" ou "Stratégique long-terme" pas dans le Top 5.
+4. **Dépendances et root causes** (section optionnelle) : à inclure uniquement si col 26 a des valeurs non vides OU si Step 2bis a consolidé des symptômes. 2-3 paragraphes prose.
+5. **Recommandations méthodologiques** (1-2 paragraphes).
 
-**Style français Québec strict** :
-- Aucun em dash dans tout le document (remplacer par virgule, parenthèse, deux-points).
-- Chiffres en toutes lettres : `220 000 $` pas `220k$`, `5 mois` pas `5m`.
-- Garder uniquement les symboles `%` et `$`.
-
-Sauvegarder dans `priorisation_use_cases.csv` et `synthese_priorisation.md` du dossier projet (Step 0).
+**Style français Québec strict** : aucun em dash, chiffres en toutes lettres (`220 000 $` pas `220k$`), garder uniquement `%` et `$` comme symboles.
 
 ### Step 7 — Présenter le dossier
 
-Utiliser `present_files` pour partager les deux fichiers. CSV en premier (artefact de travail principal), puis synthèse markdown.
+Utiliser `present_files` pour partager les deux fichiers. CSV en premier, puis synthèse markdown.
 
 ## Principes critiques
 
-**Ne jamais inventer de données quantitatives.** Les cellules vides ou à 0 sont valables et utiles : elles signalent ce qui reste à chiffrer en atelier.
+**Step 2bis n'est pas optionnel.** Sans cette analyse, on liste des symptômes en parallèle et on triple-compte l'impact. Si en doute sur un candidat, appliquer 5 Whys.
+
+**Ne jamais inventer de données quantitatives.** Cellules vides ou à 0 = ce qui reste à chiffrer en atelier.
 
 **La cellule à 0 sans question en Notes est une erreur.** Si tu mets 0, tu DOIS ajouter une question structurée dans Notes.
 
 **Ne jamais inscrire une estimation LLM dans une cellule Impact $.** Quand en doute : 0 dans la cellule, hypothèse en Notes.
 
-**Ne pas surcharger le verdict.** Si la math dit "À chiffrer prioritairement", ne pas écrire "Critique" parce que tu as une intuition. L'intuition va dans Notes.
+**Ne pas surcharger le verdict.** L'intuition va dans Notes, pas dans le verdict.
 
 **Sortie en français Québec.** Même si les inputs sont en anglais. Aucun em dash.
 
 ## Cas particuliers
 
-- **Pas de données quantitatives du tout** : remplir cols 1-12 (identification et pain points). Toutes les cols 13-18 à 0 avec questions structurées en Notes. Complétude Chiffrage = 1. La synthèse recommande explicitement un atelier chiffrage.
+- **Pas de données quantitatives du tout** : remplir cols 1-12 + Step 2bis. Toutes les cols 13-18 à 0 avec questions structurées en Notes. Complétude Chiffrage = 1. La synthèse recommande explicitement un atelier chiffrage.
 
-- **Un seul use case** : générer un CSV 1 ligne. La synthèse se concentre sur ce use case avec analyse approfondie en prose narrative.
+- **Un seul use case** : générer un CSV 1 ligne. La synthèse se concentre sur ce use case en prose narrative approfondie.
 
-- **500+ use cases dans un inventaire** : traiter toutes les lignes. Le CSV gère. La synthèse garde le Top 5. Si traitement trop long, batcher par département ou par Urgence Stratégique et alerter l'utilisateur.
+- **500+ use cases dans un inventaire** : Step 2bis va probablement réduire à 50-100 root causes actionnables. Traiter toutes les lignes. La synthèse garde le Top 5. Batcher par département si trop long.
 
-- **Information conflictuelle entre sources** : documenter le conflit dans Notes. Utiliser la source la plus crédible pour la cellule (transcript validé > note d'atelier > photo de post-it).
+- **Information conflictuelle entre sources** : documenter dans Notes, utiliser la source la plus crédible (transcript validé > note d'atelier > photo de post-it).
 
-- **Inputs en anglais** : traduire à la sortie. Le CSV et la synthèse sont toujours en français Québec.
+- **Inputs en anglais** : traduire à la sortie. CSV et synthèse en français Québec.
 
 ## Quality checks avant `present_files`
 
 - [ ] Dossier de sortie créé avec nom `priorisation_impact_<projet>_<YYYY-MM-DD>/`
-- [ ] CSV a la ligne FORMULES (row 2) et SOURCE (row 3) préservées
+- [ ] CSV a 26 colonnes, ligne FORMULES (row 2) et SOURCE (row 3) préservées
+- [ ] **Step 2bis Root Cause appliqué** : chaque ligne est une root cause actionnable, pas un symptôme isolé. Notes documente la consolidation si applicable.
 - [ ] Chaque ligne data a au moins Use Case et Sponsor remplis
 - [ ] **Aucune cellule Impact $ ne contient une estimation LLM** : toutes les valeurs > 0 ont une citation source ou une formule simple documentée dans Notes
 - [ ] Les cellules à 0 ont une question structurée correspondante dans Notes sous "À chiffrer en atelier"
+- [ ] **Col 26 Dépend de remplie** pour les use cases avec dépendances inter-use-cases identifiées en Step 2bis
 - [ ] Verdict matche la grille (cf. calculation_rules.md §Col 24)
 - [ ] Aucun em dash dans CSV ni dans synthèse
-- [ ] Synthèse a préambule + Top 5 + À chiffrer en atelier + Recommandations méthodologiques
-- [ ] Synthèse en prose narrative complète : phrases complètes, pas de fragments à pipe, pas de crochets, pas de séparateurs `---` entre Top
-- [ ] Chiffres en toutes lettres dans la synthèse (220 000 $ pas 220k$)
+- [ ] Synthèse a préambule + Top 5 + À chiffrer en atelier + Dépendances et root causes (si applicable) + Recommandations méthodologiques
+- [ ] Synthèse en prose narrative : phrases complètes, pas de fragments à pipe, pas de crochets, pas de séparateurs `---` entre Top
+- [ ] Chiffres en toutes lettres dans la synthèse

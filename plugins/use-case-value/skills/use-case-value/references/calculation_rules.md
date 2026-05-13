@@ -87,6 +87,19 @@ Le gabarit `csv_template.csv` contient :
 
 Ne jamais modifier les rows 2 et 3 lors du remplissage des use cases. Ce sont la documentation traçable du calcul.
 
+## Col 26 — Dépend de (texte libre, n'entre PAS dans le calcul)
+
+La colonne 26 "Dépend de" capture les use cases prérequis identifiés en Step 2bis du workflow. Elle **n'entre pas dans la formule** du Score Priorité Impact ni dans la grille du Verdict Impact. C'est un signal qualitatif pour la synthèse (section "Dépendances et root causes") et pour aider l'analyste à planifier l'ordre de lancement.
+
+Format texte libre, nom du use case prérequis (matchant exactement la col 1 d'une autre ligne du CSV pour permettre un lookup mécanique), virgules pour séparer plusieurs prérequis.
+
+Exemples :
+- Vide (cas par défaut, aucune dépendance inter-use-cases)
+- `Data Lake` (une seule dépendance)
+- `Data Lake, Workestimity opérationnel` (plusieurs dépendances)
+
+Les dépendances **non-use-case** (intégration tierce externe, condition contractuelle, autre projet hors scope IA) vont en Notes (col 25), pas dans col 26.
+
 ## Vérifications de cohérence avant `present_files`
 
 Après remplissage, vérifier ligne par ligne :
@@ -97,3 +110,5 @@ Après remplissage, vérifier ligne par ligne :
 - Si Verdict = "À chiffrer prioritairement" : Notes mention au moins une estimation indicative > 100 000 $ ET la source de l'urgence est documentée.
 - Si col 22 (Urgence) = 3 : Notes doit citer la source de l'urgence (OKR client verbatim, sponsor avec verbe d'action, date butoir).
 - Aucune cellule Impact $ ne doit contenir une valeur "estimée par le LLM sans citation source". Si le LLM a estimé, la valeur doit être dans Notes, pas dans la cellule.
+- **Step 2bis appliqué** : chaque ligne du CSV est une root cause actionnable, pas un symptôme isolé. Si Step 2bis a consolidé des symptômes, Notes mentionne explicitement cette consolidation.
+- **Col 26 Dépend de** : si le use case a une dépendance inter-use-cases, elle est listée. Si la valeur référence un autre Use Case (col 1), vérifier que le nom matche exactement (lookup possible).

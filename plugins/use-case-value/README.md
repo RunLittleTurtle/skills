@@ -1,6 +1,14 @@
-# use-case-value (v1.0)
+# use-case-value (v1.1)
 
-> Priorise les use cases d'AI/automatisation par **impact business chiffré documenté**, à partir de matériel d'atelier de découverte (transcripts, post-its, inventaires de processus, notes de réunion). Six sources d'Impact $ explicites (temps perdu, opportunités manquées, coût des erreurs, saturation main-d'œuvre, dépendances externes, frictions inter-départementales). Règle d'or stricte : seuls les chiffres durs cités ou validés par le sponsor entrent dans les cellules Impact $ ; les estimations LLM vont exclusivement en Notes comme questions à poser au sponsor. Synthèse one-pager en prose narrative pour directeurs de compte. **Aucune dimension d'effort technique** : ce skill se concentre sur la VALEUR uniquement, l'effort sera traité par un futur skill séparé.
+> Priorise les use cases d'AI/automatisation par **impact business chiffré documenté**, à partir de matériel d'atelier de découverte (transcripts, post-its, inventaires de processus, notes de réunion). Six sources d'Impact $ explicites (temps perdu, opportunités manquées, coût des erreurs, saturation main-d'œuvre, dépendances externes, frictions inter-départementales) + colonne `Dépend de` pour modéliser les dépendances inter-use-cases + Step 2bis Root Cause Analysis (5 Whys / Ishikawa) avant chiffrage. Règle d'or stricte : seuls les chiffres durs cités ou validés par le sponsor entrent dans les cellules Impact $ ; les estimations LLM vont exclusivement en Notes comme questions à poser au sponsor. Synthèse one-pager en prose narrative pour directeurs de compte, avec section optionnelle Dépendances et root causes. **Aucune dimension d'effort technique** : ce skill se concentre sur la VALEUR uniquement, l'effort sera traité par un futur skill séparé.
+
+## Nouveautés v1.1 (vs v1.0)
+
+- **Step 2bis Root Cause Analysis** dans le workflow : avant chiffrage, le LLM applique un mini 5 Whys ou un Ishikawa léger sur chaque candidat use case pour distinguer **root cause actionnable** (à enregistrer comme ligne du CSV) vs **symptôme** (à consolider comme Pain Point sur la ligne de la root cause). Évite de triple-compter l'impact quand plusieurs symptômes ont une seule automatisation possible.
+- **Col 26 `Dépend de`** : texte libre qui liste les use cases prérequis identifiés en Step 2bis. Permet une lecture mécanique des chaînes (ex : 3 use cases du Top dépendent du Data Lake en amont). Cette colonne n'entre pas dans le calcul du Score Priorité Impact, elle sert de signal qualitatif pour la synthèse et la planification de l'ordre de lancement.
+- **Section optionnelle "Dépendances et root causes"** dans la synthèse : 2-3 paragraphes en prose qui identifient les chaînes critiques et les fondations à débloquer en premier. Incluse uniquement si pertinent (col 26 a des valeurs ou Step 2bis a consolidé des symptômes), omise sinon pour préserver le format one-pager pour les cas simples.
+- Sources méthodologiques étendues : ajout de **5 Whys (Taiichi Ohno, Toyota Production System)** et **Ishikawa Diagram (Kaoru Ishikawa)** pour Step 2bis. **SAFe Enabler** pour la notion de dépendance infrastructure.
+- CSV passe de 25 à 26 colonnes ; le workflow ajoute une Step 2bis sans casser les autres étapes.
 
 ## Use case
 

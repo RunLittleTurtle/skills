@@ -142,3 +142,19 @@ Si une variable de la formule vient de l'expérience MIA ou du LLM, l'ensemble d
 Le coût horaire de 80 $/h documenté dans `calculation_rules.md` est un **standard de la méthode**, pas une hypothèse LLM. Il peut être utilisé pour convertir des heures dures en Impact $ Temps Perdu sans que cela compte comme estimation LLM. À condition de documenter dans Notes : `Hypothèses : coût horaire fully-loaded 80 $/h utilisé.`
 
 Si le sponsor cite un taux différent (ex : "nos estimateurs sont à 90 $/h chargé"), utiliser ce taux et documenter la source dans Notes.
+
+## Interaction avec Step 2bis Root Cause
+
+Quand Step 2bis identifie une root cause qui consolide plusieurs symptômes, l'Impact $ chiffré sur la root cause **capture l'impact agrégé** de tous les symptômes consolidés. Ne pas double-compter en créant plusieurs lignes.
+
+Exemple concret (Faspac soumissions) :
+- Candidats bruts en Step 1 : "Valérie saturée", "Soumissions lentes 3 semaines", "Erreurs estimation marge"
+- Après Step 2bis : une seule root cause `Agent d'estimation soumission from Business Central`. Les 3 candidats deviennent des Pain Points #1, #2, #3 sur la même ligne.
+- Impact $ chiffré sur cette ligne :
+  - Impact Temps Perdu : 20 h/sem citées par Sophie × 50 sem × 80 $/h = 80 000 $ (capture le coût de la saturation)
+  - Impact Opportunités Manquées : 0 + question en Notes (les contrats retardés par le délai 3 semaines)
+  - Impact Coût Erreurs : 30 000 $ cités par Maxime (2 erreurs/an × 15 000 $)
+  - Total Documenté : 110 000 $ avec mentions explicites en Notes
+- Sans Step 2bis : on aurait eu 3 lignes (Valérie, lenteur, erreurs) qui auraient chacune chiffré des slices du même impact, gonflant artificiellement la somme.
+
+**Règle** : sur une root cause consolidée, le chiffrage Impact $ doit capturer l'impact total des symptômes consolidés sans double-compter. Documenter dans Notes : `Root cause : cette ligne consolide les symptômes [X], [Y], [Z]. L'Impact $ chiffré ci-dessus est agrégé sur l'ensemble.`
