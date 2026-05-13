@@ -1,6 +1,6 @@
-# use-case-prioritization (v2.1)
+# use-case-prioritization (v2.2)
 
-> Scorer, prioriser et chiffrer des use cases d'AI/automatisation à partir de matériel de découverte de processus (photos de post-its, transcripts d'ateliers, inventaires CSV de 500+ lignes, notes de réunion). Combine BABOK Business Case, UiPath Suitability sur **échelle 1-3** avec **labels qualitatifs intégrés dans les cellules**, coûts fully-loaded, **Run cost benchmarké par recherche web** selon le type d'agent, et **score de confiance hybride** (complétude × validation LLM) qui évite que toutes les lignes affichent faussement 100%. Sortie : CSV de travail (38 colonnes v5) + synthèse exécutive en français Québec.
+> Scorer, prioriser et chiffrer des use cases d'AI/automatisation à partir de matériel de découverte de processus (photos de post-its, transcripts d'ateliers, inventaires CSV de 500+ lignes, notes de réunion). Combine BABOK Business Case, UiPath Suitability sur **échelle 1-3** avec **labels qualitatifs intégrés dans les cellules**, coûts fully-loaded, **Run cost benchmarké par recherche web** selon le type d'agent, et **score de confiance hybride** (complétude × validation LLM). Sortie : un **dossier projet par run** contenant le CSV de travail (38 colonnes v5), une synthèse exécutive lisible avec **layer de jugement LLM** (bundling, lectures transversales, recommandations stratégiques), et un fichier `sources_benchmark.md` auditable.
 
 ## Use case
 
@@ -16,8 +16,14 @@ Tu as fini un atelier de découverte (post-its, transcript, inventaire de proces
 
 **v2.1** :
 - **Nouvelle col 35 `Validation LLM`** (`1 - estimation contextuelle` / `2 - mixte` / `3 - source primaire validée`) : le LLM s'auto-évalue ligne par ligne sur la fraction de valeurs issues de la source vs estimées depuis le contexte. Justification obligatoire dans Notes.
-- **Verdict Confiance hybride** : `Confiance Globale = Confiance Données × Validation_Multiplier` (1.0 / 0.75 / 0.5). Évite que toutes les lignes saturent à 100% quand le LLM remplit tous les slots avec des estimations. Sur le CSV Faspac réel, ramène les 14 lignes à 100% à des Confiance Globale différenciées entre 50% et 100%.
+- **Verdict Confiance hybride** : `Confiance Globale = Confiance Données × Validation_Multiplier` (1.0 / 0.75 / 0.5). Évite que toutes les lignes saturent à 100% quand le LLM remplit tous les slots avec des estimations.
 - Total : **38 colonnes** au lieu de 37.
+
+**v2.2** :
+- **Dossier de sortie par run** : chaque invocation crée `priorisation_<projet>_<YYYY-MM-DD>/` avec inférence auto du nom de projet depuis les inputs (fallback date-heure si ambigu). Archivage propre, traçabilité par client.
+- **Synthèse exécutive plus lisible** : prose au lieu de fragments télégraphiques. Suppression des crochets `[XX]`, pipes `|`, séparateurs `---`, symboles `≥`/`<`/`×`. Garde uniquement `%` et `$` (universels).
+- **Layer de jugement LLM** sur la synthèse : le LLM peut **bundler** (ex: "Fondations Data Lake"), **promouvoir/rétrograder** un use case du ranking mécanique avec justification citée, et ajouter deux nouvelles sections (`Lectures transversales` pour les patterns inter-rows, `Recommandations stratégiques` pour l'ordre de lancement et les pré-requis). Le verdict mécanique du CSV reste affiché pour traçabilité.
+- **`sources_benchmark.md`** auditable : compile toutes les sources web utilisées pour les Coût Unitaire Agent ($/run) avec date de consultation. Permet l'audit reviewer et la mise à jour trimestrielle.
 
 ## Installation
 
@@ -59,7 +65,8 @@ Le skill détecte les mots-clés courants : `prioriser`, `prioritization`, `use 
 - `skills/use-case-prioritization/references/framework_v5.md` — explication des 38 colonnes v5, sources méthodologiques (BABOK, UiPath, SAFe, DAMA-DMBOK).
 - `skills/use-case-prioritization/references/calculation_rules.md` — formules v5, valeurs par défaut, seuils de verdict, table de fallback benchmark.
 - `skills/use-case-prioritization/references/csv_template.csv` — gabarit CSV 37 colonnes avec lignes FORMULES, SOURCE et exemple use case fictif.
-- `skills/use-case-prioritization/references/exec_summary_template.md` — gabarit de synthèse exécutive en français Québec.
+- `skills/use-case-prioritization/references/exec_summary_template.md` — gabarit de synthèse exécutive en français Québec, avec layer de jugement LLM (bundling, lectures transversales, recommandations stratégiques).
+- `skills/use-case-prioritization/references/sources_benchmark_template.md` — gabarit du fichier auditable de sources web utilisées pour les benchmarks $/run.
 
 ## Licence
 

@@ -1,6 +1,14 @@
-# Règles de calcul et valeurs par défaut (v5.1)
+# Règles de calcul et valeurs par défaut (v5.2)
 
 Formules exactes, seuils et défauts pour générer le CSV de priorisation v5 (38 colonnes). À lire après `framework_v5.md`.
+
+## Frontière math / jugement (v2.2)
+
+**Le CSV est la source de vérité numérique** : verdicts ROI et Confiance Globale calculés mécaniquement par les seuils ci-dessous, immutables une fois la ligne remplie.
+
+**La synthèse exécutive est un layer de jugement LLM** par-dessus le CSV : le LLM peut promouvoir, rétrograder ou bundler des use cases dans la synthèse s'il a une raison citée. Mais ces overrides apparaissent uniquement dans `synthese_priorisation.md` ; le CSV reste fidèle aux verdicts mécaniques.
+
+Cette séparation préserve la traçabilité : un reviewer peut toujours comparer le ranking mécanique du CSV vs le ranking synthèse, et juger si les overrides LLM sont justifiés.
 
 ## Format des cellules qualitatives
 

@@ -34,7 +34,7 @@
     {
       "name": "use-case-prioritization",
       "source": "./plugins/use-case-prioritization",
-      "description": "Scorer, prioriser et chiffrer des use cases d'AI/automatisation (post-its, transcripts, inventaires CSV). v2.1 : échelle 1-3 avec labels qualitatifs intégrés dans les cellules + Run cost benchmarké par recherche web LLM ($/run par type d'agent : email auto, dashboard genAI, RAG, OCR, RPA) + score de confiance hybride (complétude × validation LLM) qui évite les faux 100%. Sortie : CSV 38 colonnes v5 + synthèse exec en français Québec."
+      "description": "Scorer, prioriser et chiffrer des use cases d'AI/automatisation (post-its, transcripts, inventaires CSV). v2.2 : échelle 1-3 avec labels qualitatifs intégrés + Run cost benchmarké par recherche web LLM + confiance hybride (complétude × validation LLM) + dossier de sortie par run + synthèse exécutive lisible avec layer de jugement LLM (bundling, lectures transversales, recommandations stratégiques) + sources_benchmark.md auditable. Sortie : dossier projet contenant CSV 38 colonnes v5, synthèse, et sources."
     }
   ]
 }
