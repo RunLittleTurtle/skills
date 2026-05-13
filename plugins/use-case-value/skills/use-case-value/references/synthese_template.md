@@ -1,194 +1,171 @@
-# Gabarit synthèse exécutive use-case-value v1.1
+# Gabarit synthèse exécutive use-case-value v1.3 — Top 10 × 3 lignes
 
-Ce gabarit produit une **note de cadrage one-pager en prose narrative française Québec** pour les directeurs de compte et sponsors clients.
+Ce gabarit produit une **note de cadrage one-pager en prose narrative française Québec** pour directeurs de compte et sponsors clients.
+
+Format compact v1.3 : 10 use cases prioritaires, 3 lignes chacun, classement décisif sans section "À chiffrer en atelier" séparée.
 
 ## Règles de style absolues
 
-- **Prose narrative**. Phrases complètes, pas de fragments à pipe ni de fragments télégraphiques.
+- **Prose narrative compacte**. Phrases complètes mais denses.
 - **Pas d'em dash** dans aucun texte. Remplacer par virgule, parenthèse ou deux-points.
-- **Pas de crochets** comme `[XX %]` ou `[X mois]`. Écrire en toutes lettres.
-- **Pas de séparateurs** `---` entre les Top. Une ligne vide suffit, les titres `### N.` font la séparation visuelle.
-- **Pas de pipe** `|` dans le corps du texte (réservé aux tableaux si besoin).
-- **Pas de symboles** `≥`, `<`, `×`. Écrire "supérieur ou égal à", "moins de", "fois", "par".
-- **Garder uniquement** les symboles `%` (compact universel) et `$` (universel).
-- Les chiffres en toutes lettres : `220 000 $` pas `220k$`, `5 mois` pas `5m`.
-- **Mention sobre du Verdict** dans la prose pour chaque Top (intégré dans la phrase, pas en label).
+- **Pas de crochets** comme `[XX %]`. Écrire en toutes lettres.
+- **Pas de séparateurs** `---` entre les Top.
+- **Pas de pipe** `|` dans le corps du texte.
+- **Pas de symboles** `≥`, `<`, `×`. Écrire "supérieur ou égal à", "moins de", "fois".
+- **Garder uniquement** `%` et `$`.
+- Les chiffres en toutes lettres : `220 000 $` pas `220k$`.
+- **Mention sobre du Verdict** dans la 3e ligne de chaque entrée.
 
-## Structure du document
+## Structure du document v1.3
 
 ```markdown
 # Priorisation par impact — [nom du projet] ([date])
 
-[Préambule en prose, 1 paragraphe]
+[Préambule en prose, 1 paragraphe court]
 
-## Les cinq priorités
+## Les dix priorités par impact
 
-### 1. [Nom du use case]
-
-Sponsor : [Prénom Nom] ([rôle ou département]).
-
-[Paragraphe 5 à 8 lignes en prose narrative.]
+### 1. [Titre du use case]
+Sponsor : [Prénom Nom] ([rôle ou département]). [Contexte chiffré, une phrase].
+[Impact documenté ou potentiel, une phrase]. [Verdict + recommandation, une phrase].
 
 ### 2. [...]
 
 [...]
 
-### 3. [...]
-
-### 4. [...]
-
-### 5. [...]
-
-## À chiffrer en atelier avant décision
-
-[Use cases avec Verdict "À chiffrer prioritairement" ou "Stratégique
-long-terme" pas dans le Top 5, en prose.]
+### 10. [...]
 
 ## Dépendances et root causes
 
-[Section OPTIONNELLE — incluse uniquement si la col 26 Dépend de a des
-valeurs non vides OU si Step 2bis a consolidé des symptômes sous des root
-causes. 2-3 paragraphes en prose.]
+[Section OPTIONNELLE — incluse uniquement si col 26 Dépend de a des valeurs
+non vides OU si Step 2bis a consolidé des symptômes. 2-3 paragraphes prose.]
 
 ## Recommandations méthodologiques
 
-[1 ou 2 paragraphes.]
+[1 paragraphe court.]
 ```
+
+**Sections supprimées en v1.3** :
+- "À chiffrer en atelier avant décision" : disparue. Les use cases avec verdict "À chiffrer prioritairement" ou "secondairement" apparaissent dans le Top 10 si leur Score les y place, avec leur verdict mentionné en ligne 3 pour transparence.
 
 ## Préambule type
 
-Le préambule en 1 paragraphe doit couvrir :
+1 paragraphe court (4 à 6 lignes wrappées) couvrant :
 
-- Date d'analyse et nom du projet
-- Sources d'inputs (transcripts, post-its, notes, inventaires)
-- Nombre total de **candidats** identifiés en Step 1 et nombre de **root causes** retenues après Step 2bis
-- Nombre retenu pour les cinq priorités
-- Rappel discret de la règle d'or (chiffres durs en cellules, hypothèses en Notes)
-- Rappel que l'effort technique n'est pas évalué dans cette note
+- Date et nom du projet
+- Sources d'inputs
+- Nombre de **candidats** identifiés en Step 1 et nombre de **root causes** retenues après Step 2bis
+- Rappel scope impact-only (effort à venir séparément)
 
 Exemple :
 
 ```
 Cette note synthétise l'analyse d'impact business des use cases identifiés
-lors de l'atelier de découverte du 13 mai 2026 avec Maxime Soweif, Valérie
-Audet-Nadon, Nicolas L et l'équipe Faspac. Vingt-deux candidats use cases
-ont été extraits des transcripts, des post-its de cartographie des processus
-et de la note d'analyse Ishikawa. Après application de la Step 2bis Root
-Cause Analysis (consolidation de symptômes sous leurs causes profondes
-actionnables), il reste douze root causes distinctes, dont cinq sont
-retenues comme priorités dans cette note. Conformément à la règle d'or de
-la méthode, seuls les chiffres durs cités par les sponsors entrent dans les
-cellules Impact, les estimations indicatives sont reportées dans la colonne
-Notes du CSV comme questions à poser en atelier de chiffrage. L'effort
-technique de réalisation n'est pas évalué dans cette note et fera l'objet
-d'une analyse complémentaire.
+lors de l'atelier de découverte du 13 mai 2026 avec l'équipe Faspac.
+Vingt-deux candidats use cases ont été extraits des transcripts, des
+post-its de cartographie et de la note Ishikawa. Après la Step 2bis Root
+Cause Analysis (consolidation des symptômes sous leurs causes profondes
+actionnables), il reste douze root causes distinctes, dont dix sont
+classées ci-dessous par Score Priorité Impact décroissant. L'effort
+technique de réalisation fera l'objet d'une analyse complémentaire.
 ```
 
-## Top entry type
+## Top entry type (3 lignes utiles, max 5 lignes wrappées)
 
-Chaque entrée Top en 5 à 8 lignes de prose narrative. Pattern :
+Chaque entrée Top suit le pattern :
 
-1. Une ligne pour Sponsor
-2. Une à deux lignes pour la situation actuelle, avec les chiffres durs cités verbatim
-3. Une à deux lignes pour l'impact documenté avec ventilation entre 2 ou 3 sources principales
-4. Une ligne pour le verdict intégré dans la phrase
-5. Une ligne pour les questions à chiffrer en atelier si pertinent (renvoi aux Notes du CSV)
+1. **Ligne 1 (titre)** : `### N. [Titre du use case]`
+2. **Ligne 2 (sponsor + contexte)** : `Sponsor : [Prénom Nom] ([rôle]). [Contexte chiffré une phrase].`
+3. **Ligne 3 (impact + verdict)** : `[Impact documenté ou potentiel, une phrase]. [Verdict + recommandation, une phrase].`
 
-Exemple avec mention root cause :
+Exemple 1 — use case transverse avec impact élevé :
+
+```
+### 1. Agent tri courriel transverse
+Sponsor : Steven (Direction). 20 personnes touchées avec environ 2 heures par
+semaine chacune, soit 160 000 $/an documenté en temps perdu transverse.
+Sponsors activement engagés en atelier, verdict Critique, scoping immédiat
+recommandé comme premier quick win transverse.
+```
+
+Exemple 2 — use case avec chiffrage partiel et potentiel élevé :
 
 ```
 ### 2. Agent d'estimation soumission from Business Central
-
-Sponsor : Valérie Audet-Nadon (Finance et Commercial), avec sponsor exécutif
-Maxime Lavoie (Direction Commerciale).
-
-Le process de soumissions est aujourd'hui un goulot critique. Valérie est
-la seule ressource sur la fonction estimation depuis le passage à Business
-Central, et le cycle de génération d'une soumission est passé à trois
-semaines là où la cible commerciale est de 24 heures. Cette root cause
-consolide trois symptômes observés en atelier (saturation Valérie, lenteur
-de cycle, erreurs marge) qui ont été identifiés en Step 2bis comme ayant
-une seule automatisation possible. L'impact documenté chiffrable directement
-(temps Valérie immobilisé) tourne autour de 90 000 $ par an, mais les deux
-plus gros leviers (manque à gagner sur contrats retardés et erreurs marge
-absorbées) ne sont pas encore chiffrés par le sponsor. Use case classé à
-chiffrer prioritairement parce que la voix de Valérie et de la direction
-est forte et qu'un chiffrage rapide en atelier pourrait débloquer plusieurs
-centaines de milliers de dollars d'impact additionnel. Voir notes du CSV
-pour les questions précises à poser au sponsor.
+Sponsor : Valérie Audet-Nadon (Finance et Commercial). Cycle actuel trois
+semaines vs cible 24 heures, Sophie citée à temps plein soit 100 000 $/an
+documenté en saturation. Verdict À chiffrer prioritairement, potentiel
+additionnel de 280 000 $ sur opportunités contrats à confirmer en atelier
+de chiffrage avec Maxime.
 ```
 
-## Section "À chiffrer en atelier avant décision"
+Exemple 3 — use case "Forte (chiffrage à compléter)" :
 
-Pour chaque use case avec Verdict "À chiffrer prioritairement" ou "Stratégique long-terme" qui n'est pas dans le Top 5, format prose 3 à 5 lignes par use case mentionnant les questions clés à poser.
+```
+### 3. Dashboard recoster écarts production
+Sponsor : Nicolas L (Direction Opérations). 250 000 $/an cités en
+non-conformité documentée, une cellule dominante chiffrée. Verdict Forte
+(chiffrage à compléter), à scoper dès que le pourcentage de captation par
+l'agent est confirmé en atelier.
+```
 
 ## Section "Dépendances et root causes" (optionnelle)
 
-**Inclure uniquement si** :
+Inclure uniquement si :
 - Au moins une ligne du CSV a une valeur non vide dans col 26 Dépend de, OU
-- Step 2bis a consolidé plusieurs symptômes sous une root cause (le mentionner dans la synthèse aide le lecteur à comprendre pourquoi certains pain points apparents n'ont pas leur propre ligne)
+- Step 2bis a consolidé plusieurs symptômes sous une root cause
 
-Format : 2-3 paragraphes en prose, identifiant les chaînes critiques et les fondations à débloquer en premier.
-
-Exemple (cas Faspac avec Data Lake comme fondation) :
-
-```
-## Dépendances et root causes
-
-Trois des cinq priorités du Top partagent une dépendance commune au Data
-Lake, qui apparaît dans la col 26 "Dépend de" des use cases Agent flagging
-consommation matière première, Agent reconciliation Workestimity et
-Dashboard recoster écarts. Le Data Lake lui-même n'apparaît pas dans le Top
-5 par impact direct, car il n'adresse pas un pain point business mesurable
-isolément. Sa construction est néanmoins préalable à la captation des
-plusieurs centaines de milliers de dollars d'impact des trois use cases
-consommateurs. L'ordre de lancement recommandé place donc le Data Lake en
-mois un, suivi des trois use cases consommateurs en parallèle ou en
-séquence selon les capacités équipe.
-
-L'analyse root cause de Step 2bis a permis de regrouper plusieurs symptômes
-sous des use cases actionnables, ce qui évite de triple-compter l'impact.
-La saturation de Valérie sur les soumissions, par exemple, n'apparaît pas
-comme un use case distinct mais comme un symptôme dont la root cause est
-l'Agent d'estimation soumission from Business Central listé en priorité
-deux. Cette consolidation rend la priorisation plus honnête mais demande
-au lecteur de bien lire les pain points listés dans le CSV plutôt que de
-chercher chaque symptôme observé en atelier comme une ligne séparée.
-```
-
-Si aucune dépendance et aucune consolidation Step 2bis : **omettre entièrement cette section**.
-
-## Section "Recommandations méthodologiques"
-
-1 ou 2 paragraphes qui rappellent les limites du chiffrage actuel, identifient les 2 ou 3 use cases qui méritent un atelier de chiffrage prioritaire, mentionnent la prochaine étape (futur skill effort).
+Format : 2-3 paragraphes en prose, identifiant les chaînes critiques et les fondations à débloquer.
 
 Exemple :
 
 ```
-L'impact total chiffré dans le CSV reste prudent car il s'appuie sur les
-chiffres bruts partagés par les sponsors en atelier et sur des extrapolations
-documentées (essentiellement heures par semaine fois coût horaire fully-
-loaded). Pour les use cases en première priorité, un atelier de validation
-avec les sponsors sera utile pour confirmer le manque à gagner commercial,
-le taux d'erreur actuel et le coût exact des défauts. Les questions précises
-sont listées dans la colonne Notes du CSV.
+## Dépendances et root causes
 
-L'effort technique de réalisation (taille de build, coût agent à
-l'exécution, dépendances techniques, intégrations) n'est pas évalué dans
-cette note. Une analyse complémentaire d'effort viendra fermer la lecture
-ROI complète. Le CSV de cette note de cadrage est conçu pour s'intégrer
-directement avec ce futur skill complémentaire.
+Trois des dix priorités partagent une dépendance au Data Lake, qui apparaît
+dans la col 26 Dépend de des use cases Workestimity reconciliation, Agent
+flagging consommation MP et Dashboard recoster écarts. Le Data Lake
+n'apparaît pas dans le Top 10 par impact direct (il n'adresse pas un pain
+point business mesurable isolément), mais sa construction est préalable à
+la captation des plusieurs centaines de milliers de dollars d'impact des
+trois use cases consommateurs. Ordre de lancement recommandé : Data Lake
+en mois un, suivi des trois use cases consommateurs en parallèle.
+
+L'analyse Step 2bis a permis de regrouper plusieurs symptômes sous des use
+cases actionnables, évitant de triple-compter l'impact. La saturation
+Valérie sur les soumissions, par exemple, n'apparaît pas comme un use case
+distinct mais comme un symptôme dont la root cause Agent d'estimation
+soumission est listée en priorité deux.
+```
+
+Si aucune dépendance ni consolidation : **omettre entièrement cette section**.
+
+## Section "Recommandations méthodologiques"
+
+1 paragraphe court (4 à 6 lignes wrappées) qui rappelle les limites du chiffrage actuel, identifie les use cases qui méritent un atelier de chiffrage si pertinent, et mentionne la prochaine étape (futur skill effort).
+
+Exemple :
+
+```
+L'impact total chiffré dans le CSV applique la règle d'or v1.3 qui autorise
+les inférences sur signaux verbaux concrets (heures par personne, FTE
+saturé) avec défauts conservateurs documentés à la borne basse du range
+plausible. Pour les use cases en priorité un à trois, un atelier de
+validation rapide avec les sponsors confirmera les défauts conservateurs.
+L'effort technique de réalisation (taille de build, coût agent, intégrations)
+n'est pas évalué dans cette note et viendra dans une analyse complémentaire
+qui se branchera sur le CSV.
 ```
 
 ## Quality checks avant export
 
-- [ ] Préambule mentionne date, sources, nombre de candidats avant et après Step 2bis, nombre de use cases retenus, règle d'or, scope impact-only
-- [ ] Exactement 5 Top dans la section "Les cinq priorités"
-- [ ] Chaque Top a sponsor + 5 à 8 lignes prose + verdict intégré
-- [ ] Section "À chiffrer en atelier" présente avec use cases hors Top 5 ayant verdict À chiffrer ou Stratégique
-- [ ] Section "Dépendances et root causes" présente si col 26 a des valeurs non vides ou si Step 2bis a consolidé des symptômes ; omise sinon
-- [ ] Section "Recommandations méthodologiques" présente avec 1 ou 2 paragraphes
+- [ ] Préambule mentionne date, sources, nombre de candidats avant et après Step 2bis, nombre de use cases retenus dans le Top 10
+- [ ] **Exactement 10 entrées** dans la section "Les dix priorités par impact" (ou moins si le CSV a moins de 10 root causes ; dans ce cas, mentionner explicitement le nombre)
+- [ ] Chaque entrée Top : **3 lignes utiles maximum** (titre + sponsor/contexte + impact/verdict)
+- [ ] Section "Dépendances et root causes" présente si col 26 a des valeurs OU si Step 2bis a consolidé des symptômes ; omise sinon
+- [ ] Section "Recommandations méthodologiques" courte, 1 paragraphe
+- [ ] **AUCUNE section "À chiffrer en atelier"** séparée (supprimée en v1.3)
 - [ ] Aucun em dash, aucun crochet, aucun pipe dans le corps du texte
-- [ ] Chiffres en toutes lettres (220 000 $, pas 220k$)
-- [ ] Document tient sur une page A4 imprimée (sauf si section Dépendances est nécessaire et l'étire à 1.5 page)
+- [ ] Chiffres en toutes lettres (220 000 $)
+- [ ] Document tient sur 1 page A4 imprimée (Top 10 × 3 lignes = ~40 lignes prose)
 - [ ] Aucune section Méthodologie longue

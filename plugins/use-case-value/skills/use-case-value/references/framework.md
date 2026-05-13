@@ -97,16 +97,18 @@ Le skill se distingue de `use-case-prioritization` v2.2 par cinq choix structura
 
 L'élargissement v1.2 reconnaît qu'un use case avec une seule cellule chiffrée à 250 000 $ qui capture la dimension dominante (ex : Coût Erreurs sur un use case de qualité produit) mérite niveau 2, pas 1.
 
-**Urgence Stratégique (col 22)** — WSJF Cost of Delay :
-- `3 - critique court terme` : OKR explicite, fenêtre client/concurrence, sponsor pousse activement avec date butoir
-- `2 - important moyen terme` : sponsor identifié, mention récurrente, pas de date butoir
-- `1 - nice-to-have` : mention isolée
+**Urgence Stratégique (col 22) — rubrique élargie v1.3** : WSJF Cost of Delay + signaux d'engagement sponsor :
+- `3 - critique court terme` : OKR explicite, fenêtre client ou concurrence, date butoir mentionnée, OU sponsor activement engagé en atelier avec émotion d'adhésion ("ça m'excite", "wow", "il faut absolument", plusieurs interventions soutenues)
+- `2 - important moyen terme` : sponsor identifié, mention récurrente, soutien quand interrogé, pas de date butoir
+- `1 - nice-to-have` : mention isolée, pas de sponsor actif
+
+L'élargissement v1.3 reconnaît que les signaux d'engagement émotionnel des sponsors en atelier (Faspac : "ça me ferait tout le monde s'être comme excité" de Valérie) sont des indicateurs d'urgence stratégique au même titre qu'un OKR ou une date butoir.
 
 ### Bloc 6 — Verdict (cols 23 à 25)
 
 | # | Colonne | Type | Logique |
 |---|---------|------|---------|
-| 23 | Score Priorité Impact | calculé | Voir formule v1.2 dans calculation_rules.md (intègre col 27 avec discount 0.3) |
+| 23 | Score Priorité Impact | calculé | Voir formule v1.3 dans calculation_rules.md (intègre col 27 avec discount 0.3 + Personnes_factor paliers + Transversalité_factor) |
 | 24 | Verdict Impact | calculé via algorithme déterministe v1.2 | Voir algorithme numéroté dans calculation_rules.md |
 | 25 | Notes | texte structuré | Sources citées, hypothèses, root cause, À chiffrer en atelier, autres notes |
 

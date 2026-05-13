@@ -66,7 +66,7 @@ Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customiz
 
 | Nom | Description |
 |---|---|
-| `use-case-value` | Priorise les use cases d'AI/automatisation par impact business chiffré (6 sources d'impact $, root cause avant chiffrage, règle d'or adoucie v1.2 avec inférences obvious sur signaux cités, Score intègre potentiel Notes avec discount). |
+| `use-case-value` | Priorise les use cases d'AI/automatisation par impact business chiffré (6 sources d'impact $, root cause avant chiffrage, règle d'or v1.3 avec inférences sur paire d'anchors verbaux et défauts conservateurs, Score amplifié pour transverse via Personnes_factor paliers + Transversalité_factor, synthèse Top 10 × 3 lignes décisive). |
 | `use-case-prioritization` `[draft]` | Score + priorise + chiffre les use cases (BABOK + UiPath Suitability + Run cost benchmarké web + confiance hybride). |
 | `scenario-uc` | Transforme tout input (md/PDF/image/idée) en scénario use-case au format PRD avec diagramme de séquence Mermaid. |
 | `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik (7 sections strictes + diagramme Mermaid causal OKR + Job Stories Klement + Flows AARRR). |

@@ -1,6 +1,6 @@
 ---
 name: use-case-value
-description: Priorise et chiffre la VALEUR business des use cases d'AI/automatisation à partir de tout matériel de découverte de processus (transcripts d'ateliers, post-its, inventaires CSV de 500+ lignes, notes de réunion). Six sources d'Impact $ explicites (temps perdu, opportunités manquées, coût des erreurs, saturation main-d'œuvre, dépendances externes, frictions inter-départementales) + pain points + personnes affectées + transversalité + colonne Dépend de pour modéliser les dépendances inter-use-cases + colonne Impact Potentiel Estimé pour intégrer les estimations Notes dans le Score avec discount. Step 2bis Root Cause Analysis (5 Whys + Ishikawa) appliquée avant chiffrage pour distinguer root causes actionnables vs symptômes. Règle d'or adoucie v1.2 : cellules acceptent les chiffres durs cités, les formules simples sur chiffres durs, ET les inférences obvious sur signaux cités via standards de méthode documentés (80 $/h pour heures citées, 100 000 $/FTE pour saturation FTE citée). Refusé : multiplicateurs sortis du chapeau (% captable, probabilité, valeur moyenne sans citation). Aucune dimension d'effort technique (Build, Run, Payback) : ce skill se concentre sur la VALEUR uniquement, l'effort sera traité par un futur skill séparé. Sortie : un dossier projet par run contenant un CSV 27 colonnes (avec FORMULES et SOURCE pour traçabilité) et une synthèse exécutive one-pager en prose narrative française Québec. Triggers : prioriser, valeur use case, chiffrer impact, note de cadrage, atelier découverte, post-its, transcript, root cause, dépendances use cases, 5 whys, ishikawa.
+description: Priorise et chiffre la VALEUR business des use cases d'AI/automatisation à partir de tout matériel de découverte de processus (transcripts d'ateliers, post-its, inventaires CSV de 500+ lignes, notes de réunion). Six sources d'Impact $ explicites + pain points + personnes affectées + transversalité + colonne Dépend de + colonne Impact Potentiel Estimé. Step 2bis Root Cause Analysis (5 Whys + Ishikawa) avant chiffrage. Règle d'or v1.3 adoucie avec paire d'anchors (signal heures vague + N personnes cité = inférable via défauts conservateurs documentés à la borne basse du range plausible) en plus des chiffres durs cités, formules simples, et inférences obvious sur citations FTE explicites. Refusé : multiplicateurs sortis du chapeau (% captable, probabilité, valeur moyenne sans citation) ou inférence avec un seul anchor manquant. Score Priorité Impact v1.3 amplifié pour les use cases transverses : Personnes_factor en paliers stepwise (1.0 / 1.2 / 1.5 / 1.8) ET Transversalité_factor (1.0 / 1.3 / 1.6) explicites dans la formule. Algorithme Verdict déterministe numéroté. Synthèse Top 10 use cases × 3 lignes par entrée (classement décisif sans section À chiffrer en atelier séparée). Aucune dimension d'effort technique : focus pur VALEUR, effort traité par un futur skill séparé. Sortie : dossier projet par run contenant CSV 27 colonnes et synthèse one-pager prose narrative française Québec. Triggers : prioriser, valeur use case, chiffrer impact, note de cadrage, atelier découverte, post-its, transcript, root cause, dépendances use cases, 5 whys, ishikawa, top 10.
 ---
 
 # Use Case Value v1.2 — Priorisation par impact chiffré
@@ -30,7 +30,7 @@ Avant de traiter tout input, lire dans cet ordre :
 
 Sans ce contexte, tu vas remplir le CSV de manière incorrecte (notamment violer la règle d'or ou lister des symptômes au lieu de root causes).
 
-## Règle d'or adoucie v1.2
+## Règle d'or v1.3 adoucie
 
 **Cellules Impact $ (colonnes 13 à 18) acceptent** :
 
@@ -39,18 +39,28 @@ Sans ce contexte, tu vas remplir le CSV de manière incorrecte (notamment violer
    - 80 $/h (coût horaire fully-loaded standard) appliqué à des heures par semaine citées
    - 100 000 $/an (FTE chargé fully-loaded standard) appliqué à une saturation FTE citée
 3. **Inférence obvious sur signal cité explicitement** :
-   - "Sophie est à temps plein sur les soumissions" → col Main d'Œuvre = 100 000 $ (FTE standard appliqué à citation FTE)
-   - "20 h/sem de matching" → col Temps Perdu = 80 000 $ (coût horaire standard appliqué à heures citées)
-   - "5 personnes 1h/jour" → conversion directe avec heures × 250 × 80 $/h
+   - "Sophie est à temps plein sur les soumissions" → col Main d'Œuvre = 100 000 $
+   - "20 h/sem de matching" → col Temps Perdu = 80 000 $
+4. **NOUVEAU v1.3 — Inférence avec défaut conservateur si DEUX anchors verbaux concrets** :
+   - Signal d'heures vague (`quelques heures par semaine`, `pas mal de temps`, `tout le monde y passe du temps`) **ET** nombre de personnes cité
+   - Conversion avec défaut conservateur (voir tableau dans `calculation_rules.md` et `exemples_chiffrage_impact.md`)
+   - Documenter dans Notes : `Hypothèses : 'quelques heures' converti en 2 h/sem par personne (défaut conservateur v1.3), 20 personnes citées.`
+
+**Défauts conservateurs v1.3** (à la borne basse pour anti-gonflage) :
+- "quelques heures par semaine" → 2 h/sem
+- "pas mal de temps" → 3 h/sem
+- "tout le monde y passe du temps" → 2 h/sem
+- "une partie significative de la journée" → 2 h/jour
+- "la moitié de la journée" → 4 h/jour
 
 **Cellules Impact $ refusent toujours (gonflage interdit)** :
-- Multiplicateurs sortis du chapeau : % captable, probabilité de perte, valeur moyenne contrat sans citation
-- Volumes inventés sans signal dans les inputs
-- Extrapolations sans anchor verbal
+- **Signal d'heures vague SANS nombre de personnes** ou nombre de personnes sans signal d'heures (un seul anchor) → 0
+- Multiplicateurs sortis du chapeau : % captable, probabilité, valeur moyenne contrat sans citation → 0
+- Volumes inventés sans signal dans les inputs → 0
 
-**Test de décision** : "Pour cette valeur de cellule, est-ce que tous les paramètres de la formule sont (a) cités verbatim dans les inputs OU (b) un standard de méthode documenté (80 $/h, 100 000 $/FTE) ? Si OUI les deux → cellule. Si NON, paramètre inventé → cellule = 0, hypothèse en Notes."
+**Test de décision v1.3** : "Pour cette valeur de cellule, ai-je (a) une citation verbatim sponsor OU (b) une formule simple sur chiffres durs OU (c) une inférence obvious sur signal cité + standard méthode OU (d) une paire d'anchors (heures vague + nombre personnes) + défaut conservateur documenté ? Si oui → cellule. Sinon → cellule = 0, hypothèse en Notes."
 
-**Une cellule à 0 ne signifie pas "pas d'impact"**. Elle signifie "non chiffré dans les inputs OU paramètres de conversion non disponibles". Toute cellule à 0 doit avoir une question correspondante structurée dans Notes (col 25), et son estimation indicative chiffrée alimentera col 27 Impact Potentiel Estimé.
+**Une cellule à 0 ne signifie pas "pas d'impact"**. Elle signifie "anchors verbaux insuffisants". Toute cellule à 0 doit avoir une question structurée dans Notes (col 25) qui alimentera col 27 Impact Potentiel Estimé.
 
 ## Inputs acceptés
 
@@ -144,9 +154,16 @@ Voir `framework.md` §Bloc 5 pour rubriques précises.
 
 Pour chaque ligne, lister les use cases prérequis identifiés en Step 2bis (texte libre, séparés par virgules, vide si aucune dépendance). Les dépendances non-use-case vont en Notes, pas en col 26.
 
-### Step 6 — Rédiger la synthèse en prose narrative
+### Step 6 — Rédiger la synthèse en prose narrative (Top 10 × 3 lignes v1.3)
 
-Suivre `references/synthese_template.md`. Sections : Préambule + Top 5 + À chiffrer en atelier + Dépendances et root causes (optionnel) + Recommandations méthodologiques.
+Suivre `references/synthese_template.md`. Structure v1.3 :
+
+1. **Préambule** : 1 paragraphe court (date, sources, nombre de candidats avant et après Step 2bis, scope impact-only)
+2. **Top 10 use cases** : 10 entrées × 3 lignes chacune (titre + sponsor/contexte chiffré + impact/verdict/recommandation). Classement par Score Priorité Impact décroissant.
+3. **Dépendances et root causes** : section optionnelle 2-3 paragraphes, incluse seulement si col 26 a des valeurs OU si Step 2bis a consolidé des symptômes
+4. **Recommandations méthodologiques** : 1 paragraphe court
+
+**Section "À chiffrer en atelier avant décision" supprimée en v1.3** : les use cases avec verdict "À chiffrer prioritairement" ou "secondairement" apparaissent dans le Top 10 si leur Score les y place, avec leur verdict mentionné en ligne 3 pour transparence. Classement décisif, pas de revalidation systématique.
 
 Style français Québec strict : pas d'em dash, pas de crochets, pas de pipes dans le corps, chiffres en toutes lettres (`220 000 $`), garder uniquement `%` et `$`.
 
@@ -205,6 +222,10 @@ Hypothèses : 80 $/h appliqué aux 20 h/sem = 80 000 $.
 - [ ] **Anti-prudence-excessive** : si col 27 > 100 000 $ ET sponsor actif ET Urgence ≥ 2, Verdict doit être "À chiffrer prioritairement", pas "secondairement"
 - [ ] **CSV format RFC 4180** : colonne Notes entre guillemets doubles, sauts de ligne entre sections (PAS de pipes `|`), guillemets internes doublés (`""`)
 - [ ] Aucun em dash dans CSV ni synthèse
-- [ ] Synthèse a préambule + Top 5 + À chiffrer + Dépendances et root causes (si pertinent) + Recommandations
+- [ ] Synthèse a préambule + **Top 10** + Dépendances et root causes (si pertinent) + Recommandations méthodologiques
+- [ ] **Aucune section "À chiffrer en atelier" séparée** dans la synthèse (supprimée v1.3)
+- [ ] Chaque entrée Top : **3 lignes utiles maximum** (titre + sponsor/contexte + impact/verdict)
 - [ ] Synthèse en prose narrative complète
 - [ ] Chiffres en toutes lettres
+- [ ] Score Priorité Impact appliqué avec **Personnes_factor paliers stepwise** ET **Transversalité_factor** (formule v1.3)
+- [ ] Inférences v1.3 sur signaux d'heures vague + N personnes : défaut conservateur documenté dans Notes (`'quelques' converti en 2 h/sem par personne, valeur basse du range plausible`)

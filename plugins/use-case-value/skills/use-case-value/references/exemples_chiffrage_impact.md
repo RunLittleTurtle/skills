@@ -2,23 +2,43 @@
 
 Ce document aide le LLM à décider, pour chaque colonne Impact $ (cols 13 à 18), ce qui peut entrer dans la cellule (chiffre dur, formule simple sur chiffres durs, ou inférence obvious sur signal cité) versus ce qui doit rester en Notes comme question à poser au sponsor.
 
-## Principe général v1.2 (règle d'or adoucie)
+## Principe général v1.3 (règle d'or adoucie + inférences avec défauts conservateurs)
 
 **Va dans la cellule** :
 - Valeur citée verbatim par un sponsor ou participant atelier
 - Valeur tirée d'un tableau source (Excel, CSV, rapport)
 - Formule simple sur chiffres durs cités appliquant un standard de méthode (heures × 80 $/h)
 - **Inférence obvious sur signal cité explicitement** convertie via standard de méthode documenté :
-  - Citation FTE explicite → 100 000 $/an par FTE saturé (FTE standard)
-  - Heures par semaine citées → × 50 sem × 80 $/h (coût horaire standard)
-  - Personnes × heures unitaires citées → conversion directe
+  - Citation FTE explicite → 100 000 $/an par FTE saturé
+  - Heures par semaine citées → × 50 sem × 80 $/h
+- **NOUVEAU v1.3 : Inférence avec défaut conservateur si DEUX anchors verbaux concrets** :
+  - Signal d'heures vague (`quelques heures par semaine`, `pas mal de temps`, `tout le monde y passe du temps`) ET nombre de personnes cité → conversion avec défaut conservateur (voir tableau ci-dessous)
+  - Documenter dans Notes : `Hypothèses : 'quelques heures' converti en 2 h/sem par personne (défaut conservateur v1.3), 20 personnes citées par Steven en atelier.`
 
 **Va en Notes (jamais dans la cellule)** :
-- Estimation contextuelle du LLM avec multiplicateur inventé ("% captable", "probabilité de", "valeur moyenne contrat" sans citation)
+- Signal d'heures vague SANS nombre de personnes cité (un seul anchor manquant)
+- Estimation contextuelle du LLM avec multiplicateur inventé (`% captable`, `probabilité de`, `valeur moyenne contrat` sans citation)
 - Extrapolation de volumes sans signal dans les inputs
-- Toute valeur dont la dérivation invente un paramètre de conversion
+- Toute valeur dont la dérivation invente un paramètre
 
-**Test décisif** : "Si on me demande d'où vient cette valeur, est-ce que je peux pointer à une citation verbatim sponsor + un standard de méthode documenté ? Si oui → cellule. Si je dois inventer un paramètre (un %, une probabilité, une valeur unitaire jamais nommée) → cellule = 0, hypothèse en Notes."
+**Test décisif v1.3** : "Pour cette valeur de cellule, est-ce que j'ai (a) une citation verbatim sponsor OU (b) une formule simple sur chiffres durs OU (c) une inférence obvious sur signal cité + standard méthode OU (d) une paire d'anchors (heures vague + nombre personnes) + défaut conservateur documenté ? Si oui → cellule. Sinon → cellule = 0, hypothèse en Notes."
+
+## Défauts conservateurs pour signaux d'heures vague (v1.3)
+
+Tableau de conversion à utiliser quand un signal d'heures vague est cité ET un nombre de personnes est cité :
+
+| Signal verbal | Défaut conservateur par personne | Range plausible | Note Hypothèses obligatoire |
+|---------------|----------------------------------|-----------------|------------------------------|
+| "quelques heures par semaine" | 2 h/sem | 2-5 h/sem | "défaut conservateur 2 h/sem, valeur basse du range" |
+| "pas mal de temps par semaine" | 3 h/sem | 3-6 h/sem | "défaut conservateur 3 h/sem" |
+| "du temps notable", "ça consomme" | 2 h/sem | 2-5 h/sem | "conservateur" |
+| "une partie significative de la journée" | 2 h/jour (10 h/sem) | 2-4 h/jour | "borne basse du range" |
+| "la moitié de la journée" | 4 h/jour (20 h/sem) | citation plus précise | "valeur médiane du range" |
+| "tout le monde y passe du temps" | 2 h/sem | conservateur | "défaut bas faute de précision" |
+
+**Tous ces défauts sont à la borne basse** pour préserver l'anti-gonflage. La note Hypothèses dans Notes documente toujours `valeur conservative à valider en atelier si arbitrage critique`.
+
+Si le sponsor cite un range explicite (ex : "entre 5 et 10 heures par semaine"), utiliser la borne basse (5 h/sem).
 
 ---
 
@@ -34,13 +54,17 @@ Ce document aide le LLM à décider, pour chaque colonne Impact $ (cols 13 à 18
 | "Valérie passe 6 heures par soumission, fait 5 soumissions/sem" (Valérie) | `120 000 $` | Formule : 30 h/sem × 50 × 80. Anchors heures et volume cités. |
 | "Eric estime 10 h/sem sur la planif manuelle" (Eric) | `40 000 $` | Formule : 10 × 50 × 80. Anchor heures cité. |
 | "L'équipe de 5 personnes y passe environ 2 h/jour chacune" (Nicolas) | `200 000 $` | Formule : 5 × 2 × 250 × 80. Anchors équipe et heures cités. |
+| **NOUVEAU v1.3** "Tout le monde y passe quelques heures par semaine" (Steven) + Personnes Affectées = 20 cité | `160 000 $` | Inférence v1.3 : 20 personnes × 2 h/sem (défaut conservateur "quelques") × 50 × 80. Deux anchors verbaux concrets : signal d'heures vague + nombre de personnes cité. |
+| **NOUVEAU v1.3** "L'équipe de 8 personnes y passe pas mal de temps chaque semaine" (Nicolas) | `96 000 $` | Inférence v1.3 : 8 × 3 h/sem (défaut conservateur "pas mal de temps") × 50 × 80. |
+| **NOUVEAU v1.3** "Chacun des 15 estimateurs perd une partie significative de la journée là-dessus" (Maxime) | `300 000 $` | Inférence v1.3 : 15 × 2 h/jour (défaut conservateur "partie significative") × 250 × 80. |
 
-**Va en Notes** :
+**Va en Notes** (v1.3, plus permissif mais toujours strict si anchor manque) :
 
 | Indice dans l'input | Cellule | Note |
 |---------------------|---------|------|
-| "On y passe beaucoup de temps" (sans chiffre) | `0` | `À chiffrer : combien d'heures par semaine en moyenne ? À titre indicatif si 15 h/sem × 50 sem × 80 $/h = 60 000 $.` |
-| "C'est énorme comme charge" (sans chiffre) | `0` | `À chiffrer : équivalent FTE actuel sur cette tâche ?` |
+| "On y passe beaucoup de temps" (sans nombre de personnes ni précision horaire) | `0` | `À chiffrer : combien de personnes y consacrent du temps et combien d'heures par semaine ?` |
+| "Quelques heures par semaine" sans nombre de personnes cité | `0` | `À chiffrer : combien de personnes sont concernées ? Si 10 personnes × 2 h/sem = +80 000 $.` |
+| "Beaucoup de monde" sans signal d'heures | `0` | `À chiffrer : combien d'heures par personne en moyenne ?` |
 
 ### Col 14 — Impact $ Opportunités Manquées (très restrictif)
 
