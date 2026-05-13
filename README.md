@@ -50,14 +50,14 @@ Dossiers cibles courants :
 flowchart LR
   A[use-case-value<br/><i>Business Analysis</i>] --> B[use-case-prioritization<br/><i>draft</i>]
   B --> C[scenario-uc<br/><i>Product Management</i>]
-  C --> D[product-brief<br/><i>à venir</i>]
+  C --> D[product-brief<br/><i>Product Management</i>]
   C --> E[mermaid-flow<br/><i>Directeur de compte</i>]
 ```
 
 - **use-case-value** : analyse d'impact business chiffré (chiffres durs uniquement, root cause avant chiffrage).
 - **use-case-prioritization** *(draft)* : ajoute effort, ROI, Run cost benchmarké.
 - **scenario-uc** : formalise le use case retenu en scénario PRD.
-- **product-brief** *(à venir)* : brief produit final, skill pas encore créé.
+- **product-brief** : transforme inputs hétérogènes (BA, transcripts, OKRs) en product brief one-pager au format PRD Authentik.
 - **mermaid-flow** : vulgarise les scénarios pour un Directeur de compte ou stakeholder non technique.
 
 Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customize-skills`) sont indépendants de ce flow.
@@ -69,6 +69,7 @@ Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customiz
 | `use-case-value` | Priorise les use cases d'AI/automatisation par impact business chiffré (6 sources d'impact $, root cause avant chiffrage, règle d'or adoucie v1.2 avec inférences obvious sur signaux cités, Score intègre potentiel Notes avec discount). |
 | `use-case-prioritization` `[draft]` | Score + priorise + chiffre les use cases (BABOK + UiPath Suitability + Run cost benchmarké web + confiance hybride). |
 | `scenario-uc` | Transforme tout input (md/PDF/image/idée) en scénario use-case au format PRD avec diagramme de séquence Mermaid. |
+| `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik (7 sections strictes + diagramme Mermaid causal OKR + Job Stories Klement + Flows AARRR). |
 | `mermaid-flow` | Transforme un flow en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, emojis acteurs). |
 | `bmad-customize-skills` | Désactive/réactive sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). |
 | `skill-creator` | Meta-skill générique pour créer un nouveau skill dans ta propre marketplace (pas la mienne). |

@@ -45,6 +45,11 @@
       "name": "use-case-value",
       "source": "./plugins/use-case-value",
       "description": "Priorise les use cases d'AI/automatisation par impact business chiffré documenté (post-its, transcripts, inventaires). v1.2 : 27 colonnes focus VALEUR uniquement (pas d'effort technique), six sources d'Impact $ explicites + col Dépend de + col Impact Potentiel Estimé. Step 2bis Root Cause Analysis (5 Whys / Ishikawa) avant chiffrage. Règle d'or adoucie : cellules acceptent chiffres durs cités, formules simples sur citations, et inférences obvious sur signaux cités via standards de méthode documentés (80 $/h, 100 000 $/FTE). Refusé : multiplicateurs sortis du chapeau. Algorithme Verdict déterministe numéroté. Synthèse one-pager en prose narrative pour directeurs de compte. Complémentaire à use-case-prioritization v2.2 (en draft)."
+    },
+    {
+      "name": "product-brief",
+      "source": "./plugins/product-brief",
+      "description": "Transformer divers inputs (notes BA, data points chiffrés, transcripts d'ateliers ou d'entrevues, insights discovery, OKRs, contraintes budgétaires, brouillons) en product brief one-pager au format PRD Authentik : 7 sections strictes (Contexte, Problème avec insights citables, Enveloppe & contraintes, Alignement OKR avec diagramme Mermaid causal, Solution avec Job Stories Klement + Flows AARRR, Out of scope, Risques avec mitigation). Analyse profonde + validation interactive avant génération. Sortie FR Québec."
     }
   ]
 }
