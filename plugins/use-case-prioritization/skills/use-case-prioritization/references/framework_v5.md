@@ -1,16 +1,16 @@
 # Framework de priorisation des use cases AI (v5)
 
-Référence des 37 colonnes du CSV v5. Combine triage qualitatif (Suitability), business case quantitatif (ROI), output architecte minimal, Run cost benchmarké par recherche web, et score de confiance par complétude.
+Référence des 38 colonnes du CSV v5. Combine triage qualitatif (Suitability), business case quantitatif (ROI), output architecte minimal, Run cost benchmarké par recherche web, et **score de confiance hybride (complétude × validation LLM)**.
 
 ## Changements v4 → v5
 
 - **Échelles 1-5 → 1-3** sur tous les critères qualitatifs. Granularité plus humaine en atelier.
 - **Format cellule : chiffre + label dans la même cellule** (ex: `3 - récurrent standardisé`). Le LLM extrait le préfixe numérique pour calculer.
 - **Run Annuel benchmarké** : remplace l'heuristique `Build × 0.15` par `Volume Qté × Coût Unitaire Agent`, où le Coût Unitaire est récupéré par recherche web LLM en fin de workflow.
-- **8 colonnes supprimées** : Nb Intégrations Identifiées, Volume Annuel (unité), Personnes Impactées, Notes Architecte (fusionnée dans Notes), Nb Colonnes Critiques, Qualité Source, Cohérence Check, Confiance Globale.
-- **2 nouvelles colonnes** : Type Agent, Coût Unitaire Agent ($/run).
+- **8 colonnes supprimées** : Nb Intégrations Identifiées, Volume Annuel (unité), Personnes Impactées, Notes Architecte (fusionnée dans Notes), Nb Colonnes Critiques, Qualité Source, Cohérence Check, Confiance Globale (réintroduite v2.1 sous forme calculée hybride).
+- **3 nouvelles colonnes** : Type Agent, Coût Unitaire Agent ($/run), **Validation LLM (v2.1)**.
 - **Volume Qté = total annuel** (avant pouvait être per-person × Personnes Impactées). Simplification : un seul nombre.
-- **Confiance Globale supprimée** : Verdict Confiance pointe directement sur Confiance Données (complétude).
+- **Confiance hybride v2.1** : Verdict Confiance lit maintenant `Confiance Données × Validation_Multiplier`. La complétude seule saturait à 100% quand le LLM remplissait tous les slots avec des estimations contextuelles. La col Validation LLM (1-3) capture la fraction validée vs estimée.
 
 ## Principe directeur v5
 
@@ -242,7 +242,9 @@ Plus élevé = meilleur. Source : WSJF simplifié (SAFe).
 
 ---
 
-## Bloc 8 : Méta-confiance (cols 34-35)
+## Bloc 8 : Méta-confiance hybride (cols 34-36)
+
+Mécanisme à deux étages : (1) **complétude** des slots (combien de cellules critiques sont remplies), et (2) **validation LLM** (la fraction de ces valeurs qui vient de la source vs de l'estimation contextuelle). Le verdict final combine les deux.
 
 ### 34. Confiance Données (%)
 **Rôle** : Pourcentage de complétude des 20 colonnes critiques (voir liste plus bas).
@@ -251,20 +253,42 @@ Plus élevé = meilleur. Source : WSJF simplifié (SAFe).
 
 Source : Data Completeness Ratio (DAMA-DMBOK).
 
-### 35. Verdict Confiance
-**Seuils** :
-| Confiance Données | Verdict |
+### 35. Validation LLM (NEW v2.1)
+**Valeurs** :
+- `1 - estimation contextuelle` : LLM a inféré la majorité des chiffres depuis le contexte général (sponsor "À identifier" ou inféré, volume/temps/pertes tous estimés, pain point reformulé)
+- `2 - mixte source + estimation` : certains chiffres explicites dans le transcript + d'autres inférés (sponsor nommé mais engagement déduit, 1-2 chiffres clés cités, autres extrapolés)
+- `3 - source primaire validée` : sponsor explicitement nommé ET présent atelier, Volume Qté + Temps OU Pertes Évitées explicitement cités dans le transcript, Pain Point cité textuellement
+
+**Rôle** : Capture la **fraction validée** des données vs estimée par le LLM. Sert de **multiplicateur de fiabilité** sur la complétude (col 34). Sans ce signal, la complétude seule peut faussement saturer à 100% quand le LLM remplit tous les slots avec des estimations contextuelles.
+
+**Méthode** : le LLM s'auto-évalue ligne par ligne, en se basant sur la traçabilité du transcript et du matériel d'atelier. Documenter dans Notes les sources clés ayant justifié le niveau choisi.
+
+Source : Validation Source vs Estimation - pratique data triangulation appliquée à l'extraction LLM.
+
+### 36. Verdict Confiance
+**Formule** : `Confiance Globale = Confiance Données × Validation_Multiplier`
+
+| Validation LLM | Multiplicateur |
+|---|---|
+| `3 - source primaire validée` | 1.0 |
+| `2 - mixte source + estimation` | 0.75 |
+| `1 - estimation contextuelle` | 0.5 |
+
+**Seuils** sur Confiance Globale :
+| Confiance Globale | Verdict |
 |---|---|
 | ≥ 80% | Fiable |
 | 60-79% | À valider 1-2 points |
 | 40-59% | Hypothèses fortes |
 | < 40% | Atelier de validation requis |
 
+**Exemple** : Confiance Données 100% (tous slots remplis) + Validation `2 - mixte` → Confiance Globale 75% → Verdict `À valider 1-2 points`. Plus honnête qu'un `Fiable` qui ignore la part estimation.
+
 ---
 
-## Bloc 9 : Décision (cols 36-37)
+## Bloc 9 : Décision (cols 37-38)
 
-### 36. Verdict ROI
+### 37. Verdict ROI
 **Seuils** sur Payback (col 30) :
 | Payback (mois) | Verdict |
 |---|---|
@@ -276,8 +300,8 @@ Source : Data Completeness Ratio (DAMA-DMBOK).
 
 Source : Decision Rules - pratique cabinet conseil et benchmarks RPA.
 
-### 37. Notes
-**Rôle** : Commentaires libres analyste + notes architecte + **source/date du benchmark Coût Unitaire Agent**. Hypothèses à valider, drapeaux rouges, prochaines étapes.
+### 38. Notes
+**Rôle** : Commentaires libres analyste + notes architecte + **source/date du benchmark Coût Unitaire Agent** + **justification du niveau Validation LLM** (citations clés du transcript ou nature des estimations). Hypothèses à valider, drapeaux rouges, prochaines étapes.
 
 Format pour le benchmark : `Benchmark Run: $X.XX/<type agent> (<source>, consulté YYYY-MM-DD)`.
 
@@ -318,8 +342,9 @@ Build Base et Run Annuel ne sont pas critiques (auto-calculés depuis T-shirt et
 2. **Post-atelier (analyste)** — Si Suitability < 50, marquer en Pass. Sinon, remplir cols 15-22 (quantitatif économique).
 3. **Architecte** — Lire la fiche, livrer cols 24-25 (T-shirt, Build Base optionnel).
 4. **Analyste** — Catégoriser col 26 (Type Agent) et remplir col 32 (Risque).
-5. **LLM (skill)** — Benchmark web pour col 27 (Coût Unitaire Agent), puis recalcule cols 14, 20-21, 23, 28-31, 33-36.
-6. **Décision** — Trier par Score Priorité, filtrer par Verdict ROI ∈ {Quick win, Go, À challenger}, valider Verdict Confiance ≥ "À valider 1-2 points".
+5. **LLM (skill)** — Benchmark web pour col 27 (Coût Unitaire Agent), puis recalcule cols 14, 20-21, 23, 28-31, 33-34.
+6. **LLM auto-évaluation (v2.1)** — Remplir col 35 (Validation LLM) en pesant la fraction des chiffres validés depuis transcript vs estimés depuis contexte. Justifier dans Notes. Verdict Confiance (col 36) en découle automatiquement.
+7. **Décision** — Trier par Score Priorité, filtrer par Verdict ROI ∈ {Quick win, Go, À challenger}, valider Verdict Confiance ≥ "À valider 1-2 points".
 
 ---
 
@@ -331,19 +356,20 @@ Build Base et Run Annuel ne sont pas critiques (auto-calculés depuis T-shirt et
 - Nb Intégrations Identifiées (ancienne col 15) — info imprécise en atelier, non utilisée dans formules
 - Volume Annuel (unité) (ancienne col 16) — convention "annuel" implicite
 - Personnes Impactées (ancienne col 20) — sociologique, Volume Qté capte déjà le total
-- Notes Architecte (ancienne col 29) — fusionnée dans Notes (col 37)
+- Notes Architecte (ancienne col 29) — fusionnée dans Notes
 - Nb Colonnes Critiques Remplies (ancienne col 36) — redondant avec Confiance Données
-- Qualité Source (ancienne col 37) — méta imprécise
+- Qualité Source (ancienne col 37) — méta imprécise, remplacée v2.1 par Validation LLM
 - Cohérence Check (ancienne col 38) — méta imprécise
-- Confiance Globale (ancienne col 40) — composite supprimé, Verdict Confiance pointe sur Confiance Données directement
+- Confiance Globale (ancienne col 40) — composite supprimé v2.0, réintroduit v2.1 comme calculé via Validation LLM × Confiance Données
 
-**Ajoutées** (2 cols) :
+**Ajoutées** (3 cols) :
 - Type Agent (col 26) — catégorisation pour benchmark
 - Coût Unitaire Agent ($/run) (col 27) — benchmarké par recherche web LLM
+- Validation LLM (col 35, v2.1) — fraction source vs estimation, multiplicateur de confiance
 
 **Formules modifiées** :
 - Suitability : `MOYENNE × 20` (8 critères 1-5) → `MOYENNE × 33.33` (8 critères 1-3)
 - Gain Heures : `Volume × ΔT × Personnes` → `Volume × ΔT` (Volume = total)
 - Run Annuel : `Build × 0.15` → `Volume Qté × Coût Unitaire Agent`
 - Confiance Données : `Nb_Rempli / 20 × 100` (dénominateur inchangé, mais composition des critiques renouvelée)
-- Confiance Globale : **supprimée**, Verdict Confiance lit directement Confiance Données
+- Verdict Confiance (v2.1) : `seuils sur Confiance Données × Validation_Multiplier` (hybride complétude + qualité estimation)

@@ -1,6 +1,6 @@
-# Règles de calcul et valeurs par défaut (v5)
+# Règles de calcul et valeurs par défaut (v5.1)
 
-Formules exactes, seuils et défauts pour générer le CSV de priorisation v5 (37 colonnes). À lire après `framework_v5.md`.
+Formules exactes, seuils et défauts pour générer le CSV de priorisation v5 (38 colonnes). À lire après `framework_v5.md`.
 
 ## Format des cellules qualitatives
 
@@ -103,6 +103,44 @@ Risque ∈ {1, 2, 3}. Plus le score est élevé, plus le use case est prioritair
 Conf_Donnees = Nb_Colonnes_Critiques_Remplies / 20 × 100
 ```
 
+### Validation LLM (col 35, v2.1)
+
+**Auto-évaluation par le LLM** ligne par ligne. Format cellule : `<n> - <label>`.
+
+Rubric :
+- `3 - source primaire validée` : 
+  - Sponsor explicitement nommé ET présent en atelier
+  - Volume Qté EXPLICITEMENT cité dans le transcript (pas inféré)
+  - Temps Actuel/Cible OU Pertes Évitées EXPLICITEMENT cité avec chiffre précis
+  - Pain Point cité textuellement (citation client)
+- `2 - mixte source + estimation` : 
+  - Sponsor nommé mais niveau d'engagement déduit du contexte
+  - 1-2 chiffres clés cités dans transcript, autres extrapolés
+  - Pain Point reformulé depuis description du contexte
+- `1 - estimation contextuelle` :
+  - Sponsor `À identifier` OU inféré du département
+  - Volume/Temps/Pertes TOUS estimés depuis le contexte général
+  - Pain Point reformulé sans citation directe
+  - Suitability inférée plus que validée par signaux explicites
+
+Le LLM doit **justifier le niveau choisi en col 38 Notes** par 1-2 citations du transcript ou par la nature des estimations.
+
+### Confiance Globale (calculée pour Verdict Confiance)
+
+**Pas une colonne visible** dans le CSV (calculée à la volée). Combine complétude × validation :
+
+```
+Validation_Multiplier:
+  "3 - source primaire validée"    → 1.0
+  "2 - mixte source + estimation"  → 0.75
+  "1 - estimation contextuelle"    → 0.5
+  (vide ou invalide)               → 0.5 (défaut conservateur)
+
+Confiance_Globale = Confiance_Donnees × Validation_Multiplier
+```
+
+C'est sur cette `Confiance_Globale` que le Verdict Confiance (col 36) applique ses seuils.
+
 ## Benchmark web du Coût Unitaire Agent
 
 À effectuer en **avant-dernière étape** du workflow (avant la synthèse exec), pour chaque ligne du CSV en fonction du Type Agent.
@@ -169,15 +207,23 @@ Ces valeurs sont indicatives — toujours préférer un benchmark web frais à j
 
 ## Seuils de verdicts
 
-### Verdict Confiance (col 35) — basé sur col 34 Confiance Données
-| Confiance Données | Verdict |
+### Verdict Confiance (col 36) — basé sur Confiance Globale hybride
+| Confiance Globale | Verdict |
 |---|---|
 | ≥ 80% | Fiable |
 | 60-79% | À valider 1-2 points |
 | 40-59% | Hypothèses fortes |
 | < 40% | Atelier de validation requis |
 
-### Verdict ROI (col 36) — basé sur col 30 Payback
+Où `Confiance_Globale = Confiance_Donnees × Validation_Multiplier` (voir section ci-dessus).
+
+**Exemples** :
+- Complétude 100% + Validation `3 - validée` → 100% → `Fiable`
+- Complétude 100% + Validation `2 - mixte` → 75% → `À valider 1-2 points`
+- Complétude 100% + Validation `1 - estimation` → 50% → `Hypothèses fortes`
+- Complétude 55% + Validation `1 - estimation` → 27.5% → `Atelier de validation requis`
+
+### Verdict ROI (col 37) — basé sur col 30 Payback
 | Payback (mois) | Verdict |
 |---|---|
 | < 6 | Quick win |

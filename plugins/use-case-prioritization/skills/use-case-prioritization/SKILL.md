@@ -1,6 +1,6 @@
 ---
 name: use-case-prioritization
-description: Score, prioritize, and build business cases for AI/automation use cases from any process discovery input (post-it photos, atelier transcripts, process inventories of up to 500+ rows, meeting notes, or mixed workshop materials). Combines BABOK Business Case methodology, UiPath Suitability scoring on a /3 scale with inline qualitative labels, fully-loaded cost calculations, and a Run cost benchmarked live by web search per agent type (email auto, dashboard genAI, RAG, OCR, RPA, etc.). Use this skill whenever the user has process discovery materials and needs to decide which use case to scope first, build an enveloppe budgétaire, or triage an automation pipeline. Triggers on keywords like prioriser, prioritization, use case, ROI, payback, business case, suitability, scoping, enveloppe budgétaire, quel use case en premier, automation pipeline, process triage, atelier découverte, post-its, cartographie processus, chiffrer use case. Always outputs both a working CSV (37-column v5 schema with FORMULES and SOURCE rows) and an executive summary markdown in French Quebec.
+description: Score, prioritize, and build business cases for AI/automation use cases from any process discovery input (post-it photos, atelier transcripts, process inventories of up to 500+ rows, meeting notes, or mixed workshop materials). Combines BABOK Business Case methodology, UiPath Suitability scoring on a /3 scale with inline qualitative labels, fully-loaded cost calculations, and a Run cost benchmarked live by web search per agent type (email auto, dashboard genAI, RAG, OCR, RPA, etc.). Use this skill whenever the user has process discovery materials and needs to decide which use case to scope first, build an enveloppe budgétaire, or triage an automation pipeline. Triggers on keywords like prioriser, prioritization, use case, ROI, payback, business case, suitability, scoping, enveloppe budgétaire, quel use case en premier, automation pipeline, process triage, atelier découverte, post-its, cartographie processus, chiffrer use case. Always outputs both a working CSV (38-column v5 schema (with hybrid completeness × validation confidence) with FORMULES and SOURCE rows) and an executive summary markdown in French Quebec.
 ---
 
 # Use Case Prioritization Framework (v5)
@@ -11,7 +11,7 @@ This skill turns process discovery materials into a structured priorisation arti
 
 Two files, always:
 
-1. **`priorisation_use_cases.csv`** (37 columns, French Quebec headers): the working file for the analyst. Includes FORMULES row (row 2) and SOURCE row (row 3) under the header for traceability.
+1. **`priorisation_use_cases.csv`** (38 columns, French Quebec headers): the working file for the analyst. Includes FORMULES row (row 2) and SOURCE row (row 3) under the header for traceability.
 
 2. **`synthese_priorisation.md`**: executive summary for directeurs de compte and stakeholders. Top 5 priorities with 2-3 lines each, plus "À éliminer" and "À retravailler" sections.
 
@@ -85,7 +85,8 @@ Once inputs are extracted and the agent type is categorized, calculate the deriv
 - Payback (col 30), ROI An 1 (col 31) — *also depend on Step 5*
 - Score Priorité (col 33)
 - Confiance Données (col 34) — counting filled critical columns
-- Verdict Confiance (col 35), Verdict ROI (col 36)
+- Validation LLM (col 35) — *self-assessment, see Step 6*
+- Verdict Confiance (col 36), Verdict ROI (col 37)
 
 Cols 28-31 depend on the benchmark from Step 5 — compute those after Step 5 completes.
 
@@ -102,19 +103,36 @@ For each row, on the basis of col 26 Type Agent, look up the **Coût Unitaire Ag
 4. **Cite source and date in col 37 Notes**, e.g.: `Benchmark Run: $0.04/email auto (a16z State of AI 2026, consulté 2026-05-13)`.
 5. If no credible benchmark is found, use fallback `(Build × 0.15) / Volume Qté` and flag `BENCHMARK_FALLBACK` in Notes. A fallback table per agent type lives in `calculation_rules.md`.
 
-Compute col 28 `Run Annuel = Volume Qté × Coût Unitaire Agent`, then finish the dependent columns (29 Coût An 1, 30 Payback, 31 ROI, 36 Verdict ROI).
+Compute col 28 `Run Annuel = Volume Qté × Coût Unitaire Agent`, then finish the dependent columns (29 Coût An 1, 30 Payback, 31 ROI, 37 Verdict ROI).
 
-### Step 6: Build the CSV
+### Step 6: Self-assess Validation LLM (NEW v2.1)
+
+For each row, fill **col 35 Validation LLM** with `<n> - <label>` based on the **fraction of values that came from the source vs LLM contextual estimation** :
+
+- `3 - source primaire validée` : sponsor explicitly named AND present at workshop, Volume Qté + Temps OR Pertes Évitées explicitly cited in transcript, Pain Point cited verbatim.
+- `2 - mixte source + estimation` : sponsor named but engagement inferred, 1-2 key numbers from transcript with others extrapolated, Pain Point reformulated from context.
+- `1 - estimation contextuelle` : sponsor "À identifier" or inferred from department, Volume/Temps/Pertes all estimated, Pain Point reformulated, Suitability inferred more than validated.
+
+**Always justify the chosen level in col 38 Notes**, with 1-2 transcript quotes or a clear note about what was estimated vs. validated. Example: `Validation 2: volume 50k cité par Marie DAF (transcript), mais coût horaire 60$ et taux 0.6 sont défauts agence non confirmés.`
+
+The Verdict Confiance (col 36) reads both Confiance Données (col 34) and Validation LLM (col 35) via the multiplier rule in `calculation_rules.md`:
+- Validation `3` → multiplier 1.0
+- Validation `2` → multiplier 0.75
+- Validation `1` → multiplier 0.5
+
+So Confiance Globale = Confiance Données × Multiplier, and the verdict threshold applies to that.
+
+### Step 7: Build the CSV
 
 Use `references/csv_template.csv` as the starting structure. It contains:
-- Row 1: Header (37 columns)
+- Row 1: Header (38 columns)
 - Row 2: FORMULES (do not modify)
 - Row 3: SOURCE (do not modify)
 - Row 4: example use case (replace or remove)
 
 Append data rows (one per use case). Save to `/mnt/user-data/outputs/priorisation_use_cases.csv`.
 
-### Step 7: Generate the executive summary
+### Step 8: Generate the executive summary
 
 Use `references/exec_summary_template.md` for the format. Key rules:
 - Maximum 5 use cases in the "Top priorités" section
@@ -126,7 +144,7 @@ Use `references/exec_summary_template.md` for the format. Key rules:
 
 Save to `/mnt/user-data/outputs/synthese_priorisation.md`.
 
-### Step 8: Present both files
+### Step 9: Present both files
 
 Use the `present_files` tool to share both outputs. The CSV first (primary working artifact), then the markdown summary.
 
@@ -163,12 +181,14 @@ Use the `present_files` tool to share both outputs. The CSV first (primary worki
 ## Quality checks before presenting
 
 Before calling present_files, verify:
-- [ ] CSV has FORMULES row and SOURCE row preserved
+- [ ] CSV has FORMULES row and SOURCE row preserved (38 columns)
 - [ ] Each data row has at least Use Case and Pain Point filled
-- [ ] Qualitative cells (cols 6-13, 32) are in the `<n> - <label>` format, not just a number
+- [ ] Qualitative cells (cols 6-13, 32, 35) are in the `<n> - <label>` format, not just a number
 - [ ] Verdict ROI matches Payback threshold (see calculation_rules.md)
-- [ ] Verdict Confiance matches Confiance Données threshold
+- [ ] **Verdict Confiance reflects the hybrid `Conf_Données × Validation_Multiplier`**, not raw completeness
+- [ ] Every row has Validation LLM (col 35) filled with justification in Notes
 - [ ] Every row has Type Agent (col 26) and Coût Unitaire Agent (col 27) filled, with benchmark source cited in Notes
+- [ ] **Sanity check**: if all rows show Confiance Données = 100%, double-check Validation LLM — too many `3 - source primaire validée` likely means the LLM is overstating validation
 - [ ] No em dashes anywhere in either file
 - [ ] Synthèse has top priorités, à éliminer, à retravailler sections
-- [ ] Notes column flags major hypotheses or missing data points and cites benchmark sources
+- [ ] Notes column flags major hypotheses, missing data points, benchmark sources, AND the Validation LLM justification

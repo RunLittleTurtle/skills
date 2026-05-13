@@ -30,7 +30,7 @@ Ce template définit la structure du fichier `synthese_priorisation.md`. Suivre 
 
 **Sponsor**: [nom ou "À identifier"] | **Département**: [département]
 
-**Snapshot**: Suitability [XX/100], Confiance [XX%], Payback [X mois], ROI An 1 [XX%], Bénéfice net [XX k$/an], Run [XX $/an basé sur $X.XX/run]
+**Snapshot**: Suitability [XX/100], Confiance globale [XX%] (complétude [XX%] × validation [niveau]), Payback [X mois], ROI An 1 [XX%], Bénéfice net [XX k$/an], Run [XX $/an basé sur $X.XX/run]
 
 **Pourquoi prioritaire** (2-3 lignes): [Synthétiser pourquoi ce use case mérite d'être scopé en premier. Mentionner les signaux forts: volume confirmé, sponsor engagé, données disponibles, alignement stratégique, ou pertes évitées tangibles.]
 
@@ -63,7 +63,7 @@ Cette priorisation combine:
 - **Business case quantitatif** (BABOK 10.10): bénéfice net annuel basé sur volume × temps × coût horaire, avec haircut de réalisation (Prosci 50-70%)
 - **Effort architecte** (Agile Estimation Cohn): T-shirt sizing converti via barème agence
 - **Run cost benchmarké** (v5): Volume Qté × Coût Unitaire Agent, où le $/run est récupéré par recherche web sur sources fiables (a16z, Menlo, pricing officiels) avec source et date citées
-- **Score de confiance par complétude** (DAMA-DMBOK): pourcentage des 20 colonnes critiques remplies
+- **Score de confiance hybride v2.1** (DAMA-DMBOK + validation LLM): pourcentage des 20 colonnes critiques remplies × multiplicateur de validation LLM (1.0 si source primaire validée, 0.75 si mixte, 0.5 si estimation contextuelle)
 
 **Seuils de décision**:
 - Payback < 6 mois = Quick win, 6-12 mois = Go, 12-18 = A challenger, 18-24 = Stratégique seulement, > 24 = Pass
@@ -72,7 +72,7 @@ Cette priorisation combine:
 **Sources benchmark Run** utilisées dans cette priorisation:
 [Lister les sources citées par use case, avec date de consultation. Ex: "a16z State of AI 2026 pour email auto $0.04/run, consulté 2026-05-13"]
 
-Pour le détail complet des 37 colonnes et formules, voir le CSV de priorisation et le framework de référence v5.
+Pour le détail complet des 38 colonnes et formules, voir le CSV de priorisation et le framework de référence v5.
 ```
 
 ## Notes sur les cas particuliers
