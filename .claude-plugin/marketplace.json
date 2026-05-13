@@ -39,7 +39,7 @@
     {
       "name": "use-case-value",
       "source": "./plugins/use-case-value",
-      "description": "Priorise les use cases d'AI/automatisation par impact business chiffré documenté (post-its, transcripts, inventaires). v1.1 : 26 colonnes focus VALEUR uniquement (pas d'effort technique), six sources d'Impact $ explicites + Step 2bis Root Cause Analysis (5 Whys / Ishikawa) + col Dépend de pour modéliser les dépendances inter-use-cases. Règle d'or stricte chiffres durs uniquement dans les cellules (estimations LLM exclusivement en Notes comme questions à poser au sponsor). Synthèse one-pager en prose narrative pour directeurs de compte, avec section optionnelle Dépendances et root causes. Complémentaire à use-case-prioritization v2.2 : ce skill se concentre sur l'impact, l'effort sera traité par un futur skill séparé."
+      "description": "Priorise les use cases d'AI/automatisation par impact business chiffré documenté (post-its, transcripts, inventaires). v1.2 : 27 colonnes focus VALEUR uniquement (pas d'effort technique), six sources d'Impact $ explicites + col Dépend de + col Impact Potentiel Estimé. Step 2bis Root Cause Analysis (5 Whys / Ishikawa) avant chiffrage. Règle d'or adoucie : cellules acceptent chiffres durs cités, formules simples sur citations, et inférences obvious sur signaux cités via standards de méthode documentés (80 $/h, 100 000 $/FTE). Refusé : multiplicateurs sortis du chapeau. Algorithme Verdict déterministe numéroté. Synthèse one-pager en prose narrative pour directeurs de compte. Complémentaire à use-case-prioritization v2.2 (en draft)."
     }
   ]
 }

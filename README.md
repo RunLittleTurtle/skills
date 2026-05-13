@@ -44,15 +44,35 @@ Dossiers cibles courants :
 
 ## Skills disponibles
 
-| Nom | Description | Use case |
-|---|---|---|
-| `coordination` | Coordonner plusieurs instances Claude en parallèle via locks markdown | Plusieurs fenêtres iTerm sur le même repo, ou plusieurs personnes via cloud sync |
-| `skill-creator` | Meta-skill **générique** : crée un nouveau skill dans TA propre marketplace (pas la mienne) | N'importe qui veut créer/maintenir sa propre marketplace personnelle de skills Claude Code |
-| `mermaid-flow` | Transformer un flow (texte/fichier/mermaid/image) en flowchart Mermaid simplifié pour personnes peu techniques | Vulgariser un processus métier en diagramme accessible (max 10 étapes, palette pastel, emojis acteurs 👤🤖⚙️🖥️⚖️) |
-| `scenario-uc` | Transformer tout input (md/PDF/image/URL Drive/idée) en scénario use-case au format Authentik PRD avec diagramme de séquence Mermaid | Formaliser un cas d'utilisation produit (description + acteurs typés + intent + séquence numérotée + sequenceDiagram), sortie en français, validation interactive |
-| `bmad-customize-skills` | Désactiver / réactiver sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). Patche aussi `bmad-help.csv` pour neutraliser les required gates | Adapter une install BMad à un projet doc-only ou non-coding : retirer les skills dev/architecture/sprint sans casser BMad. Réversible et ré-applicable après chaque `npx bmad-method install` |
-| `use-case-prioritization` | Scorer, prioriser et chiffrer des use cases d'AI/automatisation (BABOK + UiPath Suitability **1-3 avec labels qualitatifs** + Run cost **benchmarké par recherche web** + **confiance hybride** complétude × validation LLM + **synthèse avec jugement LLM** bundling et recommandations stratégiques). Sortie : dossier projet par run avec CSV 38 cols v5, synthèse lisible, et sources auditables | Décider quel use case scoper en premier après un atelier de découverte (post-its, transcripts, inventaires 500+ lignes), construire une enveloppe budgétaire ou faire le triage d'une pipeline d'automatisation. Run cost ancré dans la réalité économique 2026, confiance qui distingue chiffres validés vs estimations, synthèse qui combine math rigoureuse + jugement LLM contextuel |
-| `use-case-value` | Priorise les use cases d'AI/automatisation par **impact business chiffré documenté** uniquement (pas d'effort technique). v1.1 : 26 colonnes focus VALEUR, **six sources d'Impact $ explicites** + pain points + personnes affectées + transversalité + **col Dépend de** pour les dépendances inter-use-cases + **Step 2bis Root Cause Analysis** (5 Whys / Ishikawa) avant chiffrage pour distinguer root causes vs symptômes. **Règle d'or stricte** : chiffres durs uniquement dans les cellules, **estimations LLM exclusivement en Notes**. Synthèse one-pager en prose narrative française Québec avec section optionnelle Dépendances et root causes | Produire une note de cadrage business lisible pour un directeur de compte après un atelier de découverte, sans gonfler les chiffres avec des estimations LLM, et qui identifie clairement les fondations à débloquer en premier dans la chaîne d'automatisations. Complémentaire à `use-case-prioritization` v2.2 : ce skill se concentre sur l'impact, l'effort sera traité par un futur skill séparé qui se branchera sur le CSV de sortie pour fermer la lecture ROI |
+### Flow d'usage — Business Analysis → Produit → Directeur de compte
+
+```mermaid
+flowchart LR
+  A[use-case-value<br/><i>Business Analysis</i>] --> B[use-case-prioritization<br/><i>draft</i>]
+  B --> C[scenario-uc<br/><i>Product Management</i>]
+  C --> D[product-brief<br/><i>à venir</i>]
+  C --> E[mermaid-flow<br/><i>Directeur de compte</i>]
+```
+
+- **use-case-value** : analyse d'impact business chiffré (chiffres durs uniquement, root cause avant chiffrage).
+- **use-case-prioritization** *(draft)* : ajoute effort, ROI, Run cost benchmarké.
+- **scenario-uc** : formalise le use case retenu en scénario PRD.
+- **product-brief** *(à venir)* : brief produit final, skill pas encore créé.
+- **mermaid-flow** : vulgarise les scénarios pour un Directeur de compte ou stakeholder non technique.
+
+Les autres skills (`coordination`, `skill-creator`, `bmad-customize-skills`) sont indépendants de ce flow.
+
+### Tableau récapitulatif
+
+| Nom | Description |
+|---|---|
+| `use-case-value` | Priorise les use cases d'AI/automatisation par impact business chiffré (6 sources d'impact $, root cause avant chiffrage, règle d'or adoucie v1.2 avec inférences obvious sur signaux cités, Score intègre potentiel Notes avec discount). |
+| `use-case-prioritization` `[draft]` | Score + priorise + chiffre les use cases (BABOK + UiPath Suitability + Run cost benchmarké web + confiance hybride). |
+| `scenario-uc` | Transforme tout input (md/PDF/image/idée) en scénario use-case au format PRD avec diagramme de séquence Mermaid. |
+| `mermaid-flow` | Transforme un flow en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, emojis acteurs). |
+| `bmad-customize-skills` | Désactive/réactive sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). |
+| `skill-creator` | Meta-skill générique pour créer un nouveau skill dans ta propre marketplace (pas la mienne). |
+| `coordination` | Coordonne plusieurs instances Claude qui travaillent en parallèle sur le même repo via locks markdown. |
 
 ---
 

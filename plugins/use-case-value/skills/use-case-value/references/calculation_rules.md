@@ -1,28 +1,73 @@
-# Règles de calcul use-case-value v1.0
+# Règles de calcul use-case-value v1.2
 
-Ce document détaille les formules, défauts et grille de verdict du CSV 25 colonnes.
+Ce document détaille les formules, standards de méthode, formule de Score, et algorithme Verdict du CSV 27 colonnes.
 
-## Règle d'or absolue sur les estimations
+## Règle d'or adoucie sur les estimations
 
-**Cellules Impact $ (colonnes 13 à 18) acceptent uniquement** :
-1. Une valeur citée explicitement par un sponsor, un participant atelier ou une table source.
-2. Une valeur dérivée par formule simple sur des chiffres durs (ex : heures par semaine citées × 50 sem × coût horaire fully-loaded par défaut).
-3. Sinon : **0**.
+**Cellules Impact $ (colonnes 13 à 18) acceptent** :
 
-**Une cellule à 0 ne signifie pas "pas d'impact".** Elle signifie "non chiffré dans les inputs". Toute cellule à 0 doit avoir une question correspondante structurée dans Notes (col 25) sous "À chiffrer en atelier".
+1. **Valeur citée verbatim** par un sponsor, un participant atelier ou une table source.
 
-**Toute estimation LLM va exclusivement dans Notes**, jamais dans une cellule Impact $. Le LLM peut proposer une valeur indicative ("à titre indicatif, si X alors environ Y") mais cette valeur reste dans Notes en tant que question à poser au sponsor.
+2. **Formule simple sur chiffres durs cités**, avec standards de méthode documentés comme paramètres de conversion :
+   - Coût horaire fully-loaded : 80 $/h
+   - FTE chargé fully-loaded : 100 000 $/an
 
-## Coût horaire fully-loaded par défaut
+3. **Inférence obvious sur un signal cité explicitement** dans les inputs, avec un standard de méthode documenté comme anchor de conversion. Exemples acceptés :
+   - "1 personne à temps plein", "1 FTE saturé", "il y a quelqu'un dédié" → 100 000 $/an (FTE chargé standard) dans la cellule appropriée
+   - "X h/sem" cité → X × 50 × 80 $/h dans la cellule appropriée
+   - "5 personnes y consacrent une heure par jour" → 5 × 1 × 250 jours × 80 $/h dans la cellule appropriée
+
+**Cellules Impact $ refusent toujours (gonflage interdit)** :
+- **Multiplicateurs sortis du chapeau** : % captable, probabilité de perte, valeur moyenne contrat, taux de conversion, sans citation sponsor explicite
+- **Volumes inventés** sans signal dans les inputs ("on perd vraisemblablement 5 contrats/an" si le sponsor n'a jamais cité de volume)
+- **Extrapolations** "à valeur moyenne X $ par contrat" si la valeur n'a jamais été citée
+- Toute valeur d'anchor inventée par le LLM
+
+**Test de décision** : "Si on me demande d'où vient cette valeur de cellule, je peux pointer à une citation verbatim sponsor + appliquer un standard de méthode documenté → cellule OK. Si je dois inventer un paramètre de conversion → cellule = 0, l'analyse va en Notes (col 25) avec section À chiffrer en atelier."
+
+**Une cellule à 0 ne signifie pas "pas d'impact"**. Elle signifie "non chiffré dans les inputs OU paramètres de conversion non disponibles". Toute cellule à 0 doit avoir une question correspondante structurée dans Notes (col 25), et son estimation indicative sera comptée dans col 27 Impact Potentiel Estimé.
+
+## Standards de méthode — paramètres de conversion conditionnels
+
+**Important** : ces deux standards sont des **paramètres de conversion qui s'appliquent UNIQUEMENT quand un signal verbal correspondant est cité dans les inputs**. Ce ne sont pas des valeurs appliquées automatiquement à toutes les lignes. Sans citation explicite du signal correspondant (heures par semaine, FTE saturé, etc.), la cellule reste à 0 et l'analyse va en Notes.
+
+### Coût horaire fully-loaded standard de conversion
 
 `80 $/h` — profil mixte employé québécois, charges sociales et overhead inclus.
 
-Utilisable pour convertir des heures dures en Impact $ Temps Perdu :
+**Quand l'appliquer** : uniquement si un sponsor cite des heures explicites ("20 h/sem", "6 h par dossier", "2 h/jour", etc.).
+
+**Comment l'appliquer** :
 ```
 Impact $ Temps Perdu = heures par semaine citées × 50 semaines × 80 $/h
 ```
 
-Modifiable selon le client si une autre référence est fournie en input (ex : taux horaire spécifique à un département mentionné par le sponsor, ou contexte non québécois). Documenter le taux utilisé dans Notes.
+Sans heures citées → cellule = 0, question "à chiffrer" en Notes.
+
+Si le sponsor cite un taux différent (ex : "nos estimateurs sont à 90 $/h chargé"), utiliser ce taux et documenter la source dans Notes.
+
+### FTE chargé fully-loaded standard de conversion
+
+`100 000 $/an` — profil mixte employé québécois, charges sociales et overhead inclus, productivité annuelle effective.
+
+**Quand l'appliquer** : uniquement si un sponsor cite explicitement une saturation FTE ("1 personne à temps plein", "1 FTE saturé", "Sophie est dédiée à ça", "il faut quelqu'un à plein temps"). La citation doit nommer une quantité de personne ou FTE.
+
+**Comment l'appliquer** :
+```
+Impact $ Main d'Œuvre Saturation = nombre de FTE saturés cités × 100 000 $
+OU (si la saturation se manifeste comme du temps consommé)
+Impact $ Temps Perdu = équivalent FTE consommé sur tâche × 100 000 $
+```
+
+Sans citation FTE explicite → cellule = 0, question "à chiffrer" en Notes.
+
+**Exemples de citations valides** : "Sophie est à temps plein sur les soumissions", "1 personne dédiée au matching PO", "Valérie est complètement saturée", "il faut quelqu'un de full-time là-dessus".
+
+**Exemples de citations INVALIDES** (cellule = 0, va en Notes) : "ça mobilise du monde", "il y a beaucoup de travail", "c'est lourd", "ça pèse sur les équipes" — pas de quantité FTE nommée, donc pas d'anchor utilisable.
+
+Si le sponsor cite un profil spécifique chargé différemment (ex : "expert principal à 150 000 $ chargé"), utiliser cette valeur et documenter la source dans Notes.
+
+**Cohérence des deux standards** : 80 $/h × 1250 heures productives effectives par an ≈ 100 000 $. Les deux paramètres convergent quand le sponsor cite à la fois des heures et un FTE pour le même use case.
 
 ## Formules pour les colonnes calculées
 
@@ -32,83 +77,116 @@ Modifiable selon le client si une autre référence est fournie en input (ex : t
 Impact Total Documenté = SUM(col13 ; col14 ; col15 ; col16 ; col17 ; col18)
 ```
 
-Reflète uniquement les chiffres durs cités ou les formules simples sur chiffres durs. Une valeur faible avec questions chiffrables en Notes est plus honnête qu'une valeur gonflée par estimations LLM.
+Reflète uniquement les chiffres durs et inférences obvious admissibles selon la règle d'or adoucie. Pas d'estimations Notes.
 
-### Col 23 — Score Priorité Impact
+### Col 27 — Impact Potentiel Estimé ($/an)
+
+Le LLM remplit cette colonne en sommant les estimations indicatives présentes dans Notes (col 25) du même use case, sous la section "À chiffrer en atelier".
+
+Chaque "À titre indicatif, si [hypothèse], cela représenterait environ [valeur]" contribue sa valeur indicative à col 27.
+
+Exemples :
+- Notes mentionnent `À titre indicatif si 5 contrats × 100 000 $ × 30 % = +150 000 $` ET `Si 0.5 FTE évité ≈ +50 000 $` → col 27 = 200 000 $
+- Notes ne contiennent aucune estimation indicative chiffrée → col 27 = 0
+
+**Cette colonne ne remplace PAS Impact Total Documenté** (col 19). Elle s'ajoute uniquement pour le calcul du Score Priorité Impact, avec un discount d'incertitude (voir col 23).
+
+### Col 23 — Score Priorité Impact (formule v1.2)
 
 ```
-Score Priorité Impact (brut) =
-   Impact Total Documenté
- × Complétude Chiffrage (extraite du label, valeur 1, 2 ou 3)
- × Urgence Stratégique (extraite du label, valeur 1, 2 ou 3)
- × (1 + 0.2 × log(MAX(1 ; Personnes Affectées)))
+Score brut = (Impact Total Documenté + 0.3 × Impact Potentiel Estimé)
+           × Complétude Chiffrage (extraite du label, valeur 1, 2 ou 3)
+           × Urgence Stratégique (extraite du label, valeur 1, 2 ou 3)
+           × (1 + 0.2 × log(MAX(1 ; Personnes Affectées)))
 
 Score Priorité Impact (normalisé) =
    Score brut / MAX(Score brut sur toutes les lignes du CSV)
 ```
 
-Le résultat normalisé est compris entre 0 (use case sans impact documenté) et 1 (use case avec le plus fort score documenté du CSV).
+Le facteur **0.3** reflète la pénalité d'incertitude des estimations Notes vs chiffres durs. Un Impact Potentiel de 1 000 000 $ contribue donc 300 000 $ équivalent-documenté au Score.
 
-**Logique de pondération** :
-- Impact Total Documenté est le levier principal du score.
-- Complétude Chiffrage récompense les use cases bien documentés (évite que le LLM gonfle des hypothèses pour faire monter le score).
-- Urgence Stratégique applique le Cost of Delay (WSJF).
-- Personnes Affectées en logarithme : un use case qui touche 50 personnes pèse plus qu'un qui touche 5, avec un effet décroissant. log(50) ≈ 1.70, log(5) ≈ 0.70, log(1) = 0. Le facteur reste raisonnable même pour une organisation complète.
+**Logique** :
+- Impact Total Documenté reste le levier principal (poids 1.0)
+- Impact Potentiel Estimé est intégré avec discount (poids 0.3) pour éviter que les use cases haut potentiel non chiffré apparaissent à Score 0 dans le tri
+- Complétude Chiffrage récompense les use cases bien documentés
+- Urgence Stratégique applique le Cost of Delay (WSJF)
+- Personnes Affectées en logarithme
 
-### Col 24 — Verdict Impact
+### Col 24 — Verdict Impact (algorithme déterministe v1.2)
 
-Lookup sur la grille suivante (premier match l'emporte, ordre haut vers bas) :
+**Exécuter l'algorithme strictement séquentiellement, premier match l'emporte** :
 
-| Verdict | Conditions (toutes doivent être vraies) |
-|---------|------------------------------------------|
-| **Critique** | Impact Total Documenté supérieur à 200 000 $ ET Urgence Stratégique ≥ 2 ET Complétude Chiffrage ≥ 2 |
-| **Forte** | Impact Total Documenté supérieur à 100 000 $ ET Complétude Chiffrage ≥ 2 |
-| **À chiffrer prioritairement** | Impact Total Documenté inférieur à 100 000 $ ET Notes mentionne un Impact potentiel supérieur à 100 000 $ ET Urgence Stratégique ≥ 2 ET sponsor actif détecté |
-| **À chiffrer secondairement** | Impact Total Documenté inférieur à 100 000 $ ET Notes mentionne un Impact potentiel inférieur à 100 000 $ |
-| **Stratégique long-terme** | Urgence Stratégique = 3 ET Impact Total Documenté faible (sous 100 000 $) ET pas d'estimation forte en Notes |
-| **Faible impact** | Impact Total Documenté inférieur à 50 000 $ ET Urgence Stratégique inférieure à 3 ET pas d'Impact potentiel élevé en Notes |
+```
+1. SI Impact Total Documenté > 200 000 $
+       ET Urgence Stratégique ≥ 2
+       ET Complétude Chiffrage ≥ 2
+   ALORS Verdict = "Critique"
 
-**Détection "sponsor actif"** : le sponsor est cité avec un verbe d'action en atelier ("je pousse", "j'ai besoin", "c'est moi qui en parle", "cela me bloque"), ou un OKR explicite, ou une date butoir mentionnée.
+2. SINON SI Impact Total Documenté > 100 000 $
+            ET Complétude Chiffrage ≥ 2
+   ALORS Verdict = "Forte"
 
-**Détection "Impact potentiel en Notes"** : présence de questions structurées "À chiffrer" dans Notes avec valeur indicative chiffrée :
-- Seuil "potentiel supérieur à 100 000 $" : au moins une estimation indicative > 100 000 $
-- Seuil "potentiel inférieur à 100 000 $" : estimations présentes mais < 100 000 $
+3. SINON SI Impact Total Documenté > 100 000 $
+            ET Complétude Chiffrage = 1
+            ET au moins une cellule des col 13 à 18 > 0
+   ALORS Verdict = "Forte (chiffrage à compléter)"
 
-Les seuils 200 000 $, 100 000 $ et 50 000 $ sont calibrés sur l'expérience MIA Innovation auprès de clients PME québécois. À ajuster pour grandes entreprises ou autres contextes.
+4. SINON SI Impact Total Documenté ≤ 100 000 $
+            ET Impact Potentiel Estimé > 100 000 $
+            ET Urgence Stratégique ≥ 2
+            ET sponsor actif détecté dans Notes
+   ALORS Verdict = "À chiffrer prioritairement"
+
+5. SINON SI Impact Total Documenté ≤ 100 000 $
+            ET Impact Potentiel Estimé > 0
+   ALORS Verdict = "À chiffrer secondairement"
+
+6. SINON SI Urgence Stratégique = 3
+            ET Impact Total Documenté ≤ 100 000 $
+   ALORS Verdict = "Stratégique long-terme"
+
+7. SINON
+   ALORS Verdict = "Faible impact"
+```
+
+**Détection "sponsor actif"** : le sponsor est cité dans les inputs avec un verbe d'action ("je pousse", "j'ai besoin", "c'est moi qui en parle", "cela me bloque", "ça m'excite", "il faut qu'on fasse ça"), ou un OKR explicite, ou une date butoir mentionnée.
+
+**Anti-prudence-excessive** : si l'algorithme demande Verdict = "À chiffrer prioritairement" (étape 4), le LLM doit l'écrire tel quel. Ne pas downgrader en "À chiffrer secondairement" par prudence excessive. La condition est mécanique, pas d'interprétation.
+
+Les seuils 200 000 $, 100 000 $ et le facteur 0.3 sont calibrés sur l'expérience MIA Innovation auprès de clients PME québécois.
 
 ## Lignes FORMULES et SOURCE (rows 2 et 3 du CSV)
 
 Le gabarit `csv_template.csv` contient :
 
-- **Row 1** : header avec les 25 noms de colonnes.
-- **Row 2 (FORMULES)** : pour chaque colonne calculée, la formule de calcul écrite en notation Coda ou Google Sheets pour copier-coller dans un tableur. Pour les colonnes data, "input direct" ou "manuel selon rubrique".
-- **Row 3 (SOURCE)** : référence méthodologique (BABOK §10.10, WSJF, DAMA-DMBOK §3, MIA pratique terrain, input atelier).
-- **Row 4 et suivantes** : data, une ligne par use case.
+- **Row 1** : header avec les 27 noms de colonnes
+- **Row 2 (FORMULES)** : pour chaque colonne calculée, la formule. Pour les colonnes data, "input direct" ou "manuel selon rubrique" ou "LLM dérive de Notes"
+- **Row 3 (SOURCE)** : référence méthodologique (BABOK §10.10, WSJF, DAMA-DMBOK §3, 5 Whys + Ishikawa, MIA pratique terrain, input atelier)
+- **Row 4+** : data, une ligne par use case
 
-Ne jamais modifier les rows 2 et 3 lors du remplissage des use cases. Ce sont la documentation traçable du calcul.
+Ne jamais modifier les rows 2 et 3 lors du remplissage.
 
 ## Col 26 — Dépend de (texte libre, n'entre PAS dans le calcul)
 
-La colonne 26 "Dépend de" capture les use cases prérequis identifiés en Step 2bis du workflow. Elle **n'entre pas dans la formule** du Score Priorité Impact ni dans la grille du Verdict Impact. C'est un signal qualitatif pour la synthèse (section "Dépendances et root causes") et pour aider l'analyste à planifier l'ordre de lancement.
+La colonne 26 "Dépend de" capture les use cases prérequis identifiés en Step 2bis. Elle **n'entre pas dans la formule** du Score Priorité Impact ni dans l'algorithme Verdict. Signal qualitatif pour la synthèse (section "Dépendances et root causes") et la planification.
 
-Format texte libre, nom du use case prérequis (matchant exactement la col 1 d'une autre ligne du CSV pour permettre un lookup mécanique), virgules pour séparer plusieurs prérequis.
+Format texte libre, nom du use case prérequis (matchant exactement la col 1 d'une autre ligne du CSV pour lookup mécanique), virgules pour séparer.
 
 Exemples :
-- Vide (cas par défaut, aucune dépendance inter-use-cases)
-- `Data Lake` (une seule dépendance)
-- `Data Lake, Workestimity opérationnel` (plusieurs dépendances)
+- Vide (cas par défaut)
+- `Data Lake`
+- `Data Lake, Workestimity opérationnel`
 
-Les dépendances **non-use-case** (intégration tierce externe, condition contractuelle, autre projet hors scope IA) vont en Notes (col 25), pas dans col 26.
+Les dépendances non-use-case (intégration tierce externe, condition contractuelle) vont en Notes (col 25).
 
 ## Vérifications de cohérence avant `present_files`
 
-Après remplissage, vérifier ligne par ligne :
-
-- Si col 19 (Impact Total Documenté) > 0 : au moins une cellule des col 13 à 18 doit être > 0 ET citée dans Notes avec source verbatim.
-- Si une cellule des col 13 à 18 est à 0 : Notes doit contenir une question "À chiffrer" correspondante avec estimation indicative.
-- Si Verdict = "Critique" : col 19 > 200 000 $ ET les cellules > 0 sont toutes citées dans Notes.
-- Si Verdict = "À chiffrer prioritairement" : Notes mention au moins une estimation indicative > 100 000 $ ET la source de l'urgence est documentée.
-- Si col 22 (Urgence) = 3 : Notes doit citer la source de l'urgence (OKR client verbatim, sponsor avec verbe d'action, date butoir).
-- Aucune cellule Impact $ ne doit contenir une valeur "estimée par le LLM sans citation source". Si le LLM a estimé, la valeur doit être dans Notes, pas dans la cellule.
-- **Step 2bis appliqué** : chaque ligne du CSV est une root cause actionnable, pas un symptôme isolé. Si Step 2bis a consolidé des symptômes, Notes mentionne explicitement cette consolidation.
-- **Col 26 Dépend de** : si le use case a une dépendance inter-use-cases, elle est listée. Si la valeur référence un autre Use Case (col 1), vérifier que le nom matche exactement (lookup possible).
+- Si col 19 (Impact Total Documenté) > 0 : au moins une cellule des col 13 à 18 doit être > 0 ET tracée à une citation source ou un standard de méthode appliqué à un signal cité (documenté dans Notes col 25).
+- Si une cellule des col 13 à 18 est à 0 : Notes doit contenir une question "À chiffrer" correspondante avec estimation indicative chiffrée, qui contribue à col 27.
+- Col 27 (Impact Potentiel Estimé) = somme stricte des estimations indicatives chiffrées présentes dans Notes du même use case. Vérifier la traçabilité ligne par ligne.
+- Si Verdict = "Critique" : col 19 > 200 000 $ ET cellules > 0 toutes tracées dans Notes.
+- Si Verdict = "À chiffrer prioritairement" : col 27 > 100 000 $ ET sponsor actif documenté dans Notes.
+- Si Verdict = "À chiffrer secondairement" mais col 27 > 100 000 $ : c'est probablement une erreur d'application LLM par excès de prudence, repasser à "À chiffrer prioritairement" si conditions étape 4 vérifiées.
+- Aucune cellule Impact $ ne contient une valeur sans anchor verbal (citation sponsor ou table source) + standard de méthode documenté.
+- **Step 2bis appliqué** : chaque ligne est une root cause actionnable, pas un symptôme isolé.
+- **Col 26 Dépend de** : si dépendance inter-use-cases, listée avec nom exact d'un autre Use Case du CSV.
