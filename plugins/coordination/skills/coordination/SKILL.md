@@ -1,60 +1,50 @@
 ---
 name: coordination
-description: Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même repo (typiquement plusieurs fenêtres iTerm). Crée ou rejoint un fichier de log par focus (sprint, task, prd, etc.) avec un système de locks logiques en markdown. À invoquer en début de session quand l'utilisateur veut faire travailler plusieurs Claude en parallèle sans collision sur les mêmes fichiers de doc.
+description: Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même dossier — repo git OU n'importe quel folder local (typiquement plusieurs fenêtres iTerm). Crée ou rejoint un fichier de log par focus (sprint, task, prd, etc.) avec un système de locks logiques en markdown. À invoquer en début de session quand l'utilisateur veut faire travailler plusieurs Claude en parallèle sans collision sur les mêmes fichiers de doc.
 ---
 
 # Coordination multi-instance Claude
 
-Aide l'utilisateur à coordonner plusieurs instances Claude qui travaillent en parallèle dans différentes fenêtres iTerm sur le même repo. Le système utilise des fichiers markdown par focus (`COORDINATION.<FOCUS>.md`) avec des locks advisory et un protocole partagé.
+Aide l'utilisateur à coordonner plusieurs instances Claude qui travaillent en parallèle dans différentes fenêtres iTerm sur le même dossier. Le système utilise des fichiers markdown par focus (`COORDINATION.<FOCUS>.md`) avec des locks advisory et un protocole partagé. Fonctionne dans un repo git OU dans n'importe quel dossier local (les étapes git-spécifiques sont skippées quand y'a pas de `.git/`).
 
 **Réponds en français. Sois concis. Confirme les actions en une phrase.**
 
 ## Étape 1 — Vérifications préalables
 
-Exécute `git rev-parse --show-toplevel` depuis le cwd.
+Exécute en parallèle :
+- `git rev-parse --show-toplevel 2>/dev/null` → résultat
+- `pwd` → `CWD`
 
-**Si ça réussit** : mémorise le résultat comme `REPO_ROOT` et passe à l'étape 2.
+**Si `git rev-parse` réussit** : `REPO_ROOT = <résultat>`, `IS_GIT = true`.
 
-**Si ça échoue** (cwd hors repo git) : **arrête le skill immédiatement** et affiche **exactement** ce message à l'utilisateur (substitue `<cwd>` par le résultat de `pwd`) :
+**Si `git rev-parse` échoue** (cwd hors repo git) : `REPO_ROOT = CWD`, `IS_GIT = false`. Confirme à l'utilisateur en une phrase : *"Pas de repo git détecté. La coordination utilisera `<CWD>` comme dossier de travail (les étapes `.gitignore` seront skippées)."*
 
-```
-Le répertoire courant <cwd> n'est pas un repo git. La coordination écrit
-des fichiers COORDINATION.*.md à la racine d'un repo, donc j'ai besoin que tu
-sois dans le repo voulu avant d'invoquer le skill.
-
-Action requise : ferme cette session Claude, ouvre un terminal, et fais :
-
-  cd <chemin-vers-ton-repo>
-  claude
-
-Puis ré-invoque /coordination. Je ne devine pas le repo — c'est à toi de le
-définir via le cwd.
-```
-
-**Ne propose pas** d'auto-détection, de menu de choix, ni de path saisi à la main. **Ne tente pas** de déduire le repo du contexte de la conversation. Le cwd est la source unique de vérité pour `REPO_ROOT`.
+**Ne propose pas** d'auto-détection ailleurs, de menu de choix, ni de path saisi à la main. **Ne tente pas** de déduire le dossier de travail du contexte de la conversation. Le cwd est la source unique de vérité.
 
 ## Étape 2 — Détection de l'état actuel
 
-En parallèle, vérifie l'état du repo :
+En parallèle, vérifie l'état du dossier :
 - Existence de `<REPO_ROOT>/COORDINATION.README.md`
 - Liste des `<REPO_ROOT>/COORDINATION.*.md` SAUF `COORDINATION.README.md` (utilise `ls` ou `find`)
-- Présence du pattern `COORDINATION.*.md` dans `<REPO_ROOT>/.gitignore` (lis le fichier si existe)
-- Présence d'une section `## Multi-instance coordination` dans `<REPO_ROOT>/CLAUDE.md`
+- **Si `IS_GIT = true`** : présence du pattern `COORDINATION.*.md` dans `<REPO_ROOT>/.gitignore` (lis le fichier si existe). Si `IS_GIT = false`, skip ce check (pas pertinent).
+- Présence d'un fichier `<REPO_ROOT>/CLAUDE.md`. Si oui, présence d'une section `## Multi-instance coordination` dedans.
 
 Note : `COORDINATION.example.md` matche le wildcard, ignore-le aussi dans le scan des focus files (c'est un artefact de la phase de design).
 
 ## Étape 3 — Phase setup (si 1ère fois)
 
-**Condition** : si README absent OU le pattern n'est pas dans .gitignore OU la note n'est pas dans CLAUDE.md.
+**Condition** : si README absent OU (`IS_GIT=true` ET pattern absent du `.gitignore`) OU (`CLAUDE.md` existe ET la note y est absente).
 
-Présente à l'utilisateur **exactement** ce qui sera fait, puis utilise `AskUserQuestion` :
+Construis le message d'intro dynamiquement selon `IS_GIT` et l'existence de `CLAUDE.md`. Présente à l'utilisateur **exactement** ce qui sera fait, puis utilise `AskUserQuestion` :
 
 > *"Setup initial requis. Le skill va :*
-> *1. Créer `COORDINATION.README.md` (protocole, committé)*
-> *2. Ajouter `COORDINATION.*.md` au `.gitignore` (avec exclusion du README)*
-> *3. Ajouter une note `## Multi-instance coordination` dans `CLAUDE.md`*
+> *1. Créer `COORDINATION.README.md` (protocole)*
+> *<si IS_GIT=true>* *2. Ajouter `COORDINATION.*.md` au `.gitignore` (avec exclusion du README)*
+> *<si CLAUDE.md existe>* *3. Ajouter une note `## Multi-instance coordination` dans `CLAUDE.md`*
 >
 > *Procéder au setup ?"*
+
+Si `IS_GIT=false` : skippe la ligne `.gitignore` du message. Si `CLAUDE.md` n'existe pas : skippe la ligne `CLAUDE.md` du message.
 
 Options : "Oui, procéder" / "Non, annuler".
 
@@ -145,9 +135,11 @@ L'humain peut écrire plus rudimentaire. Tant que la ligne commence par `[STATUS
 | Toute l'activité d'une instance | `inst-A` (ou autre owner) |
 ```
 
-### 3b. Mettre à jour `.gitignore` si pattern absent
+### 3b. Mettre à jour `.gitignore` si pattern absent (SKIP si `IS_GIT=false`)
 
-Lis le `.gitignore` (si existe). Vérifie si le pattern `COORDINATION.*.md` est déjà présent. Si oui, ne touche pas. Si non, append à la fin :
+**Si `IS_GIT=false`** : skippe cette étape entièrement. Pas de `.gitignore` à toucher dans un dossier non-versionné.
+
+**Si `IS_GIT=true`** : lis le `.gitignore` (si existe). Vérifie si le pattern `COORDINATION.*.md` est déjà présent. Si oui, ne touche pas. Si non, append à la fin :
 
 ```
 # Coordination logs (ephemeral, per focus)
@@ -157,20 +149,22 @@ COORDINATION.*.md
 
 Si `.gitignore` n'existe pas, crée-le avec ce bloc.
 
-### 3c. Ajouter la note dans `CLAUDE.md` si absente
+### 3c. Ajouter la note dans `CLAUDE.md` si absente (SKIP si `CLAUDE.md` n'existe pas)
 
-Lis `CLAUDE.md`. Cherche la section `## Multi-instance coordination`. Si elle existe, ne touche pas. Si non, append à la fin du fichier :
+**Si `CLAUDE.md` n'existe pas** : skippe cette étape. Ne crée pas un nouveau `CLAUDE.md` juste pour la note — c'est un fichier de convention projet, pas à inventer dans un dossier random.
+
+**Si `CLAUDE.md` existe** : cherche la section `## Multi-instance coordination`. Si elle existe, ne touche pas. Si non, append à la fin du fichier :
 
 ```markdown
 
 ## Multi-instance coordination
 
-Pour coordonner plusieurs instances Claude qui travaillent en parallèle sur ce repo, utilise la commande `/coordination` au début de chaque session. Voir `COORDINATION.README.md` pour le protocole complet.
+Pour coordonner plusieurs instances Claude qui travaillent en parallèle sur ce dossier, utilise la commande `/coordination` au début de chaque session. Voir `COORDINATION.README.md` pour le protocole complet.
 ```
 
 ### Confirmation du setup
 
-Dis en une phrase ce qui a été fait : *"Setup terminé : README créé, .gitignore mis à jour, note ajoutée à CLAUDE.md."* (ou seulement les éléments effectivement modifiés).
+Dis en une phrase ce qui a été réellement fait, en ne mentionnant que les éléments modifiés : *"Setup terminé : README créé[, .gitignore mis à jour][, note ajoutée à CLAUDE.md]."*
 
 ## Étape 4 — Scanner les focus existants
 

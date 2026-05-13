@@ -1,10 +1,12 @@
 # coordination
 
-> Coordonne plusieurs instances Claude qui travaillent en parallèle sur le même repo (typiquement plusieurs fenêtres iTerm). Crée ou rejoint un fichier de log par focus (sprint, task, prd, etc.) avec un système de locks logiques en markdown — pour éviter que deux instances écrasent leurs édits sur les mêmes fichiers de doc.
+> Coordonne plusieurs instances Claude qui travaillent en parallèle sur le même dossier — repo git OU n'importe quel folder local (typiquement plusieurs fenêtres iTerm). Crée ou rejoint un fichier de log par focus (sprint, task, prd, etc.) avec un système de locks logiques en markdown — pour éviter que deux instances écrasent leurs édits sur les mêmes fichiers.
 
 ## Use case
 
-Tu lances Claude dans deux ou trois fenêtres iTerm sur le même repo (sprints, PRD, user stories). Sans coordination, deux instances peuvent toucher au même fichier en parallèle et perdre du travail. Ce skill installe un protocole d'**advisory locks** simple (fichiers `COORDINATION.<FOCUS>.md`) que chaque instance lit avant d'éditer un fichier partagé.
+Tu lances Claude dans deux ou trois fenêtres iTerm sur le même dossier (sprints, PRD, user stories, ou juste des notes/docs dans `~/Documents/...`). Sans coordination, deux instances peuvent toucher au même fichier en parallèle et perdre du travail. Ce skill installe un protocole d'**advisory locks** simple (fichiers `COORDINATION.<FOCUS>.md`) que chaque instance lit avant d'éditer un fichier partagé.
+
+Fonctionne dans un repo git (auto-setup de `.gitignore` + note dans `CLAUDE.md` si présent) ou dans un dossier local non-versionné (les étapes git-spécifiques sont skippées automatiquement à partir de v1.1.0).
 
 Lecture/recherche/planification : libre. Edit/Write sur fichier partagé : ligne `[LOCKED]` obligatoire.
 

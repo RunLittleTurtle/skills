@@ -9,7 +9,7 @@
     {
       "name": "coordination",
       "source": "./plugins/coordination",
-      "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même repo (typiquement plusieurs fenêtres iTerm), ou plusieurs personnes via cloud sync. Système de locks logiques markdown par focus (sprint, task, prd, etc.)."
+      "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même dossier — repo git OU n'importe quel folder local (v1.1.0). Système de locks logiques markdown par focus (sprint, task, prd, etc.). Setup auto-détecté : `.gitignore` et note `CLAUDE.md` seulement si pertinent."
     },
     {
       "name": "agent-talk",
