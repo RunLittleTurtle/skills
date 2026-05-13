@@ -51,6 +51,7 @@ Dossiers cibles courants :
 | `mermaid-flow` | Transformer un flow (texte/fichier/mermaid/image) en flowchart Mermaid simplifié pour personnes peu techniques | Vulgariser un processus métier en diagramme accessible (max 10 étapes, palette pastel, emojis acteurs 👤🤖⚙️🖥️⚖️) |
 | `scenario-uc` | Transformer tout input (md/PDF/image/URL Drive/idée) en scénario use-case au format Authentik PRD avec diagramme de séquence Mermaid | Formaliser un cas d'utilisation produit (description + acteurs typés + intent + séquence numérotée + sequenceDiagram), sortie en français, validation interactive |
 | `bmad-customize-skills` | Désactiver / réactiver sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). Patche aussi `bmad-help.csv` pour neutraliser les required gates | Adapter une install BMad à un projet doc-only ou non-coding : retirer les skills dev/architecture/sprint sans casser BMad. Réversible et ré-applicable après chaque `npx bmad-method install` |
+| `use-case-prioritization` | Scorer, prioriser et chiffrer des use cases d'AI/automatisation (BABOK + UiPath Suitability + ROI pondéré par confiance). Sortie : CSV 43 colonnes + synthèse exec | Décider quel use case scoper en premier après un atelier de découverte (post-its, transcripts, inventaires 500+ lignes), construire une enveloppe budgétaire ou faire le triage d'une pipeline d'automatisation. Sortie en français Québec |
 
 ---
 

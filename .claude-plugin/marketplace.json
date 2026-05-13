@@ -30,6 +30,11 @@
       "name": "bmad-customize-skills",
       "source": "./plugins/bmad-customize-skills",
       "description": "Désactiver / réactiver sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). Réversible, idempotent, ré-applicable après chaque npx bmad-method install. Patche aussi bmad-help.csv pour neutraliser les required gates des phases non pertinentes."
+    },
+    {
+      "name": "use-case-prioritization",
+      "source": "./plugins/use-case-prioritization",
+      "description": "Scorer, prioriser et chiffrer des use cases d'AI/automatisation à partir de matériel de découverte de processus (post-its, transcripts, inventaires CSV). Combine BABOK, UiPath Suitability, coûts fully-loaded et ROI pondéré. Sortie : CSV 43 colonnes + synthèse exec en français Québec."
     }
   ]
 }
