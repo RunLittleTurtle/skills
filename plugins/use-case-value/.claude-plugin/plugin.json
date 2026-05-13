@@ -1,7 +1,7 @@
 {
   "name": "use-case-value",
   "description": "Priorise les use cases d'AI/automatisation par impact business chiffré documenté à partir de matériel de découverte (transcripts, post-its, inventaires, notes). Six sources d'Impact $ explicites + pain points + personnes affectées + transversalité + colonne Dépend de pour les dépendances inter-use-cases + colonne Impact Potentiel Estimé pour intégrer les estimations Notes dans le Score avec discount d'incertitude 0.3. Règle d'or adoucie v1.2 : cellules acceptent chiffres durs cités, formules simples sur chiffres durs, ET inférences obvious sur signaux cités via standards de méthode documentés (80 $/h pour heures citées, 100 000 $/FTE pour saturation FTE citée). Refusé : multiplicateurs sortis du chapeau (% captable, probabilité, valeur moyenne sans citation). Step 2bis Root Cause Analysis (5 Whys + Ishikawa) appliquée avant chiffrage. Algorithme Verdict déterministe numéroté if-elif-else. Aucune dimension d'effort technique : focus pur VALEUR, effort traité par un futur skill séparé. Sortie : dossier projet par run contenant CSV 27 colonnes (avec FORMULES et SOURCE) et synthèse exécutive one-pager en prose narrative française Québec.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "Samuel Audette",
     "url": "https://github.com/RunLittleTurtle"

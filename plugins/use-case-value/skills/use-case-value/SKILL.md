@@ -154,6 +154,26 @@ Style français Québec strict : pas d'em dash, pas de crochets, pas de pipes da
 
 Utiliser `present_files` : CSV d'abord, puis synthèse.
 
+## Format technique du CSV (RFC 4180)
+
+Le CSV généré DOIT respecter RFC 4180 pour s'ouvrir correctement dans Numbers, Excel, LibreOffice, Google Sheets et autres viewers :
+
+- **Délimiteur** : virgule (`,`)
+- **Encodage** : UTF-8
+- **Tout champ contenant une virgule, un retour à la ligne, ou un guillemet doit être entouré de guillemets doubles** (`"..."`)
+- **Les guillemets internes doivent être doublés** (`""` pour un guillemet littéral à l'intérieur d'un champ quoté)
+- **La colonne Notes (col 25)** contient typiquement des virgules et des retours à la ligne, elle doit donc **TOUJOURS être entourée de guillemets doubles**
+- **Section dans Notes** : utiliser des sauts de ligne pour séparer les sections (Sources, Hypothèses, Root cause, À chiffrer en atelier, Autres notes), **JAMAIS de pipes `|`** (les pipes confusent les auto-détecteurs de délimiteur des viewers)
+- **Sponsor avec virgule** (ex : "Maxime Lavoie, Directeur Commercial") : champ quoté
+- **Cellules avec apostrophes ou parenthèses** : généralement OK sans quote, mais quoter si combiné avec virgule
+
+Exemple correct pour une cellule Notes :
+```csv
+"Sources : Sophie a cité 20 à 25 h/sem (atelier 7 mai 2026). Maxime a dit ""temps plein"".
+Hypothèses : 80 $/h appliqué aux 20 h/sem = 80 000 $.
+À chiffrer en atelier : combien de contrats perdus par an ?"
+```
+
 ## Principes critiques
 
 **Step 2bis n'est pas optionnel.** Sans cette analyse, on liste des symptômes et on triple-compte l'impact.
@@ -183,6 +203,7 @@ Utiliser `present_files` : CSV d'abord, puis synthèse.
 - [ ] **Col 26 Dépend de** remplie si dépendances inter-use-cases
 - [ ] Verdict matche l'algorithme déterministe (cf. calculation_rules.md)
 - [ ] **Anti-prudence-excessive** : si col 27 > 100 000 $ ET sponsor actif ET Urgence ≥ 2, Verdict doit être "À chiffrer prioritairement", pas "secondairement"
+- [ ] **CSV format RFC 4180** : colonne Notes entre guillemets doubles, sauts de ligne entre sections (PAS de pipes `|`), guillemets internes doublés (`""`)
 - [ ] Aucun em dash dans CSV ni synthèse
 - [ ] Synthèse a préambule + Top 5 + À chiffrer + Dépendances et root causes (si pertinent) + Recommandations
 - [ ] Synthèse en prose narrative complète

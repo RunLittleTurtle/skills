@@ -110,7 +110,7 @@ L'élargissement v1.2 reconnaît qu'un use case avec une seule cellule chiffrée
 | 24 | Verdict Impact | calculé via algorithme déterministe v1.2 | Voir algorithme numéroté dans calculation_rules.md |
 | 25 | Notes | texte structuré | Sources citées, hypothèses, root cause, À chiffrer en atelier, autres notes |
 
-**Notes (col 25)** — structure suggérée :
+**Notes (col 25)** — structure suggérée, **utiliser des sauts de ligne entre les sections (pas de pipes `|`)** et entourer la cellule complète de guillemets doubles dans le CSV (RFC 4180) :
 
 ```
 Sources : [citations atelier verbatim, fichier source, date]
@@ -122,6 +122,8 @@ Autres notes : [...]
 ```
 
 Les estimations chiffrées de la section "À chiffrer en atelier" alimentent la col 27 Impact Potentiel Estimé.
+
+**Important format CSV** : la cellule Notes contient des virgules, des retours à la ligne et parfois des guillemets. Elle doit donc être entourée de guillemets doubles dans le fichier CSV (`"..."`) et les guillemets internes doivent être doublés (`""`), conformément à RFC 4180. Ne JAMAIS utiliser de pipes `|` comme séparateurs internes, ils confusent les auto-détecteurs de délimiteur des viewers CSV (Numbers, LibreOffice, Excel).
 
 ### Bloc 7 — Dépendances (col 26)
 
