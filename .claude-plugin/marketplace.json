@@ -12,6 +12,11 @@
       "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même repo (typiquement plusieurs fenêtres iTerm), ou plusieurs personnes via cloud sync. Système de locks logiques markdown par focus (sprint, task, prd, etc.)."
     },
     {
+      "name": "agent-talk",
+      "source": "./plugins/agent-talk",
+      "description": "Échanger des messages structurés (conversation back-and-forth, rapport one-shot, handoff de contexte) entre instances Claude — même repo nested OU cross-projet — via un dossier-bridge partagé et des pings courts `[PING] @inst-X`. Pings dans COORDINATION.FOCUS.md (si même repo + coordination active) ou dans BRIDGE.PINGS.md dédié. Complète /coordination sans le remplacer."
+    },
+    {
       "name": "skill-creator",
       "source": "./plugins/skill-creator",
       "description": "Meta-skill générique : crée interactivement un nouveau skill Claude Code dans TA marketplace personnelle (peu importe ton compte GitHub). Détecte ou bootstrap ton repo, pose des questions sur le slug + description + body, génère la structure conforme, et propose commit + push."

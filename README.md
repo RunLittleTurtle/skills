@@ -60,7 +60,7 @@ flowchart LR
 - **product-brief** *(à venir)* : brief produit final, skill pas encore créé.
 - **mermaid-flow** : vulgarise les scénarios pour un Directeur de compte ou stakeholder non technique.
 
-Les autres skills (`coordination`, `skill-creator`, `bmad-customize-skills`) sont indépendants de ce flow.
+Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customize-skills`) sont indépendants de ce flow.
 
 ### Tableau récapitulatif
 
@@ -73,6 +73,7 @@ Les autres skills (`coordination`, `skill-creator`, `bmad-customize-skills`) son
 | `bmad-customize-skills` | Désactive/réactive sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). |
 | `skill-creator` | Meta-skill générique pour créer un nouveau skill dans ta propre marketplace (pas la mienne). |
 | `coordination` | Coordonne plusieurs instances Claude qui travaillent en parallèle sur le même repo via locks markdown. |
+| `agent-talk` | Permet à deux instances Claude (même repo nested OU cross-projet) d'échanger des messages structurés (conversation, rapport, handoff) via un dossier-bridge partagé et des pings courts. Complète `coordination`. |
 
 ---
 
