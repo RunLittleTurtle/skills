@@ -1,10 +1,15 @@
-# Règles de calcul et valeurs par défaut
+# Règles de calcul et valeurs par défaut (v5)
 
-Ce document définit les formules exactes, les seuils, et les valeurs par défaut utilisées pour générer le CSV de priorisation. À lire après `framework_v4.md` pour les détails de calcul.
+Formules exactes, seuils et défauts pour générer le CSV de priorisation v5 (37 colonnes). À lire après `framework_v5.md`.
 
-## Barème T-shirt (col 28 Build Base)
+## Format des cellules qualitatives
 
-Si l'utilisateur fournit seulement la taille T-shirt sans montant, utiliser le lookup suivant:
+Les 9 colonnes 1-3 (cols 6-13 et 32) utilisent le format **`<chiffre> - <label>`** dans la cellule :
+- Exemples : `3 - récurrent standardisé`, `2 - moyen (rework)`, `1 - faible`.
+- Pour les calculs, le LLM extrait le préfixe numérique : `parseNumber("3 - récurrent standardisé") = 3`.
+- Si la cellule est vide ou ne commence pas par un chiffre 1-3, elle compte comme NON remplie pour la confiance.
+
+## Barème T-shirt (col 25 Build Base)
 
 | T-shirt | Build Base ($) | Effort indicatif |
 |---|---|---|
@@ -18,35 +23,32 @@ Si l'architecte fournit un montant override (ex: "M mais plutôt 65k"), utiliser
 
 ## Valeurs par défaut
 
-**Taux Réalisation (col 25)**: 0.6 par défaut si non spécifié. Refléter le change management overhead (Prosci/McKinsey practice).
+**Taux Réalisation (col 22)** : `0.6` par défaut.
 - 0.5 pour use cases à fort impact organisationnel (adoption complexe)
 - 0.6 pour cas standards
 - 0.7 pour automatisations à faible friction utilisateur
 
-**Risque (col 34)**: 3 par défaut si non spécifié.
-- 1-2: Risque faible (technique connue, sponsor fort, données simples)
-- 3: Risque moyen
-- 4-5: Risque élevé (technique inconnue, pas de sponsor, données problématiques)
+**Risque (col 32)** : `2 - moyen` par défaut.
 
-**Run Annuel (col 30)**: Build Base × 0.15 si vide.
-- Heuristique 15% du TCO IT classique
-- Pour AI haute volumétrie, cette valeur sous-estime. Documenter dans Notes Architecte.
+**Coût Unitaire Agent (col 27)** : pas de défaut chiffré ; rempli par benchmark web (voir section dédiée). Fallback si recherche échoue : `(Build × 0.15) / Volume Qté` avec flag `BENCHMARK_FALLBACK` dans Notes.
 
 ## Formules de calcul
 
 ### Suitability Score (col 14)
 ```
-Suitability = MOYENNE(col 6 à col 13) × 20
+Suitability = MOYENNE(parseNumber(cols 6, 7, 8, 9, 10, 11, 12, 13)) × 33.33
 ```
-Donne un score sur 100.
+Donne un score sur 100 (range effective 33.33-100).
 
-### Gain Heures Annuel (col 23)
+### Gain Heures Annuel (col 20)
 ```
-Gain_H = Volume_Qte × (Temps_Actuel - Temps_Cible) × Personnes_Impactees
+Gain_H = Volume_Qte × (Temps_Actuel - Temps_Cible)
 ```
 Si Temps_Actuel = 0 (cas pertes évitées directes uniquement), Gain_H = 0.
 
-### Bénéfice Brut Annuel (col 24)
+**Note v5** : la formule ne multiplie plus par Personnes Impactées. Volume Qté = total annuel d'occurrences, tous exécutants confondus.
+
+### Bénéfice Brut Annuel (col 21)
 ```
 SI Temps_Actuel = 0:
   Benefice_Brut = Pertes_Evitees_Directes
@@ -54,30 +56,30 @@ SINON:
   Benefice_Brut = Gain_H × Cout_Horaire + Pertes_Evitees_Directes (si applicable)
 ```
 
-### Bénéfice Net Annuel (col 26)
+### Bénéfice Net Annuel (col 23)
 ```
 Benefice_Net = Benefice_Brut × Taux_Realisation
 ```
 
-### Build Base (col 28)
+### Build Base (col 25)
 ```
 SI montant fourni: utiliser le montant
-SINON: lookup table t-shirt (voir barème ci-dessus)
+SINON: lookup table t-shirt (voir barème)
 SI ni montant ni t-shirt: laisser vide (critique pour confiance)
 ```
 
-### Run Annuel (col 30)
+### Run Annuel (col 28) — NOUVELLE FORMULE v5
 ```
-SI rempli par architecte: utiliser la valeur
-SINON: Run = Build_Base × 0.15
+Run_Annuel = Volume_Qte × Cout_Unitaire_Agent
 ```
+Remplace l'ancienne heuristique `Build × 0.15`. Si Coût Unitaire Agent absent et benchmark indisponible, fallback documenté en Notes.
 
-### Coût An 1 Total (col 31)
+### Coût An 1 Total (col 29)
 ```
 Cout_An1 = Build_Base + Run_Annuel
 ```
 
-### Payback en mois (col 32)
+### Payback en mois (col 30)
 ```
 SI (Benefice_Net - Run_Annuel) <= 0:
   Payback = 999 (jamais rentable)
@@ -85,24 +87,59 @@ SINON:
   Payback = Build_Base × 12 / (Benefice_Net - Run_Annuel)
 ```
 
-### ROI An 1 en % (col 33)
+### ROI An 1 en % (col 31)
 ```
 ROI_An1 = (Benefice_Net - Cout_An1) / Cout_An1 × 100
 ```
-Note: souvent négatif en An 1 même pour bons projets.
 
-### Score Priorité (col 35)
+### Score Priorité (col 33)
 ```
-Score = Benefice_Net / (Build_Base × Risque)
+Score = Benefice_Net / (Build_Base × parseNumber(Risque))
 ```
-Plus élevé = meilleur.
+Risque ∈ {1, 2, 3}. Plus le score est élevé, plus le use case est prioritaire.
 
-## Calcul de la confiance
+### Confiance Données en % (col 34)
+```
+Conf_Donnees = Nb_Colonnes_Critiques_Remplies / 20 × 100
+```
 
-### Liste des 20 colonnes critiques (pour col 36 Nb Colonnes Critiques Remplies)
+## Benchmark web du Coût Unitaire Agent
+
+À effectuer en **avant-dernière étape** du workflow (avant la synthèse exec), pour chaque ligne du CSV en fonction du Type Agent.
+
+### Méthode
+
+1. Lancer une recherche web ciblée :
+   - `"[type agent] cost per run 2026 benchmark"`
+   - `"[type agent] LLM inference cost per call site:a16z.com OR site:menlovc.com"`
+   - `"[type agent] API pricing 2026"`
+2. Sources prioritaires : pricing officiels (OpenAI, Anthropic), rapports a16z / Menlo / Sequoia, blogs ingénierie produit récents (<12 mois).
+3. Prendre la **valeur médiane** des benchmarks trouvés. Remplir col 27 (Coût Unitaire Agent).
+4. Citer source + date dans col 37 Notes :
+   ```
+   Benchmark Run: $0.04/email auto (a16z State of AI 2026, consulté 2026-05-13)
+   ```
+5. Si aucun benchmark fiable trouvé : fallback `(Build × 0.15) / Volume Qté`, flag `BENCHMARK_FALLBACK` en Notes.
+
+### Table de fallback indicative (à valider chaque trimestre)
+
+| Type Agent | $/run typique 2026 |
+|---|---|
+| email auto | 0.02 - 0.05 |
+| dashboard genAI | 0.50 - 1.00 |
+| RAG simple | 0.005 - 0.02 |
+| RAG complexe | 0.05 - 0.15 |
+| OCR | 0.001 - 0.01 |
+| RPA déterministe | 0.0001 - 0.001 |
+| agent conversationnel | 0.10 - 0.30 |
+| document processing | 0.05 - 0.20 |
+
+Ces valeurs sont indicatives — toujours préférer un benchmark web frais à jour.
+
+## Liste des 20 colonnes critiques (pour confiance col 34)
 
 1. Pain Point (col 2)
-2. Sponsor / Owner (col 4) - "À identifier" compte comme NON rempli
+2. Sponsor / Owner (col 4) — "À identifier" compte comme NON rempli
 3. Département (col 5)
 4. Volume Standardisation (col 6)
 5. Règles Claires (col 7)
@@ -112,100 +149,60 @@ Plus élevé = meilleur.
 9. Impact Erreurs Actuelles (col 11)
 10. Alignement Stratégique (col 12)
 11. Sponsor Engagé (col 13)
-12. Nb Intégrations Identifiées (col 15)
-13. Volume Qté (col 17)
-14. Temps Actuel (col 18)
-15. Temps Cible (col 19)
-16. Personnes Impactées (col 20)
-17. Coût Horaire OU Pertes Évitées Directes (cols 21 ou 22, une des deux suffit)
-18. Taux Réalisation (col 25)
-19. Taille Build (col 27)
-20. Risque (col 34)
+12. Volume Qté (col 15)
+13. Temps Actuel (col 16)
+14. Temps Cible (col 17)
+15. Coût Horaire OU Pertes Évitées Directes (cols 18 ou 19, une des deux suffit)
+16. Taux Réalisation (col 22)
+17. Taille Build (col 24)
+18. Type Agent (col 26)
+19. Coût Unitaire Agent (col 27)
+20. Risque (col 32)
 
-**Règles de comptage**:
+**Règles de comptage** :
 - Valeur numérique = compté comme rempli
-- "N/A" (string) = compté comme rempli (la question a été considérée)
+- Cellule au format `<n> - <label>` avec n ∈ {1,2,3} = compté comme rempli
+- `N/A` (string) = compté comme rempli (la question a été considérée)
 - Vide = NON compté
-- "À identifier" / "À valider" pour Sponsor = NON compté
-- 0 = compté comme rempli (zéro est une valeur valide)
-
-### Confiance Données en % (col 39)
-```
-Conf_Donnees = Nb_Colonnes_Critiques_Remplies / 20 × 100
-```
-
-### Qualité Source (col 37) - input manuel 1-5
-- 5: Transcript validé + chiffres confirmés par client
-- 4: Transcript ou document client
-- 3: Note d'atelier validée
-- 2: Note d'atelier non validée
-- 1: Estimation analyste / hypothèse
-
-Si non spécifié par l'utilisateur, estimer à partir du type d'input:
-- Image post-its + transcript: 3
-- Photo post-its seule: 2
-- Table de processus structurée: 4
-- Transcript de meeting seul: 3
-- Notes manuelles: 2
-
-### Cohérence Check (col 38) - input manuel 1-5
-Vérifier les cohérences classiques:
-- Volume × Temps × Personnes correspond-il à un effort plausible?
-- Pertes évitées sont-elles cohérentes avec l'impact erreurs?
-- Sponsor engagé et Alignement stratégique sont-ils cohérents?
-
-Defaults:
-- 5: Tout colle, valeurs s'expliquent
-- 4: Une légère incohérence acceptable
-- 3: Une incohérence modérée
-- 2: Plusieurs incohérences
-- 1: Valeurs suspectes ou contradictoires
-
-Si pas d'info pour évaluer, défaut = 3.
-
-### Confiance Globale en % (col 40)
-```
-Conf_Globale = 0.4 × Conf_Donnees + 0.35 × (Qualite_Source × 20) + 0.25 × (Coherence × 20)
-```
+- `À identifier` / `À valider` pour Sponsor = NON compté
+- `0` = compté comme rempli (zéro est une valeur valide pour Pertes Évitées)
 
 ## Seuils de verdicts
 
-### Verdict Confiance (col 41)
-| Confiance Globale | Verdict |
+### Verdict Confiance (col 35) — basé sur col 34 Confiance Données
+| Confiance Données | Verdict |
 |---|---|
 | ≥ 80% | Fiable |
-| 60-79% | A valider 1-2 points |
-| 40-59% | Hypotheses fortes |
+| 60-79% | À valider 1-2 points |
+| 40-59% | Hypothèses fortes |
 | < 40% | Atelier de validation requis |
 
-### Verdict ROI (col 42)
-Basé sur Payback en mois:
-| Payback | Verdict |
+### Verdict ROI (col 36) — basé sur col 30 Payback
+| Payback (mois) | Verdict |
 |---|---|
-| < 6 mois | Quick win |
-| 6-12 mois | Go |
-| 12-18 mois | A challenger |
-| 18-24 mois | Strategique seulement |
-| > 24 mois (incluant 999) | Pass |
+| < 6 | Quick win |
+| 6-12 | Go |
+| 12-18 | À challenger |
+| 18-24 | Stratégique seulement |
+| > 24 (ou 999) | Pass |
 
 ## Conventions de remplissage
 
 ### Quand le Pain Point n'est pas explicite
-Reformuler le problème central en une phrase. Exemples:
+Reformuler le problème central en une phrase. Exemples :
 - Post-it "30h/semaine" + "erreurs scrap" → "30h/sem erreurs production, scrap milliers de $"
 - Transcript "on perd beaucoup d'argent en non-conformité" + chiffre 160k$ → "160k$ pertes non-conformité par an"
 
 ### Quand le Sponsor est nommé
-Si le client cite une personne (ex: "Robert au VP ventes s'occupe de ça"), mettre "Robert VPventes" comme Sponsor / Owner.
-Si seulement un département est mentionné, mettre le département dans Département mais "A identifier" dans Sponsor.
+Si le client cite une personne ("Robert au VP ventes s'occupe de ça"), mettre "Robert VPventes". Si seulement un département est mentionné, "À identifier" dans Sponsor (compte NON rempli).
 
 ### Quand les volumes sont approximatifs
-Si le client dit "environ 12k-15k par année", utiliser la médiane (13500) et noter dans Notes "Volume entre 12k et 15k confirmé".
+Si le client dit "environ 12k-15k par année", utiliser la médiane (13 500) et noter "Volume entre 12k et 15k confirmé" dans Notes.
 
 ### Quand le Temps Cible n'est pas spécifié
-Heuristique: viser 20% du Temps Actuel pour les processus AI-assistés. Documenter dans Notes "Temps cible estimé à 20% (à valider)".
+Heuristique : viser 20% du Temps Actuel pour les processus AI-assistés. Documenter "Temps cible estimé à 20% (à valider)" dans Notes.
 
 ### Quand l'input mentionne des montants en $
-- Si lié à des pertes ou erreurs: aller dans Pertes Évitées Directes ($) (col 22)
-- Si lié à un coût de personne: aller dans Coût Horaire ($) (col 21)
-- Si lié à un build: aller dans Build Base ($) (col 28)
+- Lié à des pertes/erreurs → Pertes Évitées Directes ($) (col 19)
+- Lié à un coût de personne → Coût Horaire ($) (col 18)
+- Lié à un build → Build Base ($) (col 25)

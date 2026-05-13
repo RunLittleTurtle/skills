@@ -30,7 +30,7 @@ Ce template définit la structure du fichier `synthese_priorisation.md`. Suivre 
 
 **Sponsor**: [nom ou "À identifier"] | **Département**: [département]
 
-**Snapshot**: Suitability [XX/100], Confiance [XX%], Payback [X mois], ROI An 1 [XX%], Bénéfice net [XX k$/an]
+**Snapshot**: Suitability [XX/100], Confiance [XX%], Payback [X mois], ROI An 1 [XX%], Bénéfice net [XX k$/an], Run [XX $/an basé sur $X.XX/run]
 
 **Pourquoi prioritaire** (2-3 lignes): [Synthétiser pourquoi ce use case mérite d'être scopé en premier. Mentionner les signaux forts: volume confirmé, sponsor engagé, données disponibles, alignement stratégique, ou pertes évitées tangibles.]
 
@@ -59,16 +59,20 @@ Ce template définit la structure du fichier `synthese_priorisation.md`. Suivre 
 ## Méthodologie
 
 Cette priorisation combine:
-- **Suitability Score** (UiPath / Deloitte): filtre qualitatif sur 8 critères (volume, règles, données, stabilité, exceptions, impact, alignement, sponsorship)
+- **Suitability Score** (UiPath / Deloitte): filtre qualitatif sur 8 critères notés 1-3 avec labels qualitatifs intégrés (volume, règles, données, stabilité, exceptions, impact, alignement, sponsorship)
 - **Business case quantitatif** (BABOK 10.10): bénéfice net annuel basé sur volume × temps × coût horaire, avec haircut de réalisation (Prosci 50-70%)
 - **Effort architecte** (Agile Estimation Cohn): T-shirt sizing converti via barème agence
-- **Score de confiance composite** (DAMA-DMBOK): pondère complétude des données, qualité de la source, et cohérence interne
+- **Run cost benchmarké** (v5): Volume Qté × Coût Unitaire Agent, où le $/run est récupéré par recherche web sur sources fiables (a16z, Menlo, pricing officiels) avec source et date citées
+- **Score de confiance par complétude** (DAMA-DMBOK): pourcentage des 20 colonnes critiques remplies
 
 **Seuils de décision**:
 - Payback < 6 mois = Quick win, 6-12 mois = Go, 12-18 = A challenger, 18-24 = Stratégique seulement, > 24 = Pass
 - Confiance ≥ 80% = Fiable, 60-79% = A valider 1-2 points, 40-59% = Hypothèses fortes, < 40% = Atelier requis
 
-Pour le détail complet des 43 colonnes et formules, voir le CSV de priorisation et le framework de référence.
+**Sources benchmark Run** utilisées dans cette priorisation:
+[Lister les sources citées par use case, avec date de consultation. Ex: "a16z State of AI 2026 pour email auto $0.04/run, consulté 2026-05-13"]
+
+Pour le détail complet des 37 colonnes et formules, voir le CSV de priorisation et le framework de référence v5.
 ```
 
 ## Notes sur les cas particuliers

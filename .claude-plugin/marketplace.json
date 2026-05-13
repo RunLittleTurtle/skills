@@ -34,7 +34,7 @@
     {
       "name": "use-case-prioritization",
       "source": "./plugins/use-case-prioritization",
-      "description": "Scorer, prioriser et chiffrer des use cases d'AI/automatisation à partir de matériel de découverte de processus (post-its, transcripts, inventaires CSV). Combine BABOK, UiPath Suitability, coûts fully-loaded et ROI pondéré. Sortie : CSV 43 colonnes + synthèse exec en français Québec."
+      "description": "Scorer, prioriser et chiffrer des use cases d'AI/automatisation (post-its, transcripts, inventaires CSV). v2 : échelle 1-3 avec labels qualitatifs intégrés dans les cellules + Run cost benchmarké par recherche web LLM ($/run par type d'agent : email auto, dashboard genAI, RAG, OCR, RPA). Sortie : CSV 37 colonnes v5 + synthèse exec en français Québec."
     }
   ]
 }

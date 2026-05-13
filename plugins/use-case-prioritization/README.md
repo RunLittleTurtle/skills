@@ -1,10 +1,17 @@
-# use-case-prioritization
+# use-case-prioritization (v2)
 
-> Scorer, prioriser et chiffrer des use cases d'AI/automatisation à partir de matériel de découverte de processus (photos de post-its, transcripts d'ateliers, inventaires CSV de 500+ lignes, notes de réunion). Combine BABOK Business Case, UiPath Suitability, coûts fully-loaded et ROI pondéré par la confiance. Sortie : CSV de travail (43 colonnes v4) + synthèse exécutive en français Québec.
+> Scorer, prioriser et chiffrer des use cases d'AI/automatisation à partir de matériel de découverte de processus (photos de post-its, transcripts d'ateliers, inventaires CSV de 500+ lignes, notes de réunion). Combine BABOK Business Case, UiPath Suitability sur **échelle 1-3** avec **labels qualitatifs intégrés dans les cellules**, coûts fully-loaded, et **Run cost benchmarké par recherche web** selon le type d'agent. Sortie : CSV de travail (37 colonnes v5) + synthèse exécutive en français Québec.
 
 ## Use case
 
-Tu as fini un atelier de découverte (post-its, transcript, inventaire de processus) et tu dois décider **quel use case scoper en premier**, construire une **enveloppe budgétaire** crédible, ou faire le **triage d'une pipeline d'automatisation**. Le skill transforme le matériel brut en deux livrables prêts à partager : un CSV 43 colonnes pour l'analyste fonctionnel (avec lignes FORMULES et SOURCE pour traçabilité) et une synthèse markdown pour les directeurs de compte (Top 5 + sections « À éliminer » / « À retravailler »).
+Tu as fini un atelier de découverte (post-its, transcript, inventaire de processus) et tu dois décider **quel use case scoper en premier**, construire une **enveloppe budgétaire** crédible, ou faire le **triage d'une pipeline d'automatisation**. Le skill transforme le matériel brut en deux livrables prêts à partager : un CSV 37 colonnes pour l'analyste fonctionnel (avec lignes FORMULES et SOURCE pour traçabilité) et une synthèse markdown pour les directeurs de compte (Top 5 + sections « À éliminer » / « À retravailler »).
+
+## Nouveautés v2 (vs v1)
+
+- **Échelles 1-5 → 1-3** sur tous les critères qualitatifs (Suitability, Risque). Granularité plus humaine en atelier.
+- **Format cellule `<chiffre> - <label>`** : la cellule contient à la fois le chiffre (pour la math) ET le label qualitatif (pour la lisibilité humaine). Exemple : `3 - récurrent standardisé`.
+- **Run cost benchmarké LLM** : remplace l'heuristique `Build × 15%` par `Volume Qté × Coût Unitaire Agent`, où le $/run est récupéré par recherche web ciblée (a16z, Menlo, pricing officiels OpenAI/Anthropic) en avant-dernière étape. Source et date citées dans Notes.
+- **8 colonnes supprimées** (Nb Intégrations, Volume Annuel unité, Personnes Impactées, Notes Architecte fusionnée dans Notes, Nb Colonnes Critiques, Qualité Source, Cohérence Check, Confiance Globale composite) ; **2 nouvelles** (Type Agent, Coût Unitaire Agent). Total : **37 cols** au lieu de 43.
 
 ## Installation
 
@@ -43,9 +50,9 @@ Le skill détecte les mots-clés courants : `prioriser`, `prioritization`, `use 
 ## Contenu
 
 - `skills/use-case-prioritization/SKILL.md` — workflow complet (frontmatter `name` + `description` + étapes).
-- `skills/use-case-prioritization/references/framework_v4.md` — explication des 43 colonnes, sources méthodologiques (BABOK, UiPath, SAFe, DAMA-DMBOK).
-- `skills/use-case-prioritization/references/calculation_rules.md` — formules exactes, valeurs par défaut, seuils de verdict.
-- `skills/use-case-prioritization/references/csv_template.csv` — gabarit CSV 43 colonnes avec lignes FORMULES et SOURCE.
+- `skills/use-case-prioritization/references/framework_v5.md` — explication des 37 colonnes v5, sources méthodologiques (BABOK, UiPath, SAFe, DAMA-DMBOK).
+- `skills/use-case-prioritization/references/calculation_rules.md` — formules v5, valeurs par défaut, seuils de verdict, table de fallback benchmark.
+- `skills/use-case-prioritization/references/csv_template.csv` — gabarit CSV 37 colonnes avec lignes FORMULES, SOURCE et exemple use case fictif.
 - `skills/use-case-prioritization/references/exec_summary_template.md` — gabarit de synthèse exécutive en français Québec.
 
 ## Licence
