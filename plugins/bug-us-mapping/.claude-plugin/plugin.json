@@ -1,0 +1,11 @@
+{
+  "name": "bug-us-mapping",
+  "description": "Analyser l'écart entre US Done et bugs Backlog dans un projet Jira pour identifier les US non complétées à 100%. Auto-détection des CSV exports Jira avec validation interactive, mapping sémantique strict bugs ↔ US (pas de liens spéculatifs), table unique triée par % complétion croissant.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Samuel Audette",
+    "url": "https://github.com/RunLittleTurtle"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/RunLittleTurtle/skills"
+}

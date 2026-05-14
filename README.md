@@ -76,6 +76,7 @@ Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customiz
 | `coordination` | Coordonne plusieurs instances Claude qui travaillent en parallèle sur le même repo via locks markdown. |
 | `agent-talk` | Permet à deux instances Claude (même repo nested OU cross-projet) d'échanger des messages structurés (conversation, rapport, handoff) via un dossier-bridge partagé et des pings courts. Complète `coordination`. |
 | `product-management` | Boîte à outils PM adaptée pour Claude Code (fork du plugin officiel Anthropic) : 8 skills auto-déclenchés (write-spec, roadmap, stakeholder updates, recherche utilisateur, analyse concurrentielle, métriques, sprint planning, brainstorming) + `/brainstorm`. Sans `.mcp.json` embarqué — opt-in MCP via ta config globale, fallback fichiers locaux + paste. |
+| `bug-us-mapping` | Croise un export CSV de User Stories Jira avec un export CSV de bugs pour identifier les US Done qui ne sont pas réellement complétées à 100%. Auto-détection avec validation interactive, mapping sémantique strict (pas de liens spéculatifs), table unique triée par % complétion croissant (30/50/70/85/100). |
 
 ---
 
