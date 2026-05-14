@@ -59,7 +59,7 @@
     {
       "name": "bug-us-mapping",
       "source": "./plugins/bug-us-mapping",
-      "description": "Analyser l'écart entre US Done et bugs Backlog Jira pour identifier les US non complétées à 100%. Auto-détection des CSV exports Jira avec validation interactive obligatoire, mapping sémantique strict bugs ↔ US (pas de liens spéculatifs), table unique triée du moins complet au plus complet avec échelle 30/50/70/85/100. Sortie FR Québec."
+      "description": "Analyser l'écart entre US Done et bugs Backlog Jira pour identifier les US non complétées à 100%. v1.1.0 : auto-détection des CSV avec validation interactive obligatoire, mapping sémantique strict bugs ↔ US (règle anti-forçage), table unique triée du moins complet au plus complet (échelle 30/50/70/85/100), section dédiée 'Bugs non liés à une US' avec validation PO interactive par bug orphelin (laisser / rattacher faible / candidat nouvelle US / ignorer), versioning auto du fichier de sortie (_v2, _v3, ...). Sortie FR Québec."
     }
   ]
 }

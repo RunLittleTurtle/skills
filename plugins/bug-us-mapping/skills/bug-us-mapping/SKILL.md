@@ -69,6 +69,33 @@ Lis attentivement les `Description` et `Critères d'acceptation` des US (souvent
 
 Un bug peut être rattaché à plusieurs US si chacune couvre directement un aspect distinct du bug (ex: bug avec 2 problèmes distincts, chacun couvert par une US différente).
 
+## Étape 4.5 - Identification des bugs non rattachables
+
+Après l'analyse Étape 4, classe chaque bug en 3 catégories :
+
+1. **Bug rattaché Haute confiance** : au moins une US couvre directement son périmètre → traité dans le tableau principal Étape 6.
+2. **Bug à liaison faible** : aucun match Haute confiance, mais une (ou plusieurs) US candidate(s) en confiance Moyenne ou Faible. Note la (ou les) US candidate(s) pour la proposition à la PO.
+3. **Bug sans match** : aucune US existante ne couvre le périmètre du bug, même en confiance faible. Probable candidat à création d'une nouvelle US.
+
+**RÈGLE ANTI-FORÇAGE** : un bug de catégorie 2 ou 3 ne va JAMAIS automatiquement dans le tableau principal. Il passe obligatoirement par l'Étape 4.6 (validation PO).
+
+## Étape 4.6 - Validation interactive avec la PO (bugs non rattachables)
+
+Pour chaque bug identifié en catégorie 2 ou 3 à l'Étape 4.5, demande via `AskUserQuestion` :
+
+> "Le bug `<AC-XXX>` (`<titre>`) n'a pas de US existante en Haute confiance. Que veux-tu faire ?"
+
+Options à proposer (adaptées selon les candidates trouvées) :
+
+- **Laisser dans section 'Bugs non liés'** (recommandé si aucune US proche) - la PO décidera plus tard du sort du bug
+- **Rattacher en confiance faible à `<US la plus proche>`** (uniquement si une candidate Moyenne/Faible existe) - le bug ira dans le tableau principal mais le commentaire mentionnera "confiance faible"
+- **Marquer comme candidat à création d'une nouvelle US** - le bug ira dans la section "Bugs non liés" avec une note explicite "candidat nouvelle US"
+- **Ignorer (bug à ne pas considérer)** - sortir le bug complètement de l'analyse (ex: bug obsolète, doublon, hors scope)
+
+**Si plus de 4 bugs non rattachables** : faire plusieurs AskUserQuestion en série (batches de 4 max - limite de l'outil). Ne JAMAIS prendre de décision automatique sans la PO.
+
+Garder la trace de chaque décision PO pour l'utiliser dans l'Étape 6 (tableau principal) et l'Étape 7 (section "Bugs non liés").
+
 ## Étape 5 - Calcul du % complétion
 
 | % | Statut qualitatif | Critère |
@@ -100,6 +127,8 @@ Format des `Bugs liés` : liste séparée par virgules des `Issue key` des bugs 
 
 ## Étape 7 - Validation du chemin de sortie + écriture
 
+### 7.1 Choix du chemin
+
 Propose un chemin par défaut :
 1. Même dossier que les CSV détectés (priorité 1)
 2. Sinon dossier courant
@@ -109,12 +138,52 @@ Valide via `AskUserQuestion` :
 
 > "Où veux-tu sauvegarder le fichier de mapping ? Défaut : `<chemin>`"
 
-Écris le fichier avec :
-- Titre `# Mapping Bugs ↔ User Stories - <nom du projet détecté>`
-- Section `## Contexte` : nombre d'US, nombre de bugs, dates des bugs (min/max), source des CSV
-- Section `## Tableau` : la table unique triée
+### 7.2 Versioning automatique
 
-Pas de section "synthèse" ou "recommandations" séparées dans le fichier (ces éléments vont dans le récap conversation).
+Avant d'écrire, vérifie si le fichier cible existe déjà :
+
+```
+Si target existe :
+  base = nom sans extension (ex: bug_us_mapping)
+  ext = extension (ex: .md)
+  n = 2
+  Tant que <base>_v<n><ext> existe :
+    n += 1
+  target = <base>_v<n><ext>
+```
+
+Exemples :
+- `bug_us_mapping.md` existe → écrire `bug_us_mapping_v2.md`
+- `bug_us_mapping.md` ET `bug_us_mapping_v2.md` existent → écrire `bug_us_mapping_v3.md`
+
+Si le versioning est appliqué, informe l'utilisateur en 1 phrase : "Le fichier `<original>` existait déjà, j'ai créé `<nouveau>` à la place."
+
+Pas de prompt utilisateur pour confirmer le versioning (auto). L'utilisateur garde ainsi l'historique de ses analyses précédentes.
+
+### 7.3 Structure du fichier
+
+Écris le fichier avec :
+
+1. **Titre** : `# Mapping Bugs ↔ User Stories - <nom du projet détecté>`
+2. **Section `## Contexte`** : nombre d'US, nombre de bugs, dates des bugs (min/max), source des CSV
+3. **Section `## Tableau`** : la table unique triée par % croissant (US rattachées en Haute confiance + US sans bug)
+4. **Section `## Bugs non liés à une US`** (UNIQUEMENT si au moins un bug a été placé ici par la PO à l'Étape 4.6) :
+
+```markdown
+## Bugs non liés à une US
+
+Bugs qui ne correspondent à aucune User Story existante avec Haute confiance. À traiter par la PO (création d'une nouvelle US, rattachement faible explicite, ou décision de ne pas adresser).
+
+| Bug | Titre | Décision PO | Note |
+|-----|-------|-------------|------|
+| AC-XXX | <titre du bug> | Section bugs non liés | <résumé du périmètre + raison pas de US> |
+| AC-YYY | <titre du bug> | Candidat nouvelle US | <description du périmètre nouveau> |
+| AC-ZZZ | <titre du bug> | Rattachement faible à AC-NNN | <raison du choix de confiance faible> |
+```
+
+Ordonner les bugs de cette section par Issue Key croissant (ordre Jira naturel).
+
+Pas de section "synthèse" ou "recommandations" séparée dans le fichier (ces éléments vont dans le récap conversation Étape 8).
 
 ## Étape 8 - Récap dans la conversation
 
@@ -127,7 +196,8 @@ Affiche dans le chat (PAS dans le fichier) :
 
 - **Ne hardcode JAMAIS** de chemins absolus, de noms de projet (ex: "Authentik"), de préfixes Jira (ex: "AC-"), de terminologie métier spécifique. Le skill doit fonctionner pour tout projet Jira.
 - **Toujours valider** via AskUserQuestion les étapes critiques (fichiers détectés, colonnes ambiguës, chemin de sortie), même si la détection semble évidente.
-- **Strict mode pour le mapping** : si un lien te semble "moyen" ou "faible", ne l'inclus PAS. Mieux vaut une table propre avec quelques US à 100% en trop qu'une table polluée par des liens spéculatifs.
+- **Strict mode pour le mapping** : si un lien te semble "moyen" ou "faible", ne l'inclus PAS dans le tableau principal. Les bugs en confiance faible passent par l'Étape 4.6 (validation PO) avant tout placement.
+- **Règle anti-forçage** : ne JAMAIS rattacher automatiquement un bug à une US par lien faible/spéculatif pour "remplir" le tableau. Si la PO n'a pas confirmé, le bug va en section "Bugs non liés". Mieux vaut une PO informée qu'un mapping fabriqué.
 - **Format strict** : une seule table, triée par % croissant, colonnes exactes.
 - **Pas d'em-dash** dans le SKILL.md ni dans les outputs (utilise `-` court). Pas de `§` (écris "section X").
 - **Si les exports CSV ont des descriptions très longues** (panels Jira, contenu RAG inclus), tronque mentalement à 800 caractères pour l'analyse sémantique (le périmètre/intent suffit, pas besoin du contenu intégral).
