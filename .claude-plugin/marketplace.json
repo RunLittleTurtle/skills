@@ -50,6 +50,11 @@
       "name": "product-brief",
       "source": "./plugins/product-brief",
       "description": "Transformer divers inputs (notes BA, data points chiffrés, transcripts d'ateliers ou d'entrevues, insights discovery, OKRs, contraintes budgétaires, brouillons) en product brief one-pager au format PRD Authentik : 7 sections strictes (Contexte, Problème avec insights citables, Enveloppe & contraintes, Alignement OKR avec diagramme Mermaid causal, Solution avec Job Stories Klement + Flows AARRR, Out of scope, Risques avec mitigation). Analyse profonde + validation interactive avant génération. Sortie FR Québec."
+    },
+    {
+      "name": "product-management",
+      "source": "./plugins/product-management",
+      "description": "Boîte à outils Product Management adaptée pour Claude Code CLI — fork du plugin officiel Anthropic (knowledge-work-plugins). 8 skills auto-déclenchés (write-spec, roadmap-update, stakeholder-update, synthesize-research, competitive-brief, metrics-review, sprint-planning, product-brainstorming) + commande /brainstorm. Pas de .mcp.json embarqué : opt-in MCP via la config Claude Code globale, fall-back fichiers markdown locaux + paste. Pédagogie PM (RICE, MoSCoW, JTBD, HMW, OKRs, ROAM, OODA, etc.) préservée verbatim du source."
     }
   ]
 }
