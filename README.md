@@ -1,6 +1,8 @@
 # skills — marketplace agrégée de Samuel Audette
 
-Marketplace Claude Code regroupant tous mes skills publics. Une seule commande pour les avoir tous, tu actives ceux que tu veux.
+Marketplace Claude Code regroupant les skills publics et stables de Samuel Audette. Une seule commande pour les avoir tous, tu actives ceux que tu veux.
+
+Pour les versions instables, expérimentales, archives ou forks adaptés, voir la marketplace beta : [`RunLittleTurtle/skills-beta`](https://github.com/RunLittleTurtle/skills-beta).
 
 ## Installation
 
@@ -44,43 +46,42 @@ Dossiers cibles courants :
 
 ## Skills disponibles
 
-### Flow d'usage — Business Analysis → Produit → Directeur de compte
+### Flow d'usage — Product Management → Directeur de compte
 
 ```mermaid
 flowchart LR
-  A[use-case-value<br/><i>Business Analysis</i>] --> B[use-case-prioritization<br/><i>draft</i>]
-  B --> C[scenario-uc<br/><i>Product Management</i>]
-  C --> C2[scenario-uc-v2<br/><i>version parallèle</i>]
-  C --> D[product-brief<br/><i>Product Management</i>]
+  C[scenario-uc<br/><i>Product Management</i>] --> D[product-brief<br/><i>Product Management</i>]
   C --> E[mermaid-flow<br/><i>Directeur de compte</i>]
 ```
 
-- **use-case-value** : analyse d'impact business chiffré (chiffres durs uniquement, root cause avant chiffrage).
-- **use-case-prioritization** *(draft)* : ajoute effort, ROI, Run cost benchmarké.
-- **scenario-uc** : formalise le use case retenu en scénario PRD.
-- **scenario-uc-v2** : version parallèle de `scenario-uc` qui ajoute scénarios alternatifs HEC (suffixes `a/b/c`), boucles `LOOP / FIN LOOP` (alignées sur `loop ... end` Mermaid), préfixe `AS-IS_v<N>` / `TO-BE_v<N>` dans le H1, et validation interactive renforcée.
-- **product-brief** : transforme inputs hétérogènes (BA, transcripts, OKRs) en product brief one-pager au format PRD Authentik. v2 — posture Product Manager Senior, scan préliminaire de la doc, validation par section via AskUserQuestion, citations verbatim complètes, AARRR conditionnel. Version 1 archivée sous `product-brief-v1`.
-- **mermaid-flow** : vulgarise les scénarios pour un Directeur de compte ou stakeholder non technique.
+- **scenario-uc** : formalise un use case en scénario PRD avec diagramme de séquence Mermaid.
+- **product-brief** : transforme des inputs hétérogènes (BA, transcripts, OKRs) en product brief one-pager au format PRD Authentik.
+- **mermaid-flow** : vulgarise un scénario pour un Directeur de compte ou stakeholder non technique.
 
-Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customize-skills`) sont indépendants de ce flow.
+Les autres skills (`coordination`, `skill-creator-turtle`, `bug-us-mapping`) sont indépendants de ce flow.
 
 ### Tableau récapitulatif
 
 | Nom | Description |
 |---|---|
-| `use-case-value` | Priorise les use cases d'AI/automatisation par impact business chiffré (6 sources d'impact $, root cause avant chiffrage, règle d'or v1.3 avec inférences sur paire d'anchors verbaux et défauts conservateurs, Score amplifié pour transverse via Personnes_factor paliers + Transversalité_factor, synthèse Top 10 × 3 lignes décisive). |
-| `use-case-prioritization` `[draft]` | Score + priorise + chiffre les use cases (BABOK + UiPath Suitability + Run cost benchmarké web + confiance hybride). |
-| `scenario-uc` | Transforme tout input (md/PDF/image/idée) en scénario use-case au format PRD avec diagramme de séquence Mermaid. |
-| `scenario-uc-v2` | Version parallèle de `scenario-uc` qui ajoute scénarios alternatifs au format HEC (suffixes `1.3a/1.3b`), boucles `LOOP / FIN LOOP` (alignées sur `loop ... end` Mermaid), titre via frontmatter Mermaid, préfixe `AS-IS_v<N>` / `TO-BE_v<N>` dans le H1, et validation interactive renforcée (questions bloquantes sur ambiguïtés). |
-| `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik. v2 : posture Product Manager Senior, scan préliminaire de la doc, validation par section via AskUserQuestion, citations verbatim complètes (sans coupure), contraintes flexibles au-delà de Budget/Temps/Pourquoi maintenant, OKR avec validation séparée Objectives/KR (max 3 par catégorie) et paragraphe épuré, AARRR conditionnel (alternatives Avant/Après ou ROI pour workflows internes), référencement des scénarios formalisés. |
-| `product-brief-v1` `[archivé]` | Version 1 originale du skill product-brief, conservée pour reproductibilité. La version active est `product-brief`. |
-| `mermaid-flow` | Transforme un flow en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, emojis acteurs). |
-| `bmad-customize-skills` | Désactive/réactive sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). |
-| `skill-creator` | Meta-skill générique pour créer un nouveau skill dans ta propre marketplace (pas la mienne). |
-| `coordination` | Coordonne plusieurs instances Claude qui travaillent en parallèle sur le même repo via locks markdown. |
-| `agent-talk` | Permet à deux instances Claude (même repo nested OU cross-projet) d'échanger des messages structurés (conversation, rapport, handoff) via un dossier-bridge partagé et des pings courts. Complète `coordination`. |
-| `product-management` | Boîte à outils PM adaptée pour Claude Code (fork du plugin officiel Anthropic) : 8 skills auto-déclenchés (write-spec, roadmap, stakeholder updates, recherche utilisateur, analyse concurrentielle, métriques, sprint planning, brainstorming) + `/brainstorm`. Sans `.mcp.json` embarqué — opt-in MCP via ta config globale, fallback fichiers locaux + paste. |
-| `bug-us-mapping` | Croise un export CSV de User Stories Jira avec un export CSV de bugs pour identifier les US Done qui ne sont pas réellement complétées à 100%. v1.1.0 : auto-détection avec validation interactive, mapping sémantique strict (règle anti-forçage), table unique triée par % complétion croissant (30/50/70/85/100), section dédiée 'Bugs non liés à une US' avec validation PO par bug orphelin (laisser / rattacher faible / candidat nouvelle US / ignorer), versioning auto du fichier de sortie. |
+| `bug-us-mapping` | Croise un export CSV de User Stories Jira avec un export CSV de bugs pour identifier les US Done qui ne sont pas réellement complétées à 100%. v1.1.0 : auto-détection avec validation interactive, mapping sémantique strict, table unique triée par % complétion croissant (30/50/70/85/100), section bugs orphelins avec validation PO. |
+| `coordination` | Coordonne plusieurs instances Claude qui travaillent en parallèle sur le même repo via locks markdown. v1.1.0 : auto-détection git/folder, setup conditionnel (`.gitignore` + note `CLAUDE.md` seulement si pertinent). |
+| `mermaid-flow` | Transforme un flow (texte, fichier markdown, mermaid existant ou image) en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, palette pastel light-mode, emojis acteurs 👤🤖⚙️🖥️⚖️). |
+| `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik. v2 : posture Product Manager Senior, scan préliminaire de la doc, validation par section, citations verbatim complètes, AARRR conditionnel. |
+| `scenario-uc` | Transforme tout input (md, PDF, image, URL Drive, idée verbale) en scénario use-case au format PRD Authentik avec diagramme de séquence Mermaid. Sortie en français. |
+| `skill-creator-turtle` | Meta-skill générique pour créer un nouveau skill dans ta propre marketplace personnelle (3 cibles : marketplace, standalone, autre outil). Renommé de `skill-creator` pour ne pas se confondre avec le skill-creator officiel d'Anthropic. |
+
+---
+
+## Marketplace beta
+
+Pour les versions en cours de développement, parallèles, archives ou forks adaptés, voir [`RunLittleTurtle/skills-beta`](https://github.com/RunLittleTurtle/skills-beta) :
+
+```
+/plugin marketplace add RunLittleTurtle/skills-beta
+```
+
+Skills actuellement disponibles en beta : `agent-talk-beta`, `product-brief-v1-beta`, `product-management`, `scenario-uc-v2-beta`, `skill-creator-turtle-beta`, `use-case-prioritization-beta`, `use-case-value-beta`.
 
 ---
 
@@ -107,7 +108,9 @@ Chaque `SKILL.md` respecte le standard ouvert [agentskills.io](https://agentskil
 
 ## Créer un nouveau skill dans cette marketplace
 
-Installe le skill `skill-creator` (`/plugin install skill-creator@skills`) et invoque-le. Il te guide interactivement et met à jour ce repo automatiquement.
+Installe le skill `skill-creator-turtle` (`/plugin install skill-creator-turtle@skills`) et invoque-le. Il te guide interactivement et met à jour ce repo automatiquement.
+
+Pour expérimenter avec une version refondue qui ajoute la modification de skills existants, utilise [`skill-creator-turtle-beta`](https://github.com/RunLittleTurtle/skills-beta/tree/main/plugins/skill-creator-turtle-beta) dans la marketplace beta.
 
 ---
 

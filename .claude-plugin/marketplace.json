@@ -1,75 +1,40 @@
 {
   "name": "skills",
-  "description": "Marketplace agrégée des skills Claude Code de Samuel Audette — coordination multi-instance, meta-skill skill-creator, et plus à venir.",
+  "description": "Marketplace agrégée des skills Claude Code de Samuel Audette — outils stables et éprouvés. Pour les versions instables, expérimentales, parallèles ou forks adaptés, voir RunLittleTurtle/skills-beta.",
   "owner": {
     "name": "Samuel Audette",
     "url": "https://github.com/RunLittleTurtle"
   },
   "plugins": [
     {
+      "name": "bug-us-mapping",
+      "source": "./plugins/bug-us-mapping",
+      "description": "Analyser l'écart entre US Done et bugs Backlog dans un projet Jira pour identifier les US non complétées à 100%. v1.1.0 : auto-détection des CSV avec validation interactive, mapping sémantique strict bugs ↔ US (règle anti-forçage), table unique triée par % complétion croissant, section dédiée 'Bugs non liés à une US' avec validation PO interactive sur chaque bug orphelin, versioning auto du fichier de sortie (_v2, _v3, ...)."
+    },
+    {
       "name": "coordination",
       "source": "./plugins/coordination",
-      "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même dossier — repo git OU n'importe quel folder local (v1.1.0). Système de locks logiques markdown par focus (sprint, task, prd, etc.). Setup auto-détecté : `.gitignore` et note `CLAUDE.md` seulement si pertinent."
-    },
-    {
-      "name": "agent-talk",
-      "source": "./plugins/agent-talk",
-      "description": "Échanger des messages structurés (conversation back-and-forth, rapport one-shot, handoff de contexte) entre instances Claude — même repo nested OU cross-projet — via un dossier-bridge partagé et des pings courts `[PING] @inst-X`. Pings dans COORDINATION.FOCUS.md (si même repo + coordination active) ou dans BRIDGE.PINGS.md dédié. Complète /coordination sans le remplacer."
-    },
-    {
-      "name": "skill-creator",
-      "source": "./plugins/skill-creator",
-      "description": "Meta-skill générique : crée interactivement un nouveau skill Claude Code dans TA marketplace personnelle (peu importe ton compte GitHub). Détecte ou bootstrap ton repo, pose des questions sur le slug + description + body, génère la structure conforme, et propose commit + push."
+      "description": "Coordonner plusieurs instances Claude qui travaillent en parallèle sur le même dossier (repo git OU n'importe quel folder local). Système de locks logiques markdown par focus (sprint, task, prd, etc.)."
     },
     {
       "name": "mermaid-flow",
       "source": "./plugins/mermaid-flow",
-      "description": "Transformer un flow (texte, fichier markdown, mermaid existant ou image) en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, palette pastel light-mode, emojis acteurs 👤🤖⚙️🖥️⚖️). Analyse profonde + validation interactive avant génération."
-    },
-    {
-      "name": "scenario-uc",
-      "source": "./plugins/scenario-uc",
-      "description": "Transformer tout input (md, PDF, image, URL Drive, idée verbale) en fichier de scénario use-case au format Authentik PRD : description avec acteurs typés, intent business, scénarios textuels numérotés, diagramme de séquence Mermaid. Analyse profonde + validation interactive avant génération. Sortie en français."
-    },
-    {
-      "name": "bmad-customize-skills",
-      "source": "./plugins/bmad-customize-skills",
-      "description": "Désactiver / réactiver sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). Réversible, idempotent, ré-applicable après chaque npx bmad-method install. Patche aussi bmad-help.csv pour neutraliser les required gates des phases non pertinentes."
-    },
-    {
-      "name": "use-case-prioritization",
-      "source": "./plugins/use-case-prioritization",
-      "description": "Scorer, prioriser et chiffrer des use cases d'AI/automatisation (post-its, transcripts, inventaires CSV). v2.2 : échelle 1-3 avec labels qualitatifs intégrés + Run cost benchmarké par recherche web LLM + confiance hybride (complétude × validation LLM) + dossier de sortie par run + synthèse exécutive lisible avec layer de jugement LLM (bundling, lectures transversales, recommandations stratégiques) + sources_benchmark.md auditable. Sortie : dossier projet contenant CSV 38 colonnes v5, synthèse, et sources."
-    },
-    {
-      "name": "use-case-value",
-      "source": "./plugins/use-case-value",
-      "description": "Priorise les use cases d'AI/automatisation par impact business chiffré documenté (post-its, transcripts, inventaires). v1.3 : 27 colonnes focus VALEUR uniquement, six sources d'Impact $ explicites + col Dépend de + col Impact Potentiel Estimé. Step 2bis Root Cause Analysis. Règle d'or v1.3 adoucie avec paire d'anchors verbaux (signal heures vague + N personnes cité = chiffrable via défauts conservateurs documentés). Score amplifié pour use cases transverses (Personnes_factor paliers + Transversalité_factor explicites). Algorithme Verdict déterministe. Synthèse Top 10 × 3 lignes par entrée, classement décisif sans section À chiffrer en atelier séparée. Complémentaire à use-case-prioritization v2.2 (en draft)."
-    },
-    {
-      "name": "product-brief-v1",
-      "source": "./plugins/product-brief-v1",
-      "description": "[archivé v1] Version 1 originale du skill product-brief, conservée pour reproductibilité. La version active est `product-brief`. Transformer divers inputs (notes BA, data points chiffrés, transcripts d'ateliers ou d'entrevues, insights discovery, OKRs, contraintes budgétaires, brouillons) en product brief one-pager au format PRD Authentik : 7 sections strictes (Contexte, Problème avec insights citables, Enveloppe & contraintes, Alignement OKR avec diagramme Mermaid causal, Solution avec Job Stories Klement + Flows AARRR, Out of scope, Risques avec mitigation). Analyse profonde + validation interactive avant génération. Sortie FR Québec."
+      "description": "Transformer un flow (texte, fichier markdown, mermaid existant ou image) en un flowchart Mermaid simplifié au format strict (max 10 étapes, palette pastel, emojis acteurs). Analyse profonde + validation interactive avant génération."
     },
     {
       "name": "product-brief",
       "source": "./plugins/product-brief",
-      "description": "Transformer divers inputs (notes BA, transcripts, data points chiffrés, insights discovery, OKRs, contraintes) en product brief one-pager au format PRD Authentik. v2 : Posture Product Manager Senior, scan préliminaire de la doc, validation par section via AskUserQuestion, citations verbatim complètes (pas de coupure), contraintes flexibles au-delà de Budget/Temps/Pourquoi maintenant, OKR avec validation séparée Objectives (jaunes, client) / Key Results (bleus, MIA) / Effets (verts) et limite stricte à 3 par catégorie, paragraphe OKR épuré, AARRR conditionnel (alternatives Avant/Après ou ROI pour workflows internes), référencement des scénarios formalisés. Version 1 archivée sous `product-brief-v1`. Sortie FR Québec."
+      "description": "Transformer divers inputs hétérogènes (notes de Business Analyst, data points chiffrés, transcripts d'ateliers ou d'entrevues, insights discovery, OKRs, contraintes budgétaires, brouillons hétérogènes) en un product brief one-pager structuré au format PRD Authentik. Posture Product Manager Senior, collaboration interactive avec l'utilisateur, scan préliminaire de la documentation pertinente, validation explicite avant chaque section, citations verbatim complètes (pas de coupure), contraintes flexibles au-delà de Budget/Temps/Pourquoi maintenant, OKR avec validation séparée Objectives (jaunes, client) / Key Results (bleus, MIA) / Effets (verts) et limite stricte à 3 par catégorie, paragraphe OKR épuré, tableau AARRR conditionnel (alternatives Avant/Après ou ROI pour workflows internes), référencement des scénarios déjà formalisés. Sortie en français Québec, format markdown concis."
     },
     {
-      "name": "product-management",
-      "source": "./plugins/product-management",
-      "description": "Boîte à outils Product Management adaptée pour Claude Code CLI — fork du plugin officiel Anthropic (knowledge-work-plugins). 8 skills auto-déclenchés (write-spec, roadmap-update, stakeholder-update, synthesize-research, competitive-brief, metrics-review, sprint-planning, product-brainstorming) + commande /brainstorm. Pas de .mcp.json embarqué : opt-in MCP via la config Claude Code globale, fall-back fichiers markdown locaux + paste. Pédagogie PM (RICE, MoSCoW, JTBD, HMW, OKRs, ROAM, OODA, etc.) préservée verbatim du source."
+      "name": "scenario-uc",
+      "source": "./plugins/scenario-uc",
+      "description": "Transformer n'importe quel input (texte, brouillon md, PDF, image, URL Drive, idée verbale) en un fichier markdown de scénario use-case au format Authentik PRD complet : description, intent, scénarios textuels numérotés, diagramme de séquence Mermaid. Analyse profonde + validation interactive avant génération. Sortie en français."
     },
     {
-      "name": "bug-us-mapping",
-      "source": "./plugins/bug-us-mapping",
-      "description": "Analyser l'écart entre US Done et bugs Backlog Jira pour identifier les US non complétées à 100%. v1.1.0 : auto-détection des CSV avec validation interactive obligatoire, mapping sémantique strict bugs ↔ US (règle anti-forçage), table unique triée du moins complet au plus complet (échelle 30/50/70/85/100), section dédiée 'Bugs non liés à une US' avec validation PO interactive par bug orphelin (laisser / rattacher faible / candidat nouvelle US / ignorer), versioning auto du fichier de sortie (_v2, _v3, ...). Sortie FR Québec."
-    },
-    {
-      "name": "scenario-uc-v2",
-      "source": "./plugins/scenario-uc-v2",
-      "description": "Version parallèle de scenario-uc : ajoute scénarios alternatifs au format HEC (TECH 30710) avec suffixes lettrés (1.3a, 1.3b) et convention de retour explicite, boucles `LOOP : <condition> / FIN LOOP` alignées avec `loop ... end` Mermaid, titre via frontmatter (`Scénario \"Happy path\"`), préfixe AS-IS / TO-BE dans le H1, et validation interactive renforcée. Compatible v1 sur tout le reste."
+      "name": "skill-creator-turtle",
+      "source": "./plugins/skill-creator-turtle",
+      "description": "Meta-skill: crée interactivement de nouveaux skills Claude Code dans le mono-repo RunLittleTurtle/skills, met à jour marketplace.json + README.md, et propose de commit + push automatiquement."
     }
   ]
 }

@@ -1,0 +1,11 @@
+{
+  "name": "skill-creator-turtle",
+  "description": "Meta-skill: crée interactivement de nouveaux skills Claude Code dans le mono-repo RunLittleTurtle/skills, met à jour marketplace.json + README.md, et propose de commit + push automatiquement.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Samuel Audette",
+    "url": "https://github.com/RunLittleTurtle"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/RunLittleTurtle/skills"
+}
