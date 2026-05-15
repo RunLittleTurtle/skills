@@ -81,7 +81,7 @@ Pour les versions en cours de développement, parallèles, archives ou forks ada
 /plugin marketplace add RunLittleTurtle/skills-beta
 ```
 
-Skills actuellement disponibles en beta : `agent-talk-beta`, `product-brief-v1-beta`, `product-management`, `scenario-uc-v2-beta`, `skill-creator-turtle-beta`, `use-case-prioritization-beta`, `use-case-value-beta`.
+Skills actuellement disponibles en beta : `agent-talk-beta`, `product-brief-v1-beta`, `product-management`, `scenario-uc-v2-beta`, `skill-creator-turtle-v1-beta`, `use-case-prioritization-beta`, `use-case-value-beta`.
 
 ---
 
@@ -110,7 +110,7 @@ Chaque `SKILL.md` respecte le standard ouvert [agentskills.io](https://agentskil
 
 Installe le skill `skill-creator-turtle` (`/plugin install skill-creator-turtle@skills`) et invoque-le. Il te guide interactivement et met à jour ce repo automatiquement.
 
-Pour expérimenter avec une version refondue qui ajoute la modification de skills existants, utilise [`skill-creator-turtle-beta`](https://github.com/RunLittleTurtle/skills-beta/tree/main/plugins/skill-creator-turtle-beta) dans la marketplace beta.
+Pour expérimenter avec une version refondue qui ajoute la modification de skills existants, utilise [`skill-creator-turtle-v1-beta`](https://github.com/RunLittleTurtle/skills-beta/tree/main/plugins/skill-creator-turtle-v1-beta) dans la marketplace beta.
 
 ---
 
