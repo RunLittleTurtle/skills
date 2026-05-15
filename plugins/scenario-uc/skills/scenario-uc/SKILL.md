@@ -146,7 +146,7 @@ La v2 **renforce** la collaboration sur les éléments structurels qui sont souv
 
 5. **Périmètre d'une boucle** — quelles étapes sont DANS la boucle et lesquelles sont APRÈS le `FIN LOOP` ? Demander si pas clair.
 
-6. **Référence inter-scénarios** — si une étape réutilise un préfixe d'un autre scénario (ex. l'étape `1.4` du scénario 1 réutilisée dans le scénario 2), valider avec l'utilisateur que c'est intentionnel et que la traçabilité fait sens.
+6. **Référence inter-scénarios** — si une étape réutilise un préfixe d'un autre scénario (ex. l'étape `1.4` du scénario 1 réutilisée dans le scénario 2), valider avec l'utilisateur que c'est intentionnel et que la traçabilité fait sens. **Propriétaire canonique** : quand plusieurs scénarios définissent la même séquence avec des préfixes différents, demander explicitement : « L'étape `<X>` apparaît aussi dans le scénario `<Y>`. Lequel est nominalement propriétaire de cette séquence (selon son H1) ? Le préfixe canonique devrait venir de ce scénario-là. »
 
 **Format des questions** : groupées par lot (2-4 questions max d'un coup) pour éviter de fragmenter la collaboration. Si tout est non ambigu dans l'input, NE PAS poser de questions inutiles — passer directement à l'étape 5.
 
@@ -198,8 +198,47 @@ N.2. <Sujet explicite> <verbe> <complément>.
 - **Une phrase par étape**, courte mais avec les détails-clés (boutons exactement nommés, options listées, conditions).
 - **Numérotation `N.1, N.2, …`** où `N` est le numéro de scénario (cohérent avec `AS-IS_v<N>` ou `TO-BE_v<N>` du H1). **Préserve les sauts** si le brouillon source en a (ex: 1.4 puis 1.6 — ne pas renuméroter, ça casse la traçabilité).
 - **Référence inter-scénarios** : si une étape du scénario 2 réutilise une étape du scénario 1, garder le préfixe d'origine (ex. `1.4` dans le scénario 2) pour la traçabilité visuelle. Valider avec l'utilisateur à l'étape 4 si non explicite.
+- **Propriété canonique** : quand une même séquence d'étapes apparaît dans plusieurs scénarios, le scénario dont le H1 nomme métier la séquence est propriétaire canonique. Son préfixe est utilisé partout, y compris dans les scénarios qui l'empruntent — aucune renumérotation locale. Heuristique : si le H1 du scénario `N` nomme l'action (ex. « Modifier un modèle »), alors les étapes qui réalisent cette action portent le préfixe `N.X` partout. Bénéfice : si l'étape canonique change, tous les scénarios qui l'empruntent héritent automatiquement de la mise à jour conceptuelle, et le lecteur voit immédiatement qui est responsable d'une étape via son préfixe.
 - **Ligne vide entre chaque étape** (pas une liste compacte).
 - **Pas de bullet points** à l'intérieur d'une étape : si beaucoup de détails, utilise des virgules ou des parenthèses.
+
+### Exemple — propriété canonique d'une séquence partagée
+
+Cas réel : la phase de modification d'un road trip apparaît dans deux scénarios (« Générer de zéro » et « Modifier un modèle »). Le scénario 2 nomme nominalement l'action de modification dans son H1, donc il est propriétaire canonique.
+
+**Avant (incohérent)** — le scénario 1 contient les étapes de modification en `1.14, 1.15, 1.16` comme source, et le scénario 2 les réutilise avec le même préfixe `1.X`, ce qui suggère à tort que le scénario 1 est propriétaire de la modification :
+
+```
+scenario_1 « Générer un road trip à partir de zéro » :
+  FLOW 2 DE MODIFICATION
+  1.14. Le client effectue des modifications via le chat...
+  1.15. Le Système IA effectue les changements...
+  1.16. Le client clique sur "calculer le prix"...
+
+scenario_2 « Modifier un modèle de road trip avec l'IA » :
+  2.1. Le client accède à la liste des modèles...
+  2.5. Le Système IA affiche la fenêtre modale...
+  1.14. Le client effectue des modifications via le chat...  <-- réutilisé du scénario 1
+  1.15. ...
+  1.16. ...
+```
+
+**Après (canonique)** — le scénario 2 est nominalement « Modifier un modèle » selon son H1, donc il devient propriétaire des étapes de modification avec préfixe `2.X`. Le scénario 1 emprunte ces étapes avec leur préfixe canonique `2.X`, sans renumérotation locale :
+
+```
+scenario_2 « Modifier un modèle de road trip avec l'IA » (SOURCE) :
+  2.1. Le client accède à la liste des modèles...
+  2.5. Le Système IA affiche la fenêtre modale...
+  2.6. Le client effectue des modifications via le chat...
+  2.7. Le Système IA effectue les changements...
+  2.8. Le client clique sur "calculer le prix"...
+
+scenario_1 « Générer un road trip à partir de zéro » (RÉUTILISE) :
+  FLOW 2 DE MODIFICATION
+  2.6. Le client effectue des modifications via le chat...  <-- préfixe d'origine = scénario 2
+  2.7. ...
+  2.8. ...
+```
 
 ### Flows secondaires
 
