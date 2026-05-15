@@ -69,7 +69,7 @@ Les autres skills (`coordination`, `skill-creator-turtle`, `bug-us-mapping`) son
 | `mermaid-flow` | Transforme un flow (texte, fichier markdown, mermaid existant ou image) en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, palette pastel light-mode, emojis acteurs 👤🤖⚙️🖥️⚖️). |
 | `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik. v2 : posture Product Manager Senior, scan préliminaire de la doc, validation par section, citations verbatim complètes, AARRR conditionnel. |
 | `scenario-uc` | Transforme tout input (md, PDF, image, URL Drive, idée verbale) en scénario use-case au format PRD Authentik avec diagramme de séquence Mermaid. Sortie en français. |
-| `skill-creator-turtle` | Meta-skill générique pour créer un nouveau skill dans ta propre marketplace personnelle (3 cibles : marketplace, standalone, autre outil). Renommé de `skill-creator` pour ne pas se confondre avec le skill-creator officiel d'Anthropic. |
+| `skill-creator-turtle` | Meta-skill pour **créer OU modifier** un skill Claude Code. 3 cibles (marketplace, standalone, autre outil) + workflow de modification d'un skill existant (snapshot avant édition, détection des skills installés, préservation du slug). Aligné sur les principes Anthropic (lean instructions, theory of mind, prose explicative). Renommé de `skill-creator` pour ne pas se confondre avec le skill-creator officiel d'Anthropic. |
 
 ---
 
@@ -106,11 +106,11 @@ Chaque `SKILL.md` respecte le standard ouvert [agentskills.io](https://agentskil
 
 ---
 
-## Créer un nouveau skill dans cette marketplace
+## Créer ou modifier un skill
 
-Installe le skill `skill-creator-turtle` (`/plugin install skill-creator-turtle@skills`) et invoque-le. Il te guide interactivement et met à jour ce repo automatiquement.
+Installe le skill `skill-creator-turtle` (`/plugin install skill-creator-turtle@skills`) et invoque-le. Il te guide interactivement pour créer un nouveau skill (3 cibles : marketplace, standalone, autre outil) ou modifier un skill existant (snapshot + édition guidée).
 
-Pour expérimenter avec une version refondue qui ajoute la modification de skills existants, utilise [`skill-creator-turtle-v1-beta`](https://github.com/RunLittleTurtle/skills-beta/tree/main/plugins/skill-creator-turtle-v1-beta) dans la marketplace beta.
+Pour la version originale archivée de skill-creator (sans le workflow modify), voir [`skill-creator-turtle-v1-beta`](https://github.com/RunLittleTurtle/skills-beta/tree/main/plugins/skill-creator-turtle-v1-beta) dans la marketplace beta.
 
 ---
 
