@@ -486,7 +486,20 @@ title: Scénario "Happy path"
 
 ## Étape 9 — Sauvegarder et confirmer
 
-### 9a. Déterminer l'emplacement
+### 9a. Demander si on regroupe dans un dossier
+
+Avant de proposer un chemin de sauvegarde, demande à l'utilisateur via `AskUserQuestion` :
+
+> *« Tu veux créer un nouveau dossier pour regrouper ce scénario avec d'autres liés (ex. AS-IS + TO-BE, plusieurs variantes du même cas), ou le sauvegarder directement dans le dossier parent avec les scénarios existants ? »*
+
+Options :
+
+- *« Dossier parent existant »* (Recommended s'il y a déjà d'autres scénarios à côté de l'input) — sauvegarde direct au path déterminé en 9b.
+- *« Créer un nouveau dossier »* — demande le nom du dossier en texte libre (ex: `scenarios_roadtrip`), créé au path déterminé en 9b (`mkdir -p` avant le `Write`).
+
+Applique ce choix au chemin proposé en 9b : si nouveau dossier, ajoute `/<nom_dossier>` au path parent ; sinon, garde le path parent tel quel.
+
+### 9b. Déterminer l'emplacement
 
 Construis un chemin par défaut selon l'origine de l'input :
 
@@ -496,7 +509,7 @@ Construis un chemin par défaut selon l'origine de l'input :
 
 `<slug>` = nom du cas en kebab-case sans accents (ex: « Générer un road trip à partir de zéro » → `generer_roadtrip_zero`).
 
-### 9b. Confirmation et écriture
+### 9c. Confirmation et écriture
 
 Utilise `AskUserQuestion` :
 
