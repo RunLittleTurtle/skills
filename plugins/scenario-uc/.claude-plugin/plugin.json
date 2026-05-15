@@ -1,7 +1,7 @@
 {
   "name": "scenario-uc",
-  "description": "Transformer n'importe quel input (texte, brouillon md, PDF, image, URL Drive, idée verbale) en un fichier markdown de scénario use-case au format Authentik PRD complet : description, intent, scénarios textuels numérotés, diagramme de séquence Mermaid. Analyse profonde + validation interactive avant génération. Sortie en français.",
-  "version": "1.0.0",
+  "description": "Transformer n'importe quel input (texte, brouillon md, PDF, image, URL Drive, idée verbale) en un fichier markdown de scénario use-case au format Authentik PRD complet : description, intent, séquence textuelle numérotée avec séquences alternatives HEC (suffixes a/b/c) et boucles LOOP/FIN LOOP, diagramme de séquence Mermaid avec titre via frontmatter et bloc `loop ... end` natif, préfixe AS-IS / TO-BE dans le H1. Analyse profonde + validation interactive renforcée avant génération. Sortie en français.",
+  "version": "2.0.0",
   "author": {
     "name": "Samuel Audette",
     "url": "https://github.com/RunLittleTurtle"
