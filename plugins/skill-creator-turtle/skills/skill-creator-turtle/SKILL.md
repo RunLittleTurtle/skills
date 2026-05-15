@@ -300,7 +300,14 @@ Structure dans `<dir>` :
 
 **`plugin.json`** : `name`, `description` (frontmatter complet), `version: "1.0.0"`, `author` (config), `license: "MIT"`, `homepage` (URL repo en mode github, omis en mode local).
 
-**`README.md`** : lis `${CLAUDE_SKILL_DIR}/assets/readme-plugin-template.md`, substitue les placeholders (`<slug>`, `<description>`, `<github_user>`, `<context>_name`, `<context>_url`). En mode `local`, remplace `/plugin marketplace add <github_user>/<context>_name` par `/plugin marketplace add <dir>` (chemin absolu) et adapte le bloc `git clone`. Adapte la section « Contenu » selon les dossiers réellement créés (`references/`, `assets/`).
+**`README.md`** : lis `${CLAUDE_SKILL_DIR}/assets/readme-plugin-template.md`, substitue les placeholders. Le template vise un README court (≤ 25 lignes) avec uniquement : titre, description complète en blockquote, dates de création et dernière mise à jour, un diagramme Mermaid `flowchart LR` simple à 3 nœuds (`input principal → <slug> → output principal`), bloc install, slash command, licence. Pas de section « Use case », « Contenu », ou « Pour les autres outils » — la description tient lieu de use case et le README racine couvre le multi-outils.
+
+Substitutions :
+- `<YYYY-MM-DD>` (les deux occurrences) → `date +%Y-%m-%d` du jour de création.
+- `<input principal>` et `<output principal>` → 1-3 mots chacun, dérivés de la description du frontmatter (Étape 4). Si tu ne peux pas les déduire avec certitude, demande à l'utilisateur via `AskUserQuestion` (« Quel est l'input principal du skill en 1-3 mots ? » + « Quel est l'output principal ? »).
+- `<slug>`, `<description>`, `<github_user>`, `<context>_name` → comme avant.
+
+En mode `local`, remplace `/plugin marketplace add <github_user>/<context>_name` par `/plugin marketplace add <dir>` (chemin absolu). Le commentaire HTML à la fin du template est strictement informatif et doit être retiré du fichier final écrit (pas de pollution du README publié).
 
 **`SKILL.md`** : frontmatter `name: <slug>` + `description: <description>` + body construit à l'Étape 6.
 

@@ -162,6 +162,12 @@ Si une validation échoue de façon non bloquante, demande à l'utilisateur si o
 
 ## M.7 — Commit, push, récap
 
+### M.7.0 — Patcher la date "Dernière mise à jour" du README plugin (Type A uniquement)
+
+Avant le commit, mets à jour la ligne `**Dernière mise à jour** : `` de `<repo_dir>/plugins/<slug>/README.md` avec la date du jour (`date +%Y-%m-%d`). La ligne `**Créé** : `` reste inchangée — elle est immuable, c'est la date de création originale du plugin.
+
+Si le README est dans l'ancien format (avant l'introduction des dates et du diagramme Mermaid), propose à l'utilisateur via `AskUserQuestion` de le migrer vers le nouveau format court (titre + description + dates + mermaid + install + licence — voir `${CLAUDE_SKILL_DIR}/assets/readme-plugin-template.md`). Si oui, applique la conversion en utilisant la date courante pour **Créé** et **Dernière mise à jour** (faute de mieux : la date de création réelle est perdue) ; signale-le à l'utilisateur pour qu'il puisse corriger manuellement si nécessaire en consultant `git log --follow --diff-filter=A` sur le fichier `plugin.json` du plugin.
+
 ### Action selon le Type d'origine du skill modifié
 
 | Type | Action |
