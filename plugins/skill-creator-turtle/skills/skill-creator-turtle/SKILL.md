@@ -439,6 +439,9 @@ Quand l'utilisateur demande de modifier `research-helper`, le fichier mis à jou
 ### Snapshot avant toute édition
 M.3 copie le skill complet vers `/tmp/<slug>-snapshot-<timestamp>/`. La raison : si la modification casse quelque chose, rollback en une commande (`cp -R /tmp/<slug>-snapshot-<ts>/* <original-path>/`). `/tmp/` est purgé au reboot — si tu veux persister, copie ailleurs avant.
 
+### Bumper la version à chaque modification (Type A)
+M.7.0bis bumpe la `version` dans `plugin.json` à chaque modification du contenu d'un plugin Type A. La raison : Claude Code met en cache les plugins installés dans `~/.claude/plugins/cache/<repo>/<slug>/<version>/` et ne re-télécharge le cache que si la version change. Modifier le contenu sans bumper la version fait que `/plugin marketplace update` rafraîchit le snapshot mais pas le cache que Claude lit à l'invocation — bug très déroutant, où le push GitHub est correct mais l'utilisateur voit toujours l'ancien comportement. Le bump force la propagation. Cas vécu : modification du suffixe `_legende` → `_simplified` sans bump, l'autre session continuait d'écrire `_legende` après reload jusqu'à la suppression manuelle du cache.
+
 ### Détection des skills installés multi-source
 M.1 scanne quatre familles d'emplacements (standalones, marketplaces locales stable, marketplaces locales beta, copies en cache `/plugin install`). La raison : les sources éditables (les deux premières) doivent être priorisées sur les copies read-only en cache, qui seront écrasées au prochain `/plugin update`. Le skill redirige vers la source quand elle existe localement, propose un clone sinon.
 

@@ -168,6 +168,25 @@ Avant le commit, mets à jour la ligne `**Dernière mise à jour** : `` de `<rep
 
 Si le README est dans l'ancien format (avant l'introduction des dates et du diagramme Mermaid), propose à l'utilisateur via `AskUserQuestion` de le migrer vers le nouveau format court (titre + description + dates + mermaid + install + licence — voir `${CLAUDE_SKILL_DIR}/assets/readme-plugin-template.md`). Si oui, applique la conversion en utilisant la date courante pour **Créé** et **Dernière mise à jour** (faute de mieux : la date de création réelle est perdue) ; signale-le à l'utilisateur pour qu'il puisse corriger manuellement si nécessaire en consultant `git log --follow --diff-filter=A` sur le fichier `plugin.json` du plugin.
 
+### M.7.0bis — Bumper la version dans plugin.json (Type A uniquement) — CRITIQUE
+
+**Problème à éviter** : Claude Code met en cache les plugins installés dans `~/.claude/plugins/cache/<repo>/<slug>/<version>/`. Quand l'utilisateur fait `/plugin marketplace update <repo>`, Claude Code rafraîchit le snapshot de la marketplace mais **ne re-télécharge le plugin dans son cache que si la `version` dans `plugin.json` a changé**. Si tu modifies le contenu (SKILL.md, references/, assets/) sans bumper la version, les sessions existantes continuent de lire l'ancien cache et le `/plugin marketplace update` semble ne rien faire — un bug très déroutant pour l'utilisateur.
+
+**Règle** : pour tout changement de contenu d'un plugin Type A (SKILL.md, fichiers dans references/ ou assets/, README, plugin.json lui-même), **bumper la version** dans `<repo_dir>/plugins/<slug>/.claude-plugin/plugin.json` avant le commit.
+
+**Comment bumper** :
+
+1. Lis la version actuelle dans `plugin.json` (champ `"version"`).
+2. Demande à l'utilisateur via `AskUserQuestion` quel type de bump appliquer, en pré-calculant les trois prochaines versions :
+   - **Patch** (recommandé pour la plupart des modifs : ajustement de règle, correction, ajout de précision) : `X.Y.(Z+1)`
+   - **Minor** (nouvelle étape, nouvelle variante, refactor structurel) : `X.(Y+1).0`
+   - **Major** (renommage de slug, refonte qui casse l'usage existant) : `(X+1).0.0`
+3. Écris la nouvelle version dans `plugin.json`.
+
+**Exception — quand ne pas bumper** : si la seule chose modifiée est un fichier qui n'est pas distribué dans le plugin (par exemple une note interne hors du dossier du plugin, ou une correction de typo dans un commentaire hors-skill). Mais en cas de doute, bumpe : un patch superflu coûte rien, un bump manqué coûte une session de debug.
+
+**Pour Type B (standalone) et Type C (autre outil)** : pas de `plugin.json`, donc pas de bump. Le fichier est lu directement depuis sa source à chaque invocation. Saute cette étape.
+
 ### Action selon le Type d'origine du skill modifié
 
 | Type | Action |
@@ -191,8 +210,12 @@ Diff résumé      : <N> lignes ajoutées, <M> supprimées dans SKILL.md
                    <K> autres fichiers modifiés (références, plugin.json, marketplace.json…)
 
 [Type A pushé]
+Version          : <ancienne> → <nouvelle>
 GitHub           : https://github.com/<github_user>/<context>_name/tree/main/plugins/<slug>
 Pour rafraîchir  : /plugin marketplace update <context>_name  →  /plugin update <slug>@<context>_name
+Si pas d'effet   : le cache local peut être stale. Supprime-le :
+                   rm -rf ~/.claude/plugins/cache/<context>_name/<slug>
+                   puis /reload-plugins.
 
 [Type A pas pushé]
 À faire          : cd <repo_dir> && git push
