@@ -59,7 +59,7 @@ flowchart LR
 - **use-case-prioritization** *(draft)* : ajoute effort, ROI, Run cost benchmarké.
 - **scenario-uc** : formalise le use case retenu en scénario PRD.
 - **scenario-uc-v2** : version parallèle de `scenario-uc` qui ajoute scénarios alternatifs HEC (suffixes `a/b/c`), boucles `LOOP / FIN LOOP` (alignées sur `loop ... end` Mermaid), préfixe `AS-IS_v<N>` / `TO-BE_v<N>` dans le H1, et validation interactive renforcée.
-- **product-brief** : transforme inputs hétérogènes (BA, transcripts, OKRs) en product brief one-pager au format PRD Authentik.
+- **product-brief** : transforme inputs hétérogènes (BA, transcripts, OKRs) en product brief one-pager au format PRD Authentik. v2 — posture Product Manager Senior, scan préliminaire de la doc, validation par section via AskUserQuestion, citations verbatim complètes, AARRR conditionnel. Version 1 archivée sous `product-brief-v1`.
 - **mermaid-flow** : vulgarise les scénarios pour un Directeur de compte ou stakeholder non technique.
 
 Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customize-skills`) sont indépendants de ce flow.
@@ -72,7 +72,8 @@ Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customiz
 | `use-case-prioritization` `[draft]` | Score + priorise + chiffre les use cases (BABOK + UiPath Suitability + Run cost benchmarké web + confiance hybride). |
 | `scenario-uc` | Transforme tout input (md/PDF/image/idée) en scénario use-case au format PRD avec diagramme de séquence Mermaid. |
 | `scenario-uc-v2` | Version parallèle de `scenario-uc` qui ajoute scénarios alternatifs au format HEC (suffixes `1.3a/1.3b`), boucles `LOOP / FIN LOOP` (alignées sur `loop ... end` Mermaid), titre via frontmatter Mermaid, préfixe `AS-IS_v<N>` / `TO-BE_v<N>` dans le H1, et validation interactive renforcée (questions bloquantes sur ambiguïtés). |
-| `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik (7 sections strictes + diagramme Mermaid causal OKR + Job Stories Klement + Flows AARRR). |
+| `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik. v2 : posture Product Manager Senior, scan préliminaire de la doc, validation par section via AskUserQuestion, citations verbatim complètes (sans coupure), contraintes flexibles au-delà de Budget/Temps/Pourquoi maintenant, OKR avec validation séparée Objectives/KR (max 3 par catégorie) et paragraphe épuré, AARRR conditionnel (alternatives Avant/Après ou ROI pour workflows internes), référencement des scénarios formalisés. |
+| `product-brief-v1` `[archivé]` | Version 1 originale du skill product-brief, conservée pour reproductibilité. La version active est `product-brief`. |
 | `mermaid-flow` | Transforme un flow en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, emojis acteurs). |
 | `bmad-customize-skills` | Désactive/réactive sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). |
 | `skill-creator` | Meta-skill générique pour créer un nouveau skill dans ta propre marketplace (pas la mienne). |

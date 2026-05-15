@@ -47,9 +47,14 @@
       "description": "Priorise les use cases d'AI/automatisation par impact business chiffré documenté (post-its, transcripts, inventaires). v1.3 : 27 colonnes focus VALEUR uniquement, six sources d'Impact $ explicites + col Dépend de + col Impact Potentiel Estimé. Step 2bis Root Cause Analysis. Règle d'or v1.3 adoucie avec paire d'anchors verbaux (signal heures vague + N personnes cité = chiffrable via défauts conservateurs documentés). Score amplifié pour use cases transverses (Personnes_factor paliers + Transversalité_factor explicites). Algorithme Verdict déterministe. Synthèse Top 10 × 3 lignes par entrée, classement décisif sans section À chiffrer en atelier séparée. Complémentaire à use-case-prioritization v2.2 (en draft)."
     },
     {
+      "name": "product-brief-v1",
+      "source": "./plugins/product-brief-v1",
+      "description": "[archivé v1] Version 1 originale du skill product-brief, conservée pour reproductibilité. La version active est `product-brief`. Transformer divers inputs (notes BA, data points chiffrés, transcripts d'ateliers ou d'entrevues, insights discovery, OKRs, contraintes budgétaires, brouillons) en product brief one-pager au format PRD Authentik : 7 sections strictes (Contexte, Problème avec insights citables, Enveloppe & contraintes, Alignement OKR avec diagramme Mermaid causal, Solution avec Job Stories Klement + Flows AARRR, Out of scope, Risques avec mitigation). Analyse profonde + validation interactive avant génération. Sortie FR Québec."
+    },
+    {
       "name": "product-brief",
       "source": "./plugins/product-brief",
-      "description": "Transformer divers inputs (notes BA, data points chiffrés, transcripts d'ateliers ou d'entrevues, insights discovery, OKRs, contraintes budgétaires, brouillons) en product brief one-pager au format PRD Authentik : 7 sections strictes (Contexte, Problème avec insights citables, Enveloppe & contraintes, Alignement OKR avec diagramme Mermaid causal, Solution avec Job Stories Klement + Flows AARRR, Out of scope, Risques avec mitigation). Analyse profonde + validation interactive avant génération. Sortie FR Québec."
+      "description": "Transformer divers inputs (notes BA, transcripts, data points chiffrés, insights discovery, OKRs, contraintes) en product brief one-pager au format PRD Authentik. v2 : Posture Product Manager Senior, scan préliminaire de la doc, validation par section via AskUserQuestion, citations verbatim complètes (pas de coupure), contraintes flexibles au-delà de Budget/Temps/Pourquoi maintenant, OKR avec validation séparée Objectives (jaunes, client) / Key Results (bleus, MIA) / Effets (verts) et limite stricte à 3 par catégorie, paragraphe OKR épuré, AARRR conditionnel (alternatives Avant/Après ou ROI pour workflows internes), référencement des scénarios formalisés. Version 1 archivée sous `product-brief-v1`. Sortie FR Québec."
     },
     {
       "name": "product-management",
