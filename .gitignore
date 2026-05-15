@@ -1,3 +1,6 @@
 # Coordination logs (ephemeral, per focus)
 COORDINATION.*.md
 !COORDINATION.README.md
+
+# macOS metadata
+.DS_Store
