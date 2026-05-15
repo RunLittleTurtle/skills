@@ -60,6 +60,11 @@
       "name": "bug-us-mapping",
       "source": "./plugins/bug-us-mapping",
       "description": "Analyser l'écart entre US Done et bugs Backlog Jira pour identifier les US non complétées à 100%. v1.1.0 : auto-détection des CSV avec validation interactive obligatoire, mapping sémantique strict bugs ↔ US (règle anti-forçage), table unique triée du moins complet au plus complet (échelle 30/50/70/85/100), section dédiée 'Bugs non liés à une US' avec validation PO interactive par bug orphelin (laisser / rattacher faible / candidat nouvelle US / ignorer), versioning auto du fichier de sortie (_v2, _v3, ...). Sortie FR Québec."
+    },
+    {
+      "name": "scenario-uc-v2",
+      "source": "./plugins/scenario-uc-v2",
+      "description": "Version parallèle de scenario-uc : ajoute scénarios alternatifs au format HEC (TECH 30710) avec suffixes lettrés (1.3a, 1.3b) et convention de retour explicite, boucles `LOOP : <condition> / FIN LOOP` alignées avec `loop ... end` Mermaid, titre via frontmatter (`Scénario \"Happy path\"`), préfixe AS-IS / TO-BE dans le H1, et validation interactive renforcée. Compatible v1 sur tout le reste."
     }
   ]
 }

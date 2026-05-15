@@ -50,6 +50,7 @@ Dossiers cibles courants :
 flowchart LR
   A[use-case-value<br/><i>Business Analysis</i>] --> B[use-case-prioritization<br/><i>draft</i>]
   B --> C[scenario-uc<br/><i>Product Management</i>]
+  C --> C2[scenario-uc-v2<br/><i>version parallèle</i>]
   C --> D[product-brief<br/><i>Product Management</i>]
   C --> E[mermaid-flow<br/><i>Directeur de compte</i>]
 ```
@@ -57,6 +58,7 @@ flowchart LR
 - **use-case-value** : analyse d'impact business chiffré (chiffres durs uniquement, root cause avant chiffrage).
 - **use-case-prioritization** *(draft)* : ajoute effort, ROI, Run cost benchmarké.
 - **scenario-uc** : formalise le use case retenu en scénario PRD.
+- **scenario-uc-v2** : version parallèle de `scenario-uc` qui ajoute scénarios alternatifs HEC (suffixes `a/b/c`), boucles `LOOP / FIN LOOP` (alignées sur `loop ... end` Mermaid), préfixe `AS-IS_v<N>` / `TO-BE_v<N>` dans le H1, et validation interactive renforcée.
 - **product-brief** : transforme inputs hétérogènes (BA, transcripts, OKRs) en product brief one-pager au format PRD Authentik.
 - **mermaid-flow** : vulgarise les scénarios pour un Directeur de compte ou stakeholder non technique.
 
@@ -69,6 +71,7 @@ Les autres skills (`coordination`, `agent-talk`, `skill-creator`, `bmad-customiz
 | `use-case-value` | Priorise les use cases d'AI/automatisation par impact business chiffré (6 sources d'impact $, root cause avant chiffrage, règle d'or v1.3 avec inférences sur paire d'anchors verbaux et défauts conservateurs, Score amplifié pour transverse via Personnes_factor paliers + Transversalité_factor, synthèse Top 10 × 3 lignes décisive). |
 | `use-case-prioritization` `[draft]` | Score + priorise + chiffre les use cases (BABOK + UiPath Suitability + Run cost benchmarké web + confiance hybride). |
 | `scenario-uc` | Transforme tout input (md/PDF/image/idée) en scénario use-case au format PRD avec diagramme de séquence Mermaid. |
+| `scenario-uc-v2` | Version parallèle de `scenario-uc` qui ajoute scénarios alternatifs au format HEC (suffixes `1.3a/1.3b`), boucles `LOOP / FIN LOOP` (alignées sur `loop ... end` Mermaid), titre via frontmatter Mermaid, préfixe `AS-IS_v<N>` / `TO-BE_v<N>` dans le H1, et validation interactive renforcée (questions bloquantes sur ambiguïtés). |
 | `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik (7 sections strictes + diagramme Mermaid causal OKR + Job Stories Klement + Flows AARRR). |
 | `mermaid-flow` | Transforme un flow en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, emojis acteurs). |
 | `bmad-customize-skills` | Désactive/réactive sélectivement les skills BMad-Method par projet (preset Product-only ou sélection custom). |
