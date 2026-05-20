@@ -32,9 +32,9 @@
       "description": "Transformer n'importe quel input (texte, brouillon md, PDF, image, URL Drive, idée verbale) en un fichier markdown de scénario use-case au format Authentik PRD complet : description, intent, séquence textuelle numérotée avec séquences alternatives HEC (suffixes a/b/c) et boucles LOOP/FIN LOOP, diagramme de séquence Mermaid avec titre via frontmatter et bloc `loop ... end` natif, préfixe AS-IS / TO-BE dans le H1. Analyse profonde + validation interactive renforcée avant génération. Sortie en français."
     },
     {
-      "name": "skill-creator-turtle",
-      "source": "./plugins/skill-creator-turtle",
-      "description": "Meta-skill (version beta) : crée OU modifie un skill Claude Code (ou compatible agentskills.io). Aligne sur principes Anthropic (lean instructions, theory of mind, prose au lieu d'ALL-CAPS). Workflow create/modify unifié à l'Étape 0.0, snapshot avant édition, détection des skills installés. Préserve le slug d'origine lors d'une modification."
+      "name": "skill-creator-generic",
+      "source": "./plugins/skill-creator-generic",
+      "description": "Create or modify a Claude Code skill (or any agentskills.io-compatible tool). Identity-free, runtime-configured fork of flo351/skill-creator that introduces a separate config field for the marketplace identifier (the top-level `name` in marketplace.json) distinct from the GitHub repo slug, so two users with the same repo name (e.g. both `skills`) never collide inside Claude Code. Defaults to `<github_user>-<repo_name>` for the marketplace id."
     }
   ]
 }

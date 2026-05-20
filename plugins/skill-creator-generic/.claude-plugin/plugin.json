@@ -1,0 +1,11 @@
+{
+  "name": "skill-creator-generic",
+  "description": "Create a new agent skill OR modify an existing one, in a personal marketplace (Type A, stable or beta), as a personal standalone (Type B), or for another tool compatible with agentskills.io (Type C). Identity-free and runtime-configured. Separates the GitHub repo name from the marketplace identifier so that two users with the same repo name never collide inside Claude Code. Auto-detects reference files, preserves the slug on modification, snapshots before editing.",
+  "version": "1.0.0",
+  "author": {
+    "name": "flo351 (original generic skill-creator), Samuel Audette (collision-safe fork)",
+    "url": "https://github.com/flo351/skills"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/RunLittleTurtle/skills"
+}

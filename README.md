@@ -58,7 +58,7 @@ flowchart LR
 - **product-brief** : transforme des inputs hétérogènes (BA, transcripts, OKRs) en product brief one-pager au format PRD Authentik.
 - **mermaid-flow** : vulgarise un scénario pour un Directeur de compte ou stakeholder non technique.
 
-Les autres skills (`coordination`, `skill-creator-turtle`, `bug-us-mapping`) sont indépendants de ce flow.
+Les autres skills (`coordination`, `skill-creator-generic`, `bug-us-mapping`) sont indépendants de ce flow.
 
 ### Tableau récapitulatif
 
@@ -69,7 +69,7 @@ Les autres skills (`coordination`, `skill-creator-turtle`, `bug-us-mapping`) son
 | `mermaid-flow` | Transforme un flow (texte, fichier markdown, mermaid existant ou image) en flowchart Mermaid simplifié pour personnes peu techniques (max 10 étapes, palette pastel light-mode, emojis acteurs 👤🤖⚙️🖥️⚖️). |
 | `product-brief` | Transforme inputs hétérogènes (notes BA, data points, transcripts, insights discovery, OKRs) en product brief one-pager au format PRD Authentik. v2 : posture Product Manager Senior, scan préliminaire de la doc, validation par section, citations verbatim complètes, AARRR conditionnel. |
 | `scenario-uc` | Transforme tout input (md, PDF, image, URL Drive, idée verbale) en scénario use-case au format PRD Authentik avec diagramme de séquence Mermaid. v2.0.0 : mode AS-IS / TO-BE obligatoire, séquences alternatives HEC (suffixes a/b/c avec retour explicite), boucles `LOOP : <condition> / FIN LOOP` alignées avec `loop ... end` Mermaid, titre du diagramme via frontmatter, validation interactive renforcée. Sortie en français. |
-| `skill-creator-turtle` | Meta-skill pour **créer OU modifier** un skill Claude Code. 3 cibles (marketplace, standalone, autre outil) + workflow de modification d'un skill existant (snapshot avant édition, détection des skills installés, préservation du slug). Aligné sur les principes Anthropic (lean instructions, theory of mind, prose explicative). Renommé de `skill-creator` pour ne pas se confondre avec le skill-creator officiel d'Anthropic. |
+| `skill-creator-generic` | Meta-skill **identity-free** pour créer OU modifier un skill Claude Code (ou compatible agentskills.io). Fork de [`flo351/skill-creator`](https://github.com/flo351/skills/tree/main/plugins/skill-creator) avec un correctif structurel anti-collision : sépare le **slug du repo GitHub** (`skills`) du **nom du marketplace** dans `marketplace.json` (par défaut `<github_user>-<repo_name>`, ex: `runlittleturtle-skills`) pour que deux utilisateurs avec le même nom de repo ne s'écrasent pas mutuellement dans Claude Code. Trois cibles création (marketplace, standalone, autre outil) + workflow modification (snapshot avant édition, détection des skills installés, préservation du slug). Pour la version personnelle non-générique de Samuel (héritage du skill original), voir `skill-creator-turtle-v2-latest` dans la marketplace beta. |
 
 ---
 
@@ -81,7 +81,7 @@ Pour les versions en cours de développement, parallèles, archives ou forks ada
 /plugin marketplace add RunLittleTurtle/skills-beta
 ```
 
-Skills actuellement disponibles en beta : `agent-talk-beta`, `product-brief-v1-beta`, `product-management`, `scenario-uc-v1-beta`, `skill-creator-turtle-v1-beta`, `use-case-prioritization-beta`, `use-case-value-beta`.
+Skills actuellement disponibles en beta : `agent-talk-beta`, `mermaid-flow-beta`, `product-brief-v1-beta`, `product-management`, `scenario-uc-v1-beta`, `skill-creator-turtle-v1-beta`, `skill-creator-turtle-v2-latest`, `use-case-prioritization-beta`, `use-case-value-beta`.
 
 ---
 
@@ -108,9 +108,9 @@ Chaque `SKILL.md` respecte le standard ouvert [agentskills.io](https://agentskil
 
 ## Créer ou modifier un skill
 
-Installe le skill `skill-creator-turtle` (`/plugin install skill-creator-turtle@skills`) et invoque-le. Il te guide interactivement pour créer un nouveau skill (3 cibles : marketplace, standalone, autre outil) ou modifier un skill existant (snapshot + édition guidée).
+Installe le skill `skill-creator-generic` (`/plugin install skill-creator-generic@skills`) et invoque-le. Il te guide interactivement pour créer un nouveau skill (3 cibles : marketplace, standalone, autre outil) ou modifier un skill existant (snapshot + édition guidée). Identity-free : aucune référence hardcodée à un compte GitHub ou à un nom — tout est détecté ou demandé au runtime. Le correctif anti-collision sépare le slug du repo GitHub (`skills`) de l'identifiant du marketplace dans Claude Code (`<github_user>-skills`).
 
-Pour la version originale archivée de skill-creator (sans le workflow modify), voir [`skill-creator-turtle-v1-beta`](https://github.com/RunLittleTurtle/skills-beta/tree/main/plugins/skill-creator-turtle-v1-beta) dans la marketplace beta.
+Pour la version personnelle de Samuel (slug `skill-creator-turtle-v2-latest`, mêmes principes mais sans le correctif anti-collision), voir la marketplace beta. Pour la version originale archivée v1 (sans workflow modify), voir [`skill-creator-turtle-v1-beta`](https://github.com/RunLittleTurtle/skills-beta/tree/main/plugins/skill-creator-turtle-v1-beta).
 
 ---
 
